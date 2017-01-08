@@ -47,7 +47,7 @@ def packageIndex(request):
         for i in packages:
             i.posibleFreight= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
-                i.posibleFreight= i.posibleFreight.exclude(id= i.freight.truck.id)
+                i.posibleFreight = i.posibleFreight.exclude(id= i.freight.id)
     return render(request, 'intranet/packages/index.html', 
         {
             'packages': packages,
