@@ -17,9 +17,15 @@
                 <table class="table">
                     <thead>
                       <tr>
-                        <th>ID</th>
+                        <th class="text-center">ID</th>
+                        <th>Cliente</th>
                         <th>Origen</th>
                         <th>Destino</th>
+                        <th>Volumen</th>
+                        <th>Cantidad</th>
+                        <th>Peso</th>
+                        <th>Precio</th>
+
                         <th>Fecha creacion</th>
                         <th>Camion</th>
                       </tr>
@@ -27,21 +33,26 @@
                     <tbody>
                         {% for package in packages %}
                             <tr onclick="location.href="">
-                                <td>{{package.id}}</td>
+                                <td class="text-center">{{package.id}}</td>
+                                <td>{{package.customer.name}}</td>
                                 <td>{{package.start.name}}</td>
                                 <td>{{package.finish.name}}</td>
                                 <td>{{package.createDate}}</td>
+                                <td>{{package.volume}}</td>
+                                <td>{{package.quantity}}</td>
+                                <td>{{package.weight}}</td>
+                                <td>{{package.rate}}</td>
                                 <td>
                                     <select id="{{package.id}}" onchange="change_package_freight(this);">
                                         {% if package.freight %}
                                           <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
                                         {% endif %}
                                           <option value="-">----</option>
-                                        {% for a in package.asd %}
+                                        {% for a in package.posibleFreight %}
                                           <option value="{{a.id}}">{{a.truck.plate}}</option>
                                         {% endfor %}
                                     </select>
-                                {{package.camion}}</td>
+                                </td>
                             </tr>
                         {% endfor %}
                         

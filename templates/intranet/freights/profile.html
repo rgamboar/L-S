@@ -1,6 +1,6 @@
 {% extends 'intranet/base.html' %}
 {% load staticfiles %}
-{% block css %}
+{% block extra_head %}
     <link href="{% static 'css/freight.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -16,7 +16,7 @@
                 <table class="table">
                     <thead>
                       <tr>
-                        <th>ID</th>
+                        <th class="text-center">ID</th>
                         <th>Origen</th>
                         <th>Destino</th>
                         <th>Conductor</th>
@@ -26,32 +26,52 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{freight.id}}</td>
+                            <td class="text-center">{{freight.id}}</td>
                             <td>{{freight.start.name}}</td>
                             <td>{{freight.finish.name}}</td>
-                            <td>{{freight.driver.name}}</td>
-                            <td>{{freight.truck.plate}}</td>
+                            <td>
+                                <select onchange="change_freight_driver(this, {{ freight.id }});">
+                                    {% if freight.driver %}
+                                      <option value="{{freight.driver.id}}">{{freight.driver.name}}</option>
+                                    {% endif %}
+                                      <option value="-">----</option>
+                                    {% for a in freight.posibleDriver %}
+                                      <option value="{{a.id}}">{{a.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select onchange="change_freight_truck(this, {{ freight.id }});">
+                                    {% if freight.truck %}
+                                      <option value="{{freight.truck.id}}">{{freight.truck.plate}}</option>
+                                    {% endif %}
+                                      <option value="-">----</option>
+                                    {% for a in freight.posibleTruck %}
+                                      <option value="{{a.id}}">{{a.plate}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
                             <td>{{freight.createDate}}</td>
                         </tr>
                     </tbody>
                 </table>
                 </div>
-                {% if own_packages %}
                     <h4 class="text-center">Paquetes dentro del flete.</h4>
                 <div class="table-responsive">   
                 <table class="table">
                     <thead>
                       <tr>
-                        <th>Nombre</th>
+                        <th>Cliente</th>
                         <th>Riesgo</th>
                         <th>Volumen</th>
                         <th>Cantidad</th>
                         <th>Peso</th>
                         <th>Oportunidad</th>
                         <th>Tarifado</th>
+                        <th></th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="own">
                         {% for package in own_packages %}
                         <tr>
                             <td>{{package.customer.name}}</td>
@@ -61,36 +81,34 @@
                             <td>{{package.weight}}</td>
                             <td>{{package.chance}}</td>
                             <td>{{package.rate}}</td>
+                            <td><i id="icon{{package.id}}" package="{{package.id}}" freight="-" onclick="change_package_freight(this);" class="fa fa-times" aria-hidden="true"></i></td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-                {% else %}
-                    <h5>-No hay paquetes dentro del flete.</h5>
-                {% endif %}
+
 
 
                 {% if not send %}
-                    
-                    {% if packages %}
                         <h4 class="text-center">Paquetes que coinciden con el recorrido.</h4>
                         <div class="table-responsive">   
                             <table class="table">
                                 <thead>
                                   <tr>
-                                    <th>Nombre</th>
+                                    <th>Cliente</th>
                                     <th>Riesgo</th>
                                     <th>Volumen</th>
                                     <th>Cantidad</th>
                                     <th>Peso</th>
                                     <th>Oportunidad</th>
                                     <th>Tarifado</th>
+                                    <th></th>
                                   </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="not_own">
                                     {% for package in packages %}
-                                    <tr>
+                                    <tr id="{{package.id}}">
                                         <td>{{package.customer.name}}</td>
                                         <td>{{package.risk}}</td>
                                         <td>{{package.volume}}</td>
@@ -98,14 +116,12 @@
                                         <td>{{package.weight}}</td>
                                         <td>{{package.chance}}</td>
                                         <td>{{package.rate}}</td>
+                                        <td><i id="icon{{package.id}}" onclick="change_package_freight(this);" package="{{package.id}}" freight="{{freight.id}}" class="fa fa-plus" aria-hidden="true"></i></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                    {% else %}
-                        <h5>-No hay paquetes en este recorrido.</h4>
-                    {% endif %}
                 {% else %}
                       <a href="{% url 'freightProfileLoad' freight.id %}" class="btn btn-primary" role="button">Ver paquetes en el recorrido</a>
                 {% endif %}
@@ -116,4 +132,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    var change = "{% url 'packageFreight' %}";
+    var changeTruck = "{% url 'freightTruck' %}";
+    var changeDriver = "{% url 'freightDriver' %}";
+    var csrf_token = "{{ csrf_token }}";
+    var freight = "{{ freight.id }}";
+</script>
+
+<script src="{% static 'js/freight.js' %}"></script>
 {% endblock %}

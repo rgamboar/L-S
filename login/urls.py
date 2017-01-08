@@ -20,7 +20,10 @@ urlpatterns = [
     url(r'^flete/crear/$',  views.freight, name='freight'),
     url(r'^flete/inicio/$',  views.freightIndex, name='freightIndex'),
     url(r'^flete/cargar/(?P<freight_id>.*)/$', views.freightProfile, {'load': True}, name='freightProfileLoad'),
+    url(r'^flete/camion/$', views.freightTruck, name='freightTruck'),
+    url(r'^flete/conductor/$', views.freightDriver, name='freightDriver'),
     url(r'^flete/(?P<freight_id>.*)/$', views.freightProfile, name='freightProfile'),
+
 
     url(r'^camion/crear/$',  views.truck, name='truck'),
     url(r'^conductor/crear/$',  views.driver, name='driver'),

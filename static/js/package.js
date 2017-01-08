@@ -1,5 +1,4 @@
 function change_package_freight(package){
-	console.log("adsda");
 	$.ajax({
 		url: change,
 		method: 'POST',

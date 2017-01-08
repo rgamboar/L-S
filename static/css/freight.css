@@ -1,3 +1,39 @@
+div.col-sm-10.default-form > form > div label{
+	width: 45%;
+}
+
+div.col-sm-10.default-form > form > div input{
+	width: 45%;
+}
 table > tbody > tr:hover {
-	background-color: #969696;
+
+}
+
+.fa-times {
+	width: 100%;
+	height: 100%;
+	color: red;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.fa-plus {
+	width: 100%;
+	height: 100%;
+	color: green;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.link {
+	cursor: pointer;
+	cursor: hand;
+	text-align: center;
+}
+.link:hover {
+	background-color: #d4d4d4;
+}
+
+.link a {
+	text-decoration:  none!important;
 }

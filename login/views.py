@@ -45,9 +45,9 @@ def packageIndex(request):
     else:
         packages = Package.objects.all()
         for i in packages:
-            i.asd= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
+            i.posibleFreight= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
-                i.asd= i.asd.exclude(id= i.freight.truck.id)
+                i.posibleFreight= i.posibleFreight.exclude(id= i.freight.truck.id)
     return render(request, 'intranet/packages/index.html', 
         {
             'packages': packages,
@@ -91,7 +91,6 @@ def packageProfile(request, package_id, load=False):
 
 @login_required(login_url="login/")   
 def packageFreight(request):
-    print("SHIT")
     if request.method == "POST":
         if request.is_ajax():
             package = Package.objects.get(id=request.POST['id'])
@@ -163,6 +162,10 @@ def freightIndex(request):
             return HttpResponseRedirect('/')
     else:
         freights = Freight.objects.all()
+        for freight in freights:
+            freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
+            freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
+        
     return render(request, 'intranet/freights/index.html', 
         {
             'freights': freights,
@@ -181,7 +184,10 @@ def freightProfile(request, freight_id, load=False):
             own_packages = Package.objects.filter(freight=freight)
             packages = Package.objects.filter(start=freight.start, finish= freight.finish, is_waiting= True)
             packages = packages.exclude(freight=freight_id)
-
+            
+            freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
+            freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
+            print (freight)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
@@ -198,7 +204,8 @@ def freightProfile(request, freight_id, load=False):
         else:
             freight = Freight.objects.get(id=freight_id)
             own_packages = Package.objects.filter(freight=freight)
-
+        freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
+        freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
@@ -206,3 +213,37 @@ def freightProfile(request, freight_id, load=False):
                 'send' : True,
 
             })
+
+@login_required(login_url="login/")   
+def freightDriver(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            freight = Freight.objects.get(id=request.POST['id'])
+            temp= request.POST['driver']
+            if temp == '-':
+                driver = None
+            else:
+                driver = Driver.objects.get(id=temp)
+            freight.driver = driver
+
+            freight.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
+
+@login_required(login_url="login/")   
+def freightTruck(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            freight = Freight.objects.get(id=request.POST['id'])
+            temp= request.POST['truck']
+            if temp == '-':
+                truck = None
+            else:
+                truck = Truck.objects.get(id=temp)
+            freight.truck = truck
+
+            freight.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
