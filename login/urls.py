@@ -6,7 +6,10 @@ urlpatterns = [
 
     url(r'^paquete/crear/$',  views.package, name='package'),
     url(r'^paquete/inicio/$',  views.packageIndex, name='packageIndex'),
+    url(r'^paquete/flete/$', views.packageFreight, name='packageFreight'),
     url(r'^paquete/(?P<package_id>.*)/$', views.packageProfile, name='packageProfile'),
+
+
 
     url(r'^accounts/profile/$',  views.home, name='adminAcount'),
 

@@ -48,7 +48,6 @@ def packageIndex(request):
             i.asd= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
                 i.asd= i.asd.exclude(id= i.freight.truck.id)
-            print(i.asd)
     return render(request, 'intranet/packages/index.html', 
         {
             'packages': packages,
@@ -88,8 +87,25 @@ def packageProfile(request, package_id, load=False):
             {
                 'package': package,
                 'send' : True,
-
             })
+
+@login_required(login_url="login/")   
+def packageFreight(request):
+    print("SHIT")
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.objects.get(id=request.POST['id'])
+            temp= request.POST['freight']
+            if temp == '-':
+                freight = None
+            else:
+                freight = Freight.objects.get(id=temp)
+            package.freight = freight
+
+            package.save()
+            return JsonResponse({'error': False})
+        else:
+            return packageIndex(request)
 
 
 @login_required(login_url="login/")

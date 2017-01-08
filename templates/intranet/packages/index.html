@@ -4,8 +4,8 @@
     <link href="{% static 'css/freight.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block content %}
 
+{% block content %}
 <div class="container">
         <div class="jumbotron">
         <div class="row">
@@ -32,7 +32,7 @@
                                 <td>{{package.finish.name}}</td>
                                 <td>{{package.createDate}}</td>
                                 <td>
-                                    <select>
+                                    <select id="{{package.id}}" onchange="change_package_freight(this);">
                                         {% if package.freight %}
                                           <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
                                         {% endif %}
@@ -59,4 +59,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    var change = "{% url 'packageFreight' %}";
+    var csrf_token = "{{ csrf_token }}";
+</script>
+
+<script src="{% static 'js/package.js' %}"></script>
+
+
 {% endblock %}
