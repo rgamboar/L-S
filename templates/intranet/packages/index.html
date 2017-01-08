@@ -21,15 +21,27 @@
                         <th>Origen</th>
                         <th>Destino</th>
                         <th>Fecha creacion</th>
+                        <th>Camion</th>
                       </tr>
                     </thead>
                     <tbody>
                         {% for package in packages %}
-                            <tr onclick="location.href='{% url 'packageProfile' package.id %}'">
+                            <tr onclick="location.href="">
                                 <td>{{package.id}}</td>
                                 <td>{{package.start.name}}</td>
                                 <td>{{package.finish.name}}</td>
                                 <td>{{package.createDate}}</td>
+                                <td>
+                                    <select>
+                                        {% if package.freight %}
+                                          <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
+                                        {% endif %}
+                                          <option value="-">----</option>
+                                        {% for a in package.asd %}
+                                          <option value="{{a.id}}">{{a.truck.plate}}</option>
+                                        {% endfor %}
+                                    </select>
+                                {{package.camion}}</td>
                             </tr>
                         {% endfor %}
                         

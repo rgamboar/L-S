@@ -44,6 +44,11 @@ def packageIndex(request):
             return HttpResponseRedirect('/')
     else:
         packages = Package.objects.all()
+        for i in packages:
+            i.asd= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
+            if i.freight:
+                i.asd= i.asd.exclude(id= i.freight.truck.id)
+            print(i.asd)
     return render(request, 'intranet/packages/index.html', 
         {
             'packages': packages,
