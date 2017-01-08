@@ -1,0 +1,50 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block css %}
+    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-10 default-form">
+            {% if packages %}
+            <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Fecha creacion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for package in packages %}
+                            <tr onclick="location.href='{% url 'packageProfile' package.id %}'">
+                                <td>{{package.id}}</td>
+                                <td>{{package.start.name}}</td>
+                                <td>{{package.finish.name}}</td>
+                                <td>{{package.createDate}}</td>
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                </div>
+                {% else %}
+                    No hay ningun paquete.
+                {% endif %}
+
+
+            </div>
+            <div class="col-sm-1">
+            </div>  
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -32,7 +32,60 @@ def package(request):
             return HttpResponseRedirect('/')
     else:
         form = PackageForm()
-    return render(request, 'intranet/package.html', {'form': form})
+    return render(request, 'intranet/packages/create.html', {'form': form})
+
+
+@login_required(login_url="login/")
+def packageIndex(request):
+    if request.method == 'POST':
+        form = DriverForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        packages = Package.objects.all()
+    return render(request, 'intranet/packages/index.html', 
+        {
+            'packages': packages,
+        })
+
+@login_required(login_url="login/")
+def packageProfile(request, package_id, load=False):
+    if load:
+        if request.method == 'POST':
+            form = DriverForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/')
+        else:
+            package = Package.objects.get(id=package_id)
+            own_packages = Package.objects.filter(package=package)
+            packages = Package.objects.filter(start=package.start, finish= package.finish, is_waiting= True)
+            packages = packages.exclude(package=package_id)
+
+        return render(request, 'intranet/packages/profile.html', 
+            {
+                'package': package,
+                'packages' : packages,
+                'own_packages' : own_packages,
+
+            })
+    else:
+        if request.method == 'POST':
+            form = DriverForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/')
+        else:
+            package = Package.objects.get(id=package_id)
+
+        return render(request, 'intranet/packages/profile.html', 
+            {
+                'package': package,
+                'send' : True,
+
+            })
+
 
 @login_required(login_url="login/")
 def customer(request):
@@ -44,17 +97,6 @@ def customer(request):
     else:
         form = CustomerForm()
     return render(request, 'intranet/customer.html', {'form': form})
-
-@login_required(login_url="login/")
-def freight(request):
-    if request.method == 'POST':
-        form = FreightForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
-    else:
-        form = FreightForm()
-    return render(request, 'intranet/freights/create.html', {'form': form})
 
 @login_required(login_url="login/")
 def truck(request):
@@ -77,6 +119,19 @@ def driver(request):
     else:
         form = DriverForm()
     return render(request, 'intranet/driver.html', {'form': form})
+
+
+@login_required(login_url="login/")
+def freight(request):
+    if request.method == 'POST':
+        form = FreightForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = FreightForm()
+    return render(request, 'intranet/freights/create.html', {'form': form})
+
 
 @login_required(login_url="login/")
 def freightIndex(request):

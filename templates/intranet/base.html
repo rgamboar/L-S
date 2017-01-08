@@ -31,10 +31,10 @@
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a href="{% url 'package'%}">Paquetes</a>
+                                                <a href="{% url 'package'%}">Guia de Despacho</a>
                                             </li>
                                             <li>
-                                                <a href="{% url 'freight'%}">Viajes</a>
+                                                <a href="{% url 'freight'%}">Flete</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'warehouse'%}">Bodegas</a>
@@ -55,6 +55,11 @@
                                 <ul class="nav navbar-nav">
                                     <li class="dropdown">
                                         <a href="{% url 'freightIndex'%}">Flete</a>
+                                    </li>
+                                </ul>
+                                <ul class="nav navbar-nav">
+                                    <li class="dropdown">
+                                        <a href="{% url 'packageIndex'%}">Guias de Despacho</a>
                                     </li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
