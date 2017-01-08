@@ -1,0 +1,11 @@
+
+div.col-sm-10.default-form > form > div label{
+	width: 45%;
+}
+
+div.col-sm-10.default-form > form > div input{
+	width: 45%;
+}
+table > tbody > tr:hover {
+	background-color: #d4d4d4;
+}

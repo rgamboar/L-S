@@ -1,0 +1,119 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block css %}
+    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-10 default-form">
+              <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Conductor</th>
+                        <th>Patente</th>
+                        <th>Fecha creacion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{freight.id}}</td>
+                            <td>{{freight.start.name}}</td>
+                            <td>{{freight.finish.name}}</td>
+                            <td>{{freight.driver.name}}</td>
+                            <td>{{freight.truck.plate}}</td>
+                            <td>{{freight.createDate}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                {% if own_packages %}
+                    <h4 class="text-center">Paquetes dentro del flete.</h4>
+                <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Riesgo</th>
+                        <th>Volumen</th>
+                        <th>Cantidad</th>
+                        <th>Peso</th>
+                        <th>Oportunidad</th>
+                        <th>Tarifado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for package in own_packages %}
+                        <tr>
+                            <td>{{package.customer.name}}</td>
+                            <td>{{package.risk}}</td>
+                            <td>{{package.volume}}</td>
+                            <td>{{package.quantity}}</td>
+                            <td>{{package.weight}}</td>
+                            <td>{{package.chance}}</td>
+                            <td>{{package.rate}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+                {% else %}
+                    <h5>-No hay paquetes dentro del flete.</h5>
+                {% endif %}
+
+
+                {% if not send %}
+                    
+                    {% if packages %}
+                        <h4 class="text-center">Paquetes que coinciden con el recorrido.</h4>
+                        <div class="table-responsive">   
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th>Nombre</th>
+                                    <th>Riesgo</th>
+                                    <th>Volumen</th>
+                                    <th>Cantidad</th>
+                                    <th>Peso</th>
+                                    <th>Oportunidad</th>
+                                    <th>Tarifado</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for package in packages %}
+                                    <tr>
+                                        <td>{{package.customer.name}}</td>
+                                        <td>{{package.risk}}</td>
+                                        <td>{{package.volume}}</td>
+                                        <td>{{package.quantity}}</td>
+                                        <td>{{package.weight}}</td>
+                                        <td>{{package.chance}}</td>
+                                        <td>{{package.rate}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <h5>-No hay paquetes en este recorrido.</h4>
+                    {% endif %}
+                {% else %}
+                      <a href="{% url 'freightProfileLoad' freight.id %}" class="btn btn-primary" role="button">Ver paquetes en el recorrido</a>
+                {% endif %}
+
+            </div>
+            <div class="col-sm-1">
+            </div>  
+        </div>
+    </div>
+</div>
+{% endblock %}
