@@ -35,22 +35,32 @@ def package(request):
     return render(request, 'intranet/packages/create.html', {'form': form})
 
 
+
+
+
 @login_required(login_url="login/")
-def packageIndex(request):
-    if request.method == 'POST':
-        form = DriverForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+def packageIndex(request, traveling=False, finish=False, delivered=False, transmitter=False):
+    if traveling:
+        packages = Package.objects.filter(is_traveling=True)
+        page = "traveling"
+    elif finish:
+        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False)
+        page = "finish"
+    elif delivered:
+        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=True)
+        page = "delivered"
     else:
         packages = Package.objects.all()
         for i in packages:
             i.posibleFreight= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
                 i.posibleFreight = i.posibleFreight.exclude(id= i.freight.id)
+        page = "inicio"
+
     return render(request, 'intranet/packages/index.html', 
         {
             'packages': packages,
+            'page': page,
         })
 
 @login_required(login_url="login/")
@@ -154,21 +164,24 @@ def freight(request):
 
 
 @login_required(login_url="login/")
-def freightIndex(request):
-    if request.method == 'POST':
-        form = DriverForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+def freightIndex(request, traveling=False, finish=False):
+    if traveling:
+        freights = Freight.objects.filter(is_traveling=True)
+        page = "traveling"
+    elif finish:
+        freights= Freight.objects.filter(is_waiting=False, is_traveling=False)
+        page = "finish"
     else:
-        freights = Freight.objects.all()
+        freights= Freight.objects.filter(is_waiting=True)
         for freight in freights:
             freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
             freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
-        
+        page = "inicio"
+
     return render(request, 'intranet/freights/index.html', 
         {
             'freights': freights,
+            'page': page,
         })
 
 @login_required(login_url="login/")

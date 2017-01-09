@@ -83,6 +83,8 @@ class Package(models.Model):
 	lastDate = models.DateTimeField(auto_now_add=True)
 
 	is_waiting =models.BooleanField(default=True)
+	is_traveling =models.BooleanField(default=False)
+	is_delivered =models.BooleanField(default=False)
 	risk = models.CharField(max_length=100, null=True)
 	volume = models.CharField(max_length=100, null=True)
 	quantity = models.CharField(max_length=100, null=True)
