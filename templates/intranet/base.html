@@ -13,6 +13,7 @@
                 <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
                 {% block extra_head %}
                 {% endblock %}
+                
                 </head>
                 <body>
                     <nav class="navbar navbar-default">
@@ -33,7 +34,7 @@
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a href="{% url 'package'%}">Guia de Despacho</a>
+                                                <a href="{% url 'package'%}">Guia de Flete</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'freight'%}">Manifiestos de Carga</a>

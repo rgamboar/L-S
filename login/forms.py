@@ -64,10 +64,14 @@ class FreightForm(forms.ModelForm):
 
 class PackageForm(forms.ModelForm):
 	name = forms.CharField(label='Nombre',max_length=300)
+	
 	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.objects.all(), empty_label=None)
+	startAddress = forms.CharField(label='Direccion de origen',max_length=300, required=False)
+	
 	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.objects.all(), empty_label=None)
+	finishAddress = forms.CharField(label='Direccion de destino',max_length=300, required=False)
+
 	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.objects.all(), empty_label=None)
-	freight = forms.ModelChoiceField(label='Flete',queryset=Freight.objects.all(), required=False)
 
 	risk = forms.CharField(label='Riesgo',max_length=100)
 	volume = forms.CharField(label='Volumen',max_length=100)
@@ -79,4 +83,4 @@ class PackageForm(forms.ModelForm):
 
 	class Meta:
 		model = Package
-		fields = ['name','start', 'finish','customer','freight','risk','volume','quantity','weight','chance','rate','pay']
+		fields = ['name','start','startAddress', 'finish','finishAddress','customer','risk','volume','quantity','weight','chance','rate','pay']

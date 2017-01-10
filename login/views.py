@@ -28,6 +28,11 @@ def package(request):
     if request.method == 'POST':
         form = PackageForm(request.POST)
         if form.is_valid():
+            if form.startAddress:
+                is_waiting=False
+                is_transmitter=True
+            if form.finishAddress:
+                is_reciever=True
             form.save()
             return HttpResponseRedirect('/')
     else:
@@ -46,11 +51,14 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
     elif finish:
         packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False)
         page = "finish"
+    elif transmitter:
+        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=True)
+        page = "finish"
     elif delivered:
         packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=True)
         page = "delivered"
     else:
-        packages = Package.objects.all()
+        packages = Package.objects.filter(is_waiting=True)
         for i in packages:
             i.posibleFreight= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
@@ -104,11 +112,15 @@ def packageFreight(request):
     if request.method == "POST":
         if request.is_ajax():
             package = Package.objects.get(id=request.POST['id'])
+            if package.is_waiting== False:
+                return JsonResponse({'error': True})
             temp= request.POST['freight']
             if temp == '-':
                 freight = None
             else:
                 freight = Freight.objects.get(id=temp)
+                if freight.is_waiting== False:
+                    return JsonResponse({'error': True})
             package.freight = freight
 
             package.save()
@@ -186,21 +198,44 @@ def freightIndex(request, traveling=False, finish=False):
 
 @login_required(login_url="login/")
 def freightProfile(request, freight_id, load=False):
+    freight = Freight.objects.get(id=freight_id)
+    if freight.is_waiting:
+        return freightProfileWaiting(request, freight, load)
+    elif freight.is_traveling:
+        return freightProfileTraveling(request, freight)
+    else:
+        return freightProfileFinish(request, freight)
+
+
+@login_required(login_url="login/")
+def freightProfileFinish(request, freight):
+    own_packages = Package.objects.filter(freight=freight)
+    return render(request, 'intranet/freights/profileFinish.html', 
+        {
+            'freight': freight,
+            'own_packages' : own_packages,
+        })
+
+@login_required(login_url="login/")
+def freightProfileTraveling(request, freight):
+    own_packages = Package.objects.filter(freight=freight)
+    return render(request, 'intranet/freights/profileTraveling.html', 
+        {
+            'freight': freight,
+            'own_packages' : own_packages,
+        })
+
+
+@login_required(login_url="login/")
+def freightProfileWaiting(request, freight, load):
     if load:
-        if request.method == 'POST':
-            form = DriverForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return HttpResponseRedirect('/')
-        else:
-            freight = Freight.objects.get(id=freight_id)
-            own_packages = Package.objects.filter(freight=freight)
-            packages = Package.objects.filter(start=freight.start, finish= freight.finish, is_waiting= True)
-            packages = packages.exclude(freight=freight_id)
-            
-            freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
-            freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
-            print (freight)
+        own_packages = Package.objects.filter(freight=freight)
+        packages = Package.objects.filter(start=freight.start, finish= freight.finish, is_waiting= True)
+        packages = packages.exclude(freight=freight)
+        
+        freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
+        freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
+        print (freight)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
@@ -209,14 +244,7 @@ def freightProfile(request, freight_id, load=False):
 
             })
     else:
-        if request.method == 'POST':
-            form = DriverForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return HttpResponseRedirect('/')
-        else:
-            freight = Freight.objects.get(id=freight_id)
-            own_packages = Package.objects.filter(freight=freight)
+        own_packages = Package.objects.filter(freight=freight)
         freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
         freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
         return render(request, 'intranet/freights/profile.html', 
@@ -243,6 +271,31 @@ def freightDriver(request):
             return JsonResponse({'error': False})
         else:
             return freightIndex(request)
+
+@login_required(login_url="login/")   
+def freightState(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            freight = Freight.objects.get(id=request.POST['id'])
+            temp= request.POST['state']
+            if temp == 'traveling':
+                freight.is_traveling = True
+                freight.is_waiting = False
+                print("1")
+            elif temp == 'finish':
+                freight.is_traveling= False
+                freight.is_waiting= False
+                print("2")
+            packages = Package.objects.filter(freight=freight)
+            for p in packages:
+                p.is_waiting=freight.is_waiting
+                p.is_traveling=freight.is_traveling
+                p.save()
+            freight.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
+
 
 @login_required(login_url="login/")   
 def freightTruck(request):

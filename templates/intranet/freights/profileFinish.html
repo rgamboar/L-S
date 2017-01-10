@@ -1,0 +1,93 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block extra_head %}
+    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-10 default-form">
+            
+              <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Conductor</th>
+                        <th>Patente</th>
+                        <th>Fecha creacion</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{freight.id}}</td>
+                            <td>{{freight.start.name}}</td>
+                            <td>{{freight.finish.name}}</td>
+                            <td>{{freight.driver.name}}</td>
+                            <td>{{freight.truck.plate}}</td>                                                        
+                            <td>{{freight.createDate}}</td>
+                            <td>Finalizado</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                    <h4 class="text-center">Paquetes dentro del flete.</h4>
+                <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Cliente</th>
+                        <th>Riesgo</th>
+                        <th>Volumen</th>
+                        <th>Cantidad</th>
+                        <th>Peso</th>
+                        <th>Oportunidad</th>
+                        <th>Tarifado</th>
+                      </tr>
+                    </thead>
+                    <tbody id="own">
+                        {% for package in own_packages %}
+                        <tr>
+                            <td>{{package.customer.name}}</td>
+                            <td>{{package.risk}}</td>
+                            <td>{{package.volume}}</td>
+                            <td>{{package.quantity}}</td>
+                            <td>{{package.weight}}</td>
+                            <td>{{package.chance}}</td>
+                            <td>{{package.rate}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <div class="col-sm-1">
+            </div>  
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var change = "{% url 'packageFreight' %}";
+    var changeTruck = "{% url 'freightTruck' %}";
+    var changeDriver = "{% url 'freightDriver' %}";
+    var changeFreightState = "{% url 'freightState' %}";
+    var csrf_token = "{{ csrf_token }}";
+    var freight = "{{ freight.id }}";
+</script>
+
+
+
+
+<script src="{% static 'js/freight.js' %}"></script>
+{% endblock %}

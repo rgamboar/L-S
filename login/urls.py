@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^flete/cargar/(?P<freight_id>.*)/$', views.freightProfile, {'load': True}, name='freightProfileLoad'),
     url(r'^flete/camion/$', views.freightTruck, name='freightTruck'),
     url(r'^flete/conductor/$', views.freightDriver, name='freightDriver'),
+    url(r'^flete/estado/$', views.freightState, name='freightState'),
     url(r'^flete/(?P<freight_id>.*)/$', views.freightProfile, name='freightProfile'),
 
 

@@ -60,3 +60,20 @@ function change_freight_driver(freight, freight_id){
 
 	});
 };
+
+
+function change_freight_state(freight, state){
+	$.ajax({
+		url: changeFreightState,
+		method: 'POST',
+		beforeSend: function(xhr){
+			xhr.setRequestHeader("X-CSRFToken", csrf_token);
+		},
+		data: {
+			'id': freight,
+			'state': state
+			},
+	}).done(function(html){
+		location.reload(true);
+	});
+};

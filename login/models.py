@@ -82,9 +82,16 @@ class Package(models.Model):
 	sendDate = models.DateTimeField(null=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
+	startAddress = models.CharField(max_length=300, null=True)
+	finishAddress = models.CharField(max_length=300, null=True)
+
 	is_waiting =models.BooleanField(default=True)
 	is_traveling =models.BooleanField(default=False)
 	is_delivered =models.BooleanField(default=False)
+	is_transmitter =models.BooleanField(default=False)
+	is_receiver =models.BooleanField(default=False)
+
+
 	risk = models.CharField(max_length=100, null=True)
 	volume = models.CharField(max_length=100, null=True)
 	quantity = models.CharField(max_length=100, null=True)
@@ -99,4 +106,4 @@ class Package(models.Model):
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish')
 
 	def __unicode__(self):
-		return self.id
+		return unicode(self.id)

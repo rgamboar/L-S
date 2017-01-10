@@ -37,3 +37,9 @@ table > tbody > tr:hover {
 .link a {
 	text-decoration:  none!important;
 }
+
+.send{
+	cursor: pointer;
+	cursor: hand;
+	color: green;
+}
