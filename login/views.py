@@ -243,7 +243,7 @@ def freightIndex(request, traveling=False, finish=False):
 
 @login_required(login_url="login/")
 def freightProfile(request, freight_id, load=False):
-    freight = Freight.objects.get(id=freight)
+    freight = Freight.objects.get(id=freight_id)
     if freight.is_waiting:
         return freightProfileWaiting(request, freight, load)
     elif freight.is_traveling:
