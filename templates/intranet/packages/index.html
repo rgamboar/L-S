@@ -33,7 +33,7 @@
                     <tbody>
                         {% for package in packages %}
                             <tr onclick="location.href="">
-                                <td class="text-center">{{package.id}}</td>
+                                <td class="link" onclick="location.href='{% url 'packageProfile' package.id %}'"><a>{{package.id}}</a></td>
                                 <td>{{package.customer.name}}</td>
                                 <td>{{package.start.name}}</td>
                                 <td>{{package.finish.name}}</td>

@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^paquete/transito/$',  views.packageIndex, {'traveling': True}, name='packageTraveling'),
     url(r'^paquete/destino/$',  views.packageIndex, {'finish': True}, name='packageFinish'),
     url(r'^paquete/entregado/$',  views.packageIndex, {'delivered': True}, name='packageDelivered'),
+    url(r'^paquete/direccion/$',  views.packageIndex, {'reciever': True}, name='packageReciever'),
     url(r'^paquete/retirar/$',  views.packageIndex, {'transmitter': True}, name='packageTransmitter'),
     
     url(r'^paquete/flete/$', views.packageFreight, name='packageFreight'),

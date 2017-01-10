@@ -28,12 +28,13 @@ def package(request):
     if request.method == 'POST':
         form = PackageForm(request.POST)
         if form.is_valid():
-            if form.startAddress:
-                is_waiting=False
-                is_transmitter=True
-            if form.finishAddress:
-                is_reciever=True
-            form.save()
+            obj = form.save(commit=False)
+            if obj.startAddress:
+                obj.is_waiting=False
+                obj.is_transmitter=True
+            if obj.finishAddress:
+                obj.is_reciever=True
+            obj.save()
             return HttpResponseRedirect('/')
     else:
         form = PackageForm()
@@ -42,14 +43,13 @@ def package(request):
 
 
 
-
 @login_required(login_url="login/")
-def packageIndex(request, traveling=False, finish=False, delivered=False, transmitter=False):
+def packageIndex(request, traveling=False, finish=False, delivered=False, transmitter=False, reciever=False):
     if traveling:
         packages = Package.objects.filter(is_traveling=True)
         page = "traveling"
     elif finish:
-        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False)
+        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
         page = "finish"
     elif transmitter:
         packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=True)
@@ -57,6 +57,9 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
     elif delivered:
         packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=True)
         page = "delivered"
+    elif reciever:
+        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_receiver=True)
+        page = "reciever"
     else:
         packages = Package.objects.filter(is_waiting=True)
         for i in packages:
@@ -72,40 +75,82 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
         })
 
 @login_required(login_url="login/")
-def packageProfile(request, package_id, load=False):
-    if load:
-        if request.method == 'POST':
-            form = DriverForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return HttpResponseRedirect('/')
-        else:
-            package = Package.objects.get(id=package_id)
-            own_packages = Package.objects.filter(package=package)
-            packages = Package.objects.filter(start=package.start, finish= package.finish, is_waiting= True)
-            packages = packages.exclude(package=package_id)
+def packageProfile(request, package_id):
+    package = Package.objects.get(id=package_id)
+    own_packages = Package.objects.filter(package=package)
+    packages = Package.objects.filter(start=package.start, finish= package.finish, is_waiting= True)
+    packages = packages.exclude(package=package_id)
+    return render(request, 'intranet/packages/profile.html', 
+        {
+            'package': package,
+            'packages' : packages,
+            'own_packages' : own_packages,
 
-        return render(request, 'intranet/packages/profile.html', 
-            {
-                'package': package,
-                'packages' : packages,
-                'own_packages' : own_packages,
+        })
 
-            })
+
+@login_required(login_url="login/")
+def packageProfile(request, package_id):
+    package = Package.objects.get(id=package_id)
+    if package.is_waiting:
+        return packageProfileWaiting(request, package)
+    elif package.is_traveling:
+        return packageProfileTraveling(request, package)
+    elif package.is_delivered:
+        return packageProfileDelivered(request, package)
+    elif package.is_transmitter:
+        return packageProfileTransmitter(request, package)
+    elif package.is_receiver:
+        return freightProfileTraveling(request, package)
     else:
-        if request.method == 'POST':
-            form = DriverForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return HttpResponseRedirect('/')
-        else:
-            package = Package.objects.get(id=package_id)
+        return packageProfileFinish(request, package)
 
-        return render(request, 'intranet/packages/profile.html', 
-            {
-                'package': package,
-                'send' : True,
-            })
+
+@login_required(login_url="login/")
+def packageProfileFinish(request, package):
+    return render(request, 'intranet/packages/profileFinish.html', 
+        {
+            'package': package,
+        })
+
+@login_required(login_url="login/")
+def freightProfileTraveling(request, package):
+    return render(request, 'intranet/packages/profile.html', 
+        {
+            'package': package,
+        })
+
+@login_required(login_url="login/")
+def packageProfileTransmitter(request, package):
+    return render(request, 'intranet/packages/profile.html', 
+        {
+            'package': package,
+        })
+
+@login_required(login_url="login/")
+def packageProfileDelivered(request, package):
+    return render(request, 'intranet/packages/profile.html', 
+        {
+            'package': package,
+        })
+
+
+@login_required(login_url="login/")
+def packageProfileTraveling(request, package):
+    return render(request, 'intranet/packages/profileTraveling.html', 
+        {
+            'package': package,
+        })
+
+
+@login_required(login_url="login/")
+def packageProfileWaiting(request, package):
+    return render(request, 'intranet/packages/profile.html', 
+        {
+            'package': package,
+        })
+
+
 
 @login_required(login_url="login/")   
 def packageFreight(request):
@@ -198,7 +243,7 @@ def freightIndex(request, traveling=False, finish=False):
 
 @login_required(login_url="login/")
 def freightProfile(request, freight_id, load=False):
-    freight = Freight.objects.get(id=freight_id)
+    freight = Freight.objects.get(id=freight)
     if freight.is_waiting:
         return freightProfileWaiting(request, freight, load)
     elif freight.is_traveling:
@@ -235,7 +280,6 @@ def freightProfileWaiting(request, freight, load):
         
         freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
         freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
-        print (freight)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
@@ -281,11 +325,9 @@ def freightState(request):
             if temp == 'traveling':
                 freight.is_traveling = True
                 freight.is_waiting = False
-                print("1")
             elif temp == 'finish':
                 freight.is_traveling= False
                 freight.is_waiting= False
-                print("2")
             packages = Package.objects.filter(freight=freight)
             for p in packages:
                 p.is_waiting=freight.is_waiting
