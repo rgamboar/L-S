@@ -53,10 +53,10 @@ class CustomerForm(forms.ModelForm):
 		fields = ['name','rut','address','phone','rep','repAddress','repEmail','repPhone','pay']
 
 class FreightForm(forms.ModelForm):
-	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.objects.all(), empty_label=None)
-	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.objects.all(), empty_label=None)
-	truck = forms.ModelChoiceField(label='Camión',queryset=Truck.objects.all(), required=False)
-	driver = forms.ModelChoiceField(label='Conductor',queryset=Driver.objects.all(), required=False)
+	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
+	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
+	truck = forms.ModelChoiceField(label='Camión',queryset=Truck.LogicTruck.all(), required=False)
+	driver = forms.ModelChoiceField(label='Conductor',queryset=Driver.LogicDriver.all(), required=False)
 
 	class Meta:
 		model = Freight
@@ -65,13 +65,13 @@ class FreightForm(forms.ModelForm):
 class PackageForm(forms.ModelForm):
 	name = forms.CharField(label='Nombre',max_length=300)
 	
-	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.objects.all(), empty_label=None)
+	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
 	startAddress = forms.CharField(label='Direccion de origen',max_length=300, required=False)
 	
-	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.objects.all(), empty_label=None)
+	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
 	finishAddress = forms.CharField(label='Direccion de destino',max_length=300, required=False)
 
-	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.objects.all(), empty_label=None)
+	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), empty_label=None)
 
 	risk = forms.CharField(label='Riesgo',max_length=100)
 	volume = forms.CharField(label='Volumen',max_length=100)

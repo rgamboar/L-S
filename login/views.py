@@ -46,24 +46,24 @@ def package(request):
 @login_required(login_url="login/")
 def packageIndex(request, traveling=False, finish=False, delivered=False, transmitter=False, reciever=False):
     if traveling:
-        packages = Package.objects.filter(is_traveling=True)
+        packages = Package.LogicPackage.filter(is_traveling=True)
         page = "traveling"
     elif finish:
-        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
         page = "finish"
     elif transmitter:
-        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=True)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=True)
         page = "finish"
     elif delivered:
-        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=True)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=True)
         page = "delivered"
     elif reciever:
-        packages= Package.objects.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_receiver=True)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_receiver=True)
         page = "reciever"
     else:
-        packages = Package.objects.filter(is_waiting=True)
+        packages = Package.LogicPackage.filter(is_waiting=True)
         for i in packages:
-            i.posibleFreight= Freight.objects.filter(start=i.start, finish= i.finish, is_waiting= True)
+            i.posibleFreight= Freight.LogicFreight.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
                 i.posibleFreight = i.posibleFreight.exclude(id= i.freight.id)
         page = "inicio"
@@ -76,9 +76,9 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
 
 @login_required(login_url="login/")
 def packageProfile(request, package_id):
-    package = Package.objects.get(id=package_id)
-    own_packages = Package.objects.filter(package=package)
-    packages = Package.objects.filter(start=package.start, finish= package.finish, is_waiting= True)
+    package = Package.LogicPackage.get(id=package_id)
+    own_packages = Package.LogicPackage.filter(package=package)
+    packages = Package.LogicPackage.filter(start=package.start, finish= package.finish, is_waiting= True)
     packages = packages.exclude(package=package_id)
     return render(request, 'intranet/packages/profile.html', 
         {
@@ -91,7 +91,7 @@ def packageProfile(request, package_id):
 
 @login_required(login_url="login/")
 def packageProfile(request, package_id):
-    package = Package.objects.get(id=package_id)
+    package = Package.LogicPackage.get(id=package_id)
     if package.is_waiting:
         return packageProfileWaiting(request, package)
     elif package.is_traveling:
@@ -156,14 +156,14 @@ def packageProfileWaiting(request, package):
 def packageFreight(request):
     if request.method == "POST":
         if request.is_ajax():
-            package = Package.objects.get(id=request.POST['id'])
+            package = Package.LogicPackage.get(id=request.POST['id'])
             if package.is_waiting== False:
                 return JsonResponse({'error': True})
             temp= request.POST['freight']
             if temp == '-':
                 freight = None
             else:
-                freight = Freight.objects.get(id=temp)
+                freight = Freight.LogicFreight.get(id=temp)
                 if freight.is_waiting== False:
                     return JsonResponse({'error': True})
             package.freight = freight
@@ -223,16 +223,16 @@ def freight(request):
 @login_required(login_url="login/")
 def freightIndex(request, traveling=False, finish=False):
     if traveling:
-        freights = Freight.objects.filter(is_traveling=True)
+        freights = Freight.LogicFreight.filter(is_traveling=True)
         page = "traveling"
     elif finish:
-        freights= Freight.objects.filter(is_waiting=False, is_traveling=False)
+        freights= Freight.LogicFreight.filter(is_waiting=False, is_traveling=False)
         page = "finish"
     else:
-        freights= Freight.objects.filter(is_waiting=True)
+        freights= Freight.LogicFreight.filter(is_waiting=True)
         for freight in freights:
-            freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
-            freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
+            freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver.id)
+            freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck.id)
         page = "inicio"
 
     return render(request, 'intranet/freights/index.html', 
@@ -243,7 +243,7 @@ def freightIndex(request, traveling=False, finish=False):
 
 @login_required(login_url="login/")
 def freightProfile(request, freight_id, load=False):
-    freight = Freight.objects.get(id=freight_id)
+    freight = Freight.LogicFreight.get(id=freight_id)
     if freight.is_waiting:
         return freightProfileWaiting(request, freight, load)
     elif freight.is_traveling:
@@ -254,7 +254,7 @@ def freightProfile(request, freight_id, load=False):
 
 @login_required(login_url="login/")
 def freightProfileFinish(request, freight):
-    own_packages = Package.objects.filter(freight=freight)
+    own_packages = Package.LogicPackage.filter(freight=freight)
     return render(request, 'intranet/freights/profileFinish.html', 
         {
             'freight': freight,
@@ -263,7 +263,7 @@ def freightProfileFinish(request, freight):
 
 @login_required(login_url="login/")
 def freightProfileTraveling(request, freight):
-    own_packages = Package.objects.filter(freight=freight)
+    own_packages = Package.LogicPackage.filter(freight=freight)
     return render(request, 'intranet/freights/profileTraveling.html', 
         {
             'freight': freight,
@@ -274,12 +274,12 @@ def freightProfileTraveling(request, freight):
 @login_required(login_url="login/")
 def freightProfileWaiting(request, freight, load):
     if load:
-        own_packages = Package.objects.filter(freight=freight)
-        packages = Package.objects.filter(start=freight.start, finish= freight.finish, is_waiting= True)
+        own_packages = Package.LogicPackage.filter(freight=freight)
+        packages = Package.LogicPackage.filter(start=freight.start, finish= freight.finish, is_waiting= True)
         packages = packages.exclude(freight=freight)
         
-        freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
-        freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
+        freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver.id)
+        freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck.id)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
@@ -288,9 +288,9 @@ def freightProfileWaiting(request, freight, load):
 
             })
     else:
-        own_packages = Package.objects.filter(freight=freight)
-        freight.posibleDriver= Driver.objects.all().exclude(id=freight.driver.id)
-        freight.posibleTruck= Truck.objects.all().exclude(id=freight.truck.id)
+        own_packages = Package.LogicPackage.filter(freight=freight)
+        freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver.id)
+        freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck.id)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
@@ -303,12 +303,12 @@ def freightProfileWaiting(request, freight, load):
 def freightDriver(request):
     if request.method == "POST":
         if request.is_ajax():
-            freight = Freight.objects.get(id=request.POST['id'])
+            freight = Freight.LogicFreight.get(id=request.POST['id'])
             temp= request.POST['driver']
             if temp == '-':
                 driver = None
             else:
-                driver = Driver.objects.get(id=temp)
+                driver = Driver.LogicDriver.get(id=temp)
             freight.driver = driver
 
             freight.save()
@@ -320,7 +320,7 @@ def freightDriver(request):
 def freightState(request):
     if request.method == "POST":
         if request.is_ajax():
-            freight = Freight.objects.get(id=request.POST['id'])
+            freight = Freight.LogicFreight.get(id=request.POST['id'])
             temp= request.POST['state']
             if temp == 'traveling':
                 freight.is_traveling = True
@@ -328,7 +328,7 @@ def freightState(request):
             elif temp == 'finish':
                 freight.is_traveling= False
                 freight.is_waiting= False
-            packages = Package.objects.filter(freight=freight)
+            packages = Package.LogicPackage.filter(freight=freight)
             for p in packages:
                 p.is_waiting=freight.is_waiting
                 p.is_traveling=freight.is_traveling
@@ -343,12 +343,12 @@ def freightState(request):
 def freightTruck(request):
     if request.method == "POST":
         if request.is_ajax():
-            freight = Freight.objects.get(id=request.POST['id'])
+            freight = Freight.LogicFreight.get(id=request.POST['id'])
             temp= request.POST['truck']
             if temp == '-':
                 truck = None
             else:
-                truck = Truck.objects.get(id=temp)
+                truck = Truck.LogicTruck.get(id=temp)
             freight.truck = truck
 
             freight.save()

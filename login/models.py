@@ -5,6 +5,31 @@ from django.db import models
 # Create your models here.
 
 
+class LogicWarehouseManager(models.Manager):
+    def get_queryset(self):
+        return super(LogicWarehouseManager, self).get_queryset().filter(delete=False)
+
+class LogicDriverManager(models.Manager):
+    def get_queryset(self):
+        return super(LogicDriverManager, self).get_queryset().filter(delete=False)
+
+class LogicTruckManager(models.Manager):
+    def get_queryset(self):
+        return super(LogicTruckManager, self).get_queryset().filter(delete=False)
+
+class LogicCustomerManager(models.Manager):
+    def get_queryset(self):
+        return super(LogicCustomerManager, self).get_queryset().filter(delete=False)
+
+class LogicFreightManager(models.Manager):
+    def get_queryset(self):
+        return super(LogicFreightManager, self).get_queryset().filter(delete=False)
+
+class LogicPackageManager(models.Manager):
+    def get_queryset(self):
+        return super(LogicPackageManager, self).get_queryset().filter(delete=False)
+
+
 class Warehouse(models.Model):
 	name = models.CharField(max_length=150, null=False, unique=True)
 	phone = models.CharField(max_length=150, null=False)
@@ -13,8 +38,12 @@ class Warehouse(models.Model):
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
+	delete = models.BooleanField(default=False)
+	LogicWarehouse = LogicWarehouseManager()
+
 	def __unicode__(self):
 		return self.name
+
 
 class Driver(models.Model):
 	name = models.CharField(max_length=150, null=False)
@@ -22,6 +51,9 @@ class Driver(models.Model):
 
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
+
+	delete = models.BooleanField(default=False)
+	LogicDriver = LogicDriverManager()
 
 	def __unicode__(self):
 		return self.name
@@ -32,6 +64,9 @@ class Truck(models.Model):
 
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
+
+	delete = models.BooleanField(default=False)
+	LogicTruck = LogicTruckManager()
 
 	def __unicode__(self):
 		return self.plate
@@ -52,6 +87,9 @@ class Customer(models.Model):
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
+	delete = models.BooleanField(default=False)
+	LogicCustomer = LogicCustomerManager()
+
 	def __unicode__(self):
 		return self.name
 
@@ -68,6 +106,9 @@ class Freight(models.Model):
 	finish = models.ForeignKey(Warehouse, null=False, related_name='travelFinish')
 	truck = models.ForeignKey(Truck, null=True)
 	driver = models.ForeignKey(Driver, null=True)
+
+	delete = models.BooleanField(default=False)
+	LogicFreight = LogicFreightManager()
 
 	def __unicode__(self):
 		return unicode(self.id)
@@ -105,6 +146,9 @@ class Package(models.Model):
 	start = models.ForeignKey(Warehouse, null=False, related_name='packageStart')
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish')
 
+	delete = models.BooleanField(default=False)
+	LogicPackage = LogicPackageManager()
+	
 	def __unicode__(self):
 		return unicode(self.id)
 
