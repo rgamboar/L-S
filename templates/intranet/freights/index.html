@@ -32,26 +32,35 @@
                                 <td>{{freight.start.name}}</td>
                                 <td>{{freight.finish.name}}</td>
                                 <td>
-                                    <select onchange="change_freight_driver(this, {{ freight.id }});">
-                                        {% if freight.driver %}
-                                          <option value="{{freight.driver.id}}">{{freight.driver.name}}</option>
-                                        {% endif %}
-                                          <option value="-">----</option>
-                                        {% for a in freight.posibleDriver %}
-                                          <option value="{{a.id}}">{{a.name}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    {% if page == 'inicio' %}
+                                        <select onchange="change_freight_driver(this, {{ freight.id }});">
+                                            {% if freight.driver %}
+                                              <option value="{{freight.driver.id}}">{{freight.driver.name}}</option>
+                                            {% endif %}
+                                              <option value="-">----</option>
+                                            {% for a in freight.posibleDriver %}
+                                              <option value="{{a.id}}">{{a.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        {{freight.driver.name}}
+                                    {% endif %}
                                 </td>
                                 <td>
-                                    <select onchange="change_freight_truck(this, {{ freight.id }});">
-                                        {% if freight.truck %}
-                                          <option value="{{freight.truck.id}}">{{freight.truck.plate}}</option>
-                                        {% endif %}
-                                          <option value="-">----</option>
-                                        {% for a in freight.posibleTruck %}
-                                          <option value="{{a.id}}">{{a.plate}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    {% if page == 'inicio' %}
+                                        <select onchange="change_freight_truck(this, {{ freight.id }});">
+                                            {% if freight.truck %}
+                                              <option value="{{freight.truck.id}}">{{freight.truck.plate}}</option>
+                                            {% endif %}
+                                              <option value="-">----</option>
+                                            {% for a in freight.posibleTruck %}
+                                              <option value="{{a.id}}">{{a.plate}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        {{freight.truck.plate}}
+                                    {% endif %}
+
                                 </td>
                                 <td>{{freight.createDate}}</td>
                             </tr>

@@ -1,6 +1,6 @@
 {% extends 'intranet/base.html' %}
 {% load staticfiles %}
-{% block css %}
+{% block extra_head %}
     <link href="{% static 'css/freight.css' %}" rel="stylesheet">
 {% endblock %}
 
@@ -32,7 +32,7 @@
                     </thead>
                     <tbody>
                         {% for package in packages %}
-                            <tr onclick="location.href="">
+                            <tr>
                                 <td class="link" onclick="location.href='{% url 'packageProfile' package.id %}'"><a>{{package.id}}</a></td>
                                 <td>{{package.customer.name}}</td>
                                 <td>{{package.start.name}}</td>
@@ -44,15 +44,19 @@
                                 <td>{{package.risk}}</td>
                                 <td>{{package.createDate}}</td>
                                 <td>
-                                    <select id="{{package.id}}" onchange="change_package_freight(this);">
-                                        {% if package.freight %}
-                                          <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
-                                        {% endif %}
-                                          <option value="-">----</option>
-                                        {% for a in package.posibleFreight %}
-                                          <option value="{{a.id}}">{{a.truck.plate}}</option>
-                                        {% endfor %}
-                                    </select>
+                                    {% if page == 'inicio' %}
+                                        <select id="{{package.id}}" onchange="change_package_freight(this);">
+                                            {% if package.freight %}
+                                              <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
+                                            {% endif %}
+                                              <option value="-">----</option>
+                                            {% for a in package.posibleFreight %}
+                                              <option value="{{a.id}}">{{a.truck.plate}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        {{package.freight.truck.plate}}
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}

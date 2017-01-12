@@ -1,0 +1,65 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block extra_head %}
+    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-10 default-form">
+            {% if customers %}
+            <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Rut</th>
+                        <th>Nombre</th>
+                        <th>Telefono</th>
+                        <th>Representante</th>
+                        <th>Email</th>
+                        <th>Telefono</th>
+                        <th>Metodo de pago</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                            <tr>
+                                <td class="link" onclick="location.href='{% url 'customerProfile' customer.id %}'"><a>{{customer.rut}}</a></td>
+                                <td>{{customer.name}}</td>
+                                <td>{{customer.phone}}</td>
+                                <td>{{customer.rep}}</td>
+                                <td>{{customer.repEmail}}</td>
+                                <td>{{customer.repPhone}}</td>
+                                <td>{{customer.pay}}</td>
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                </div>
+                {% else %}
+                    No hay ningun cliente con estas especificaciones.
+                {% endif %}
+
+
+            </div>
+            <div class="col-sm-1">
+            </div>  
+        </div>
+    </div>
+</div>
+
+<script>
+    var changeTruck = "{% url 'freightTruck' %}";
+    var changeDriver = "{% url 'freightDriver' %}";
+    var csrf_token = "{{ csrf_token }}";
+</script>
+
+
+<script src="{% static 'js/freight.js' %}"></script>
+{% endblock %}

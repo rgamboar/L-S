@@ -49,11 +49,11 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
         packages = Package.LogicPackage.filter(is_traveling=True)
         page = "traveling"
     elif finish:
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False, is_receiver=False)
         page = "finish"
     elif transmitter:
         packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=True)
-        page = "finish"
+        page = "transmitter"
     elif delivered:
         packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=True)
         page = "delivered"
@@ -176,14 +176,38 @@ def packageFreight(request):
 
 @login_required(login_url="login/")
 def customer(request):
+    success=False
     if request.method == 'POST':
         form = CustomerForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/')
+            success=True
     else:
         form = CustomerForm()
-    return render(request, 'intranet/customer.html', {'form': form})
+    return render(request, 'intranet/customers/create.html', {
+        'form': form,
+        'success': success
+    })
+
+
+@login_required(login_url="login/")
+def customerIndex(request):
+
+    customers = Customer.LogicCustomer.filter()
+
+    return render(request, 'intranet/customers/index.html', 
+        {
+            'customers': customers,
+        })
+
+@login_required(login_url="login/")
+def customerProfile(request, customer_id):
+    customer = Customer.LogicCustomer.get(id=customer_id)
+    return render(request, 'intranet/customers/profile.html', 
+        {
+            'customer': customer,
+        })
+
 
 @login_required(login_url="login/")
 def truck(request):

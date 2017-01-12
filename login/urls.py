@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls import url
 from . import views
 
@@ -23,6 +24,8 @@ urlpatterns = [
     url(r'^bodega/crear/$',  views.warehouse, name='warehouse'),
 
     url(r'^cliente/crear/$',  views.customer, name='customer'),
+    url(r'^cliente/indice/$',  views.customerIndex, name='customerIndex'),
+    url(r'^cliente/(?P<customer_id>.*)/$', views.customerProfile, name='customerProfile'),
 
     url(r'^flete/crear/$',  views.freight, name='freight'),
     url(r'^flete/origen/$',  views.freightIndex, name='freightIndex'),
