@@ -73,7 +73,7 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
         for i in packages:
             i.posibleFreight= Freight.LogicFreight.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
-                i.posibleFreight = i.posibleFreight.exclude(id= i.freights)
+                i.posibleFreight = i.posibleFreight.exclude(id= i.freight)
         page = "inicio"
 
     return render(request, 'intranet/packages/index.html', 
