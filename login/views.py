@@ -14,17 +14,24 @@ def home(request):
 
 @login_required(login_url="login/")
 def warehouse(request):
+    success=False
     if request.method == 'POST':
         form = WarehouseForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            obj = form.save(commit=False)
+            obj.creator = request.user
+            obj.save()
+            success=True
     else:
         form = WarehouseForm()
-    return render(request, 'intranet/warehouse.html', {'form': form})
+    return render(request, 'intranet/warehouse.html', {
+        'form': form,
+        'success': success
+    })
 
 @login_required(login_url="login/")
 def package(request):
+    success=False
     if request.method == 'POST':
         form = PackageForm(request.POST)
         if form.is_valid():
@@ -34,13 +41,14 @@ def package(request):
                 obj.is_transmitter=True
             if obj.finishAddress:
                 obj.is_reciever=True
+            obj.creator = request.user
             obj.save()
-            return HttpResponseRedirect('/')
     else:
         form = PackageForm()
-    return render(request, 'intranet/packages/create.html', {'form': form})
-
-
+    return render(request, 'intranet/packages/create.html', {
+        'form': form,
+        'success': success
+    })
 
 
 @login_required(login_url="login/")
@@ -101,7 +109,7 @@ def packageProfile(request, package_id):
     elif package.is_transmitter:
         return packageProfileTransmitter(request, package)
     elif package.is_receiver:
-        return freightProfileTraveling(request, package)
+        return packageProfileTraveling(request, package)
     else:
         return packageProfileFinish(request, package)
 
@@ -179,8 +187,11 @@ def customer(request):
     success=False
     if request.method == 'POST':
         form = CustomerForm(request.POST)
+
         if form.is_valid():
-            form.save()
+            obj = form.save(commit=False)
+            obj.creator = request.user
+            obj.save()
             success=True
     else:
         form = CustomerForm()
@@ -213,37 +224,55 @@ def customerProfile(request, customer_id):
 
 @login_required(login_url="login/")
 def truck(request):
+    success=False
     if request.method == 'POST':
         form = TruckForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            obj = form.save(commit=False)
+            obj.creator = request.user
+            obj.save()
+            success=True
     else:
         form = TruckForm()
-    return render(request, 'intranet/truck.html', {'form': form})
+    return render(request, 'intranet/truck.html', {
+        'form': form,
+        'success': success
+    })
 
 @login_required(login_url="login/")
 def driver(request):
+    success=False
     if request.method == 'POST':
         form = DriverForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            obj = form.save(commit=False)
+            obj.creator = request.user
+            obj.save()
+            success=True
     else:
         form = DriverForm()
-    return render(request, 'intranet/driver.html', {'form': form})
+    return render(request, 'intranet/driver.html', {
+        'form': form,
+        'success': success
+    })
 
 
 @login_required(login_url="login/")
 def freight(request):
+    success=False
     if request.method == 'POST':
         form = FreightForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
+            obj = form.save(commit=False)
+            obj.creator = request.user
+            obj.save()
+            success=True
     else:
         form = FreightForm()
-    return render(request, 'intranet/freights/create.html', {'form': form})
+    return render(request, 'intranet/freights/create.html', {
+        'form': form,
+        'success': success
+    })
 
 
 @login_required(login_url="login/")
@@ -257,8 +286,12 @@ def freightIndex(request, traveling=False, finish=False):
     else:
         freights= Freight.LogicFreight.filter(is_waiting=True)
         for freight in freights:
-            freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver)
-            freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck)
+            freight.posibleDriver = Driver.LogicDriver.all()
+            freight.posibleTruck= Truck.LogicTruck.all()
+            if freight.driver:
+                freight.posibleDriver = freight.posibleDriver.exclude(id=freight.driver.id)
+            if freight.truck:
+                freight.posibleTruck= freight.posibleTruck.exclude(id=freight.truck.id)
         page = "inicio"
 
     return render(request, 'intranet/freights/index.html', 
@@ -319,8 +352,12 @@ def freightProfileWaiting(request, freight, load):
             })
     else:
         own_packages = Package.LogicPackage.filter(freight=freight)
-        freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver)
-        freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck)
+        freight.posibleDriver = Driver.LogicDriver.all()
+        freight.posibleTruck= Truck.LogicTruck.all()
+        if freight.driver:
+            freight.posibleDriver = freight.posibleDriver.exclude(id=freight.driver.id)
+        if freight.truck:
+            freight.posibleTruck= freight.posibleTruck.exclude(id=freight.truck.id)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,

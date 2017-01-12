@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -38,6 +38,7 @@ class Warehouse(models.Model):
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
+	creator = models.ForeignKey(User, null=False, related_name='warehouseCreator')
 	delete = models.BooleanField(default=False)
 	LogicWarehouse = LogicWarehouseManager()
 
@@ -52,6 +53,7 @@ class Driver(models.Model):
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
+	creator = models.ForeignKey(User, null=False, related_name='driverCreator')
 	delete = models.BooleanField(default=False)
 	LogicDriver = LogicDriverManager()
 
@@ -65,6 +67,7 @@ class Truck(models.Model):
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
+	creator = models.ForeignKey(User, null=False, related_name='truckCreator')
 	delete = models.BooleanField(default=False)
 	LogicTruck = LogicTruckManager()
 
@@ -87,6 +90,7 @@ class Customer(models.Model):
 	createDate = models.DateTimeField(auto_now=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
+	creator = models.ForeignKey(User, null=False, related_name='customerCreator')
 	delete = models.BooleanField(default=False)
 	LogicCustomer = LogicCustomerManager()
 
@@ -107,6 +111,7 @@ class Freight(models.Model):
 	truck = models.ForeignKey(Truck, null=True)
 	driver = models.ForeignKey(Driver, null=True)
 
+	creator = models.ForeignKey(User, null=False, related_name='freightCreator')
 	delete = models.BooleanField(default=False)
 	LogicFreight = LogicFreightManager()
 
@@ -145,7 +150,8 @@ class Package(models.Model):
 	freight = models.ForeignKey(Freight, on_delete=models.CASCADE, null=True, blank=True)
 	start = models.ForeignKey(Warehouse, null=False, related_name='packageStart')
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish')
-
+	
+	creator = models.ForeignKey(User, null=False, related_name='packageCreator')
 	delete = models.BooleanField(default=False)
 	LogicPackage = LogicPackageManager()
 	

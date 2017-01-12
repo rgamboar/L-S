@@ -33,7 +33,7 @@
                             <td>{{freight.start.name}}</td>
                             <td>{{freight.finish.name}}</td>
                             <td>
-                                <select onchange="change_freight_driver(this, {{ freight.id }});">
+                                <select id="selectDriver" onchange="change_freight_driver(this, {{ freight.id }});">
                                     {% if freight.driver %}
                                       <option value="{{freight.driver.id}}">{{freight.driver.name}}</option>
                                     {% endif %}
@@ -44,7 +44,7 @@
                                 </select>
                             </td>
                             <td>
-                                <select onchange="change_freight_truck(this, {{ freight.id }});">
+                                <select id="selectTruck" onchange="change_freight_truck(this, {{ freight.id }});">
                                     {% if freight.truck %}
                                       <option value="{{freight.truck.id}}">{{freight.truck.plate}}</option>
                                     {% endif %}

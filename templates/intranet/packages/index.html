@@ -40,7 +40,7 @@
                         {% for package in packages %}
                             <tr>
                                 <td class="link" onclick="location.href='{% url 'packageProfile' package.id %}'"><a>{{package.id}}</a></td>
-                                <td>{{package.customer.name}}</td>
+                                <td class="link" onclick="location.href='{% url 'customerProfile' package.customer.id %}'"><a>{{package.customer.name}}</a></td>
                                 <td>{{package.start.name}}</td>
                                 <td>{{package.finish.name}}</td>
                                 <td>{{package.volume}}</td>

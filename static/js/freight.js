@@ -63,7 +63,11 @@ function change_freight_driver(freight, freight_id){
 
 
 function change_freight_state(freight, state){
-	$.ajax({
+	if ($("#selectDriver").val() == '-' || $("#selectTruck").val() == '-'){
+		console.log("Logrado");
+	}
+	else {
+		$.ajax({
 		url: changeFreightState,
 		method: 'POST',
 		beforeSend: function(xhr){
@@ -73,7 +77,8 @@ function change_freight_state(freight, state){
 			'id': freight,
 			'state': state
 			},
-	}).done(function(html){
-		location.reload(true);
-	});
+		}).done(function(html){
+			location.reload(true);
+		});
+	};
 };
