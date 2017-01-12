@@ -65,7 +65,7 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
         for i in packages:
             i.posibleFreight= Freight.LogicFreight.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
-                i.posibleFreight = i.posibleFreight.exclude(id= i.freight.id)
+                i.posibleFreight = i.posibleFreight.exclude(id= i.freights)
         page = "inicio"
 
     return render(request, 'intranet/packages/index.html', 
@@ -231,8 +231,8 @@ def freightIndex(request, traveling=False, finish=False):
     else:
         freights= Freight.LogicFreight.filter(is_waiting=True)
         for freight in freights:
-            freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver.id)
-            freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck.id)
+            freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver)
+            freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck)
         page = "inicio"
 
     return render(request, 'intranet/freights/index.html', 
@@ -278,8 +278,12 @@ def freightProfileWaiting(request, freight, load):
         packages = Package.LogicPackage.filter(start=freight.start, finish= freight.finish, is_waiting= True)
         packages = packages.exclude(freight=freight)
         
-        freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver.id)
-        freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck.id)
+        freight.posibleDriver = Driver.LogicDriver.all()
+        freight.posibleTruck= Truck.LogicTruck.all()
+        if freight.driver:
+            freight.posibleDriver = freight.posibleDriver.exclude(id=freight.driver.id)
+        if freight.truck:
+            freight.posibleTruck= freight.posibleTruck.exclude(id=freight.truck.id)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
@@ -289,8 +293,8 @@ def freightProfileWaiting(request, freight, load):
             })
     else:
         own_packages = Package.LogicPackage.filter(freight=freight)
-        freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver.id)
-        freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck.id)
+        freight.posibleDriver= Driver.LogicDriver.all().exclude(id=freight.driver)
+        freight.posibleTruck= Truck.LogicTruck.all().exclude(id=freight.truck)
         return render(request, 'intranet/freights/profile.html', 
             {
                 'freight': freight,
