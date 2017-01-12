@@ -27,7 +27,13 @@
                         <th>Precio</th>
                         <th>Riesgo</th>
                         <th>Fecha creacion</th>
-                        <th>Camion</th>
+                        <th>
+                            {% if page == 'transmitter' %}
+                                
+                            {% else %}
+                                Camion
+                            {% endif %} 
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -54,6 +60,8 @@
                                               <option value="{{a.id}}">{{a.truck.plate}}</option>
                                             {% endfor %}
                                         </select>
+                                    {% elif page == 'transmitter' %}
+                                        Llego a bodega
                                     {% else %}
                                         {{package.freight.truck.plate}}
                                     {% endif %}

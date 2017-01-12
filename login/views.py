@@ -203,9 +203,11 @@ def customerIndex(request):
 @login_required(login_url="login/")
 def customerProfile(request, customer_id):
     customer = Customer.LogicCustomer.get(id=customer_id)
+    own_packages = Package.LogicPackage.filter(customer=customer)
     return render(request, 'intranet/customers/profile.html', 
         {
             'customer': customer,
+            'own_packages' : own_packages,
         })
 
 
