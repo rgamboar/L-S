@@ -127,8 +127,8 @@ class Package(models.Model):
 	name = models.CharField(max_length=300, null=True)
 	authorName= models.CharField(max_length=300, null=False)
 	address= models.CharField(max_length=300, null=True)
-	createDate = models.DateTimeField(auto_now=True)
-	lastDate = models.DateTimeField(auto_now_add=True)
+	lastDate = models.DateTimeField(auto_now=True)
+	createDate = models.DateTimeField(auto_now_add=True)
 	deliverDate = models.DateTimeField(null=True)
 	transmitDate = models.DateTimeField(null=True)
 

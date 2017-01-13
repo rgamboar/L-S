@@ -28,6 +28,7 @@
                         <th>Precio</th>
                         <th>Riesgo</th>
                         <th>Fecha creacion</th>
+                        <th>Fecha entrega</th>
                         <th>Manifiesto</th>
                       </tr>
                     </thead>
@@ -43,17 +44,8 @@
                             <td>{{package.rate}}</td>
                             <td>{{package.risk}}</td>
                             <td>{{package.createDate}}</td>
-                            <td>
-                                <select id="{{package.id}}" onchange="change_package_freight(this);">
-                                    {% if package.freight %}
-                                      <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
-                                    {% endif %}
-                                      <option value="-">----</option>
-                                    {% for a in package.posibleFreight %}
-                                      <option value="{{a.id}}">{{a.truck.plate}}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
+                            <td>{{package.deliverDate}}</td>                            
+                            <td>{{package.freight.truck.plate}}</td>
                         </tr>
                     </tbody>
                 </table>

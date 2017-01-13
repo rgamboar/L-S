@@ -26,7 +26,9 @@ urlpatterns = [
 
     url(r'^cliente/crear/$',  views.customer, name='customer'),
     url(r'^cliente/indice/$',  views.customerIndex, name='customerIndex'),
+    url(r'^cliente/modificar/(?P<customer_id>.*)/$', views.customerUpdate, name='customerUpdate'),
     url(r'^cliente/(?P<customer_id>.*)/$', views.customerProfile, name='customerProfile'),
+
 
     url(r'^flete/crear/$',  views.freight, name='freight'),
     url(r'^flete/origen/$',  views.freightIndex, name='freightIndex'),

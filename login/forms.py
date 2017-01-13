@@ -86,7 +86,20 @@ class CustomerForm(forms.ModelForm):
 		rut = int(filter(unicode.isdigit, value))
 		return unicode(rut) + '-' + dv
 
+class CustomerFormUpdate(forms.ModelForm):
+	name = forms.CharField(label='Nombre',max_length=150)
+	address = forms.CharField(label='Direccion',max_length=150)
+	phone = forms.CharField(label='Telefono',max_length=150)
 
+	rep = forms.CharField(label='Representante',max_length=150)
+	repAddress = forms.CharField(label='Direccion representante',max_length=150)
+	repEmail = forms.CharField(label='Mail representante',max_length=150)
+	repPhone = forms.CharField(label='Telefono representante',max_length=150)
+	pay = forms.CharField(label='Forma de pago',max_length=150)
+
+	class Meta:
+		model = Customer
+		fields = ['name','address','phone','rep','repAddress','repEmail','repPhone','pay']
 
 
 class FreightForm(forms.ModelForm):

@@ -44,6 +44,7 @@
                             <td>{{package.risk}}</td>
                             <td>{{package.createDate}}</td>
                             <td>{{package.freight.truck.plate}}</td>
+                            <td onclick="change_freight_state({{package.id}},'delivered');" class="send">Entrega a cliente</td>
                         </tr>
                     </tbody>
                 </table>
@@ -58,6 +59,7 @@
 
 <script>
     var change = "{% url 'packageFreight' %}";
+    var changePackageState = "{% url 'packageState' %}";
     var csrf_token = "{{ csrf_token }}";
 </script>
 
@@ -65,4 +67,5 @@
 
 
 <script src="{% static 'js/freight.js' %}"></script>
+<script src="{% static 'js/package.js' %}"></script>
 {% endblock %}

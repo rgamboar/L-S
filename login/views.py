@@ -10,7 +10,7 @@ import datetime
 @login_required(login_url="login/")
 def home(request):
 	if request.user.is_superuser:
-		return HttpResponseRedirect('admin')
+		return HttpResponseRedirect(reverse('admin:index'))
 	else:
 	    return render(request,"intranet/home.html")
 
@@ -97,7 +97,7 @@ def packageProfile(request, package_id):
     elif package.is_transmitter:
         return packageProfileTransmitter(request, package)
     elif package.is_receiver:
-        return packageProfileTraveling(request, package)
+        return packageProfileReceiver(request, package)
     else:
         return packageProfileFinish(request, package)
 
@@ -105,6 +105,13 @@ def packageProfile(request, package_id):
 @login_required(login_url="login/")
 def packageProfileFinish(request, package):
     return render(request, 'intranet/packages/profileFinish.html', 
+        {
+            'package': package,
+        })
+
+@login_required(login_url="login/")
+def packageProfileReceiver(request, package):
+    return render(request, 'intranet/packages/profileReceiver.html', 
         {
             'package': package,
         })
@@ -192,6 +199,19 @@ def packageState(request):
             return freightIndex(request)
 
 
+@login_required(login_url="login/")
+def customerUpdate(request, customer_id):
+    customer = Customer.LogicCustomer.get(id=customer_id)
+    form = CustomerFormUpdate(request.POST or None, instance=customer)
+    if form.is_valid():
+          form.save()
+          return customerProfile(request, customer_id)
+    return render(request, 'intranet/customers/update.html', 
+        {
+            'form': form,
+            'customer_id': customer_id,
+        })
+    
 
 @login_required(login_url="login/")
 def customer(request):

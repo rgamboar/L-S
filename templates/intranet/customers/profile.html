@@ -25,6 +25,7 @@
                         <th>Email</th>
                         <th>Telefono</th>
                         <th>Metodo de pago</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -36,6 +37,7 @@
                             <td>{{customer.repEmail}}</td>
                             <td>{{customer.repPhone}}</td>
                             <td>{{customer.pay}}</td>
+                            <td class="link" onclick="location.href='{% url 'customerUpdate' customer.id %}'"><a>Editar</a></td>
                         </tr>
                         
                     </tbody>
