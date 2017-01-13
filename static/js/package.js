@@ -13,3 +13,19 @@ function change_package_freight(package){
 
 	});
 };
+
+function change_freight_state(package, state){
+	$.ajax({
+	url: changePackageState,
+	method: 'POST',
+	beforeSend: function(xhr){
+		xhr.setRequestHeader("X-CSRFToken", csrf_token);
+	},
+	data: {
+		'id': package,
+		'state': state
+		},
+	}).done(function(html){
+		location.reload(true);
+	});
+};

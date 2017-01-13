@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
 from .forms import *
 from .models import *
+import datetime
+
 
 @login_required(login_url="login/")
 def home(request):
@@ -82,20 +84,6 @@ def packageIndex(request, traveling=False, finish=False, delivered=False, transm
             'page': page,
         })
 
-@login_required(login_url="login/")
-def packageProfile(request, package_id):
-    package = Package.LogicPackage.get(id=package_id)
-    own_packages = Package.LogicPackage.filter(package=package)
-    packages = Package.LogicPackage.filter(start=package.start, finish= package.finish, is_waiting= True)
-    packages = packages.exclude(package=package_id)
-    return render(request, 'intranet/packages/profile.html', 
-        {
-            'package': package,
-            'packages' : packages,
-            'own_packages' : own_packages,
-
-        })
-
 
 @login_required(login_url="login/")
 def packageProfile(request, package_id):
@@ -123,21 +111,21 @@ def packageProfileFinish(request, package):
 
 @login_required(login_url="login/")
 def freightProfileTraveling(request, package):
-    return render(request, 'intranet/packages/profile.html', 
+    return render(request, 'intranet/packages/profileTraveling.html', 
         {
             'package': package,
         })
 
 @login_required(login_url="login/")
 def packageProfileTransmitter(request, package):
-    return render(request, 'intranet/packages/profile.html', 
+    return render(request, 'intranet/packages/profileTransmitter.html', 
         {
             'package': package,
         })
 
 @login_required(login_url="login/")
 def packageProfileDelivered(request, package):
-    return render(request, 'intranet/packages/profile.html', 
+    return render(request, 'intranet/packages/profileDelivered.html', 
         {
             'package': package,
         })
@@ -153,6 +141,9 @@ def packageProfileTraveling(request, package):
 
 @login_required(login_url="login/")
 def packageProfileWaiting(request, package):
+    package.posibleFreight= Freight.LogicFreight.filter(start=package.start, finish= package.finish, is_waiting= True)
+    if package.freight:
+        package.posibleFreight = package.posibleFreight.exclude(id= package.freight.id)
     return render(request, 'intranet/packages/profile.html', 
         {
             'package': package,
@@ -180,6 +171,26 @@ def packageFreight(request):
             return JsonResponse({'error': False})
         else:
             return packageIndex(request)
+
+@login_required(login_url="login/")   
+def packageState(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.LogicPackage.get(id=request.POST['id'])
+            temp= request.POST['state']
+            if temp == 'transmitter':
+                package.is_waiting = True
+                package.transmitter= request.user
+                package.transmitDate = datetime.datetime.now()
+            elif temp == 'delivered':
+                package.is_delivered = True
+                package.deliverer= request.user
+                package.deliverDate = datetime.datetime.now()
+            package.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
+
 
 
 @login_required(login_url="login/")
@@ -392,9 +403,13 @@ def freightState(request):
             if temp == 'traveling':
                 freight.is_traveling = True
                 freight.is_waiting = False
+                freight.sender= request.user
+                freight.sendDate = datetime.datetime.now()
             elif temp == 'finish':
                 freight.is_traveling= False
                 freight.is_waiting= False
+                freight.receiver= request.user
+                freight.receiveDate = datetime.datetime.now()
             packages = Package.LogicPackage.filter(freight=freight)
             for p in packages:
                 p.is_waiting=freight.is_waiting

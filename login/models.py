@@ -101,6 +101,7 @@ class Freight(models.Model):
 	authorName= models.CharField(max_length=300, null=False)
 	createDate = models.DateTimeField(auto_now=True)
 	sendDate = models.DateTimeField(null=True)
+	receiveDate = models.DateTimeField(null=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
 
 	is_waiting=models.BooleanField(default=True)
@@ -112,6 +113,8 @@ class Freight(models.Model):
 	driver = models.ForeignKey(Driver, null=True)
 
 	creator = models.ForeignKey(User, null=False, related_name='freightCreator')
+	sender = models.ForeignKey(User, null=True, related_name='freightSender')
+	receiver = models.ForeignKey(User, null=True, related_name='freightReceiver')
 	delete = models.BooleanField(default=False)
 	LogicFreight = LogicFreightManager()
 
@@ -125,8 +128,9 @@ class Package(models.Model):
 	authorName= models.CharField(max_length=300, null=False)
 	address= models.CharField(max_length=300, null=True)
 	createDate = models.DateTimeField(auto_now=True)
-	sendDate = models.DateTimeField(null=True)
 	lastDate = models.DateTimeField(auto_now_add=True)
+	deliverDate = models.DateTimeField(null=True)
+	transmitDate = models.DateTimeField(null=True)
 
 	startAddress = models.CharField(max_length=300, null=True)
 	finishAddress = models.CharField(max_length=300, null=True)
@@ -152,6 +156,8 @@ class Package(models.Model):
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish')
 	
 	creator = models.ForeignKey(User, null=False, related_name='packageCreator')
+	deliverer = models.ForeignKey(User, null=True, related_name='packageDeliverer')
+	transmitter = models.ForeignKey(User, null=True, related_name='packageTransmitter')
 	delete = models.BooleanField(default=False)
 	LogicPackage = LogicPackageManager()
 	
