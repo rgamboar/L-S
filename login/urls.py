@@ -5,6 +5,8 @@ from . import views
 urlpatterns = [
     url(r'^$', views.freightIndex, name='home'),
 
+    url(r'^password/$',  views.changePassword, name='changePassword'),
+
     url(r'^paquete/crear/$',  views.package, name='package'),
     
     url(r'^paquete/origen/$',  views.packageIndex, name='packageIndex'),

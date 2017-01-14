@@ -5,7 +5,6 @@ from django import forms
 from login.models import *
 
 
-# If you don't do this you cannot use Bootstrap CSS
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label="Nombre de usuario", max_length=30, 
                                widget=forms.TextInput(attrs={'class': 'form-control', 'name': 'username'}))
@@ -134,3 +133,9 @@ class PackageForm(forms.ModelForm):
 	class Meta:
 		model = Package
 		fields = ['name','start','startAddress', 'finish','finishAddress','customer','risk','volume','quantity','weight','chance','rate','pay']
+
+class ChangePasswordForm(forms.ModelForm):
+    password = forms.CharField(label="Contraseña", max_length=30, 
+                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'name': 'password'}))
+    password2 = forms.CharField(label="Repetir contraseña", max_length=30, 
+                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'name': 'password2'}))

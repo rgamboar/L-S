@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from .forms import *
 from .models import *
 import datetime
+from django.contrib.auth.models import User
 
 
 @login_required(login_url="login/")
@@ -51,6 +52,25 @@ def package(request):
         'form': form,
         'success': success
     })
+
+
+@login_required(login_url="login/")
+def changePassword(request):
+    if request.method == 'POST':
+        success=False
+        user = request.user
+        password = request.POST['password']
+        password2 = request.POST['password2']
+        if password== password2:
+            user.set_password(password)
+            user.save()
+            success=True
+        return render(request, 'intranet/changePassword.html', 
+            {
+                'success': success,
+            })
+    return render(request, 'intranet/changePassword.html')
+    
 
 
 @login_required(login_url="login/")
