@@ -58,16 +58,20 @@ def package(request):
 def changePassword(request):
     if request.method == 'POST':
         success=False
+        not_success = False
         user = request.user
         password = request.POST['password']
         password2 = request.POST['password2']
-        if password== password2:
+        if password == password2:
             user.set_password(password)
             user.save()
             success=True
+        else:
+            not_success=True
         return render(request, 'intranet/changePassword.html', 
             {
                 'success': success,
+                'not_success': not_success,
             })
     return render(request, 'intranet/changePassword.html')
     
