@@ -4,8 +4,41 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
 from .forms import *
 from .models import *
-import datetime
+from datetime import datetime
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from reportlab.pdfgen import canvas
+
+
+import cStringIO as StringIO
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.template import Context
+from django.http import HttpResponse
+from cgi import escape
+
+
+def render_to_pdf(template_src, context_dict):
+    template = get_template(template_src)
+    context = Context(context_dict)
+    html  = template.render(context)
+    result = StringIO.StringIO()
+
+    pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+
+def test(request):
+    results = Package.LogicPackage.all()
+
+    return render_to_pdf(
+            'pdf.html',
+            {
+                'pagesize':'A4',
+                'mylist': results,
+            }
+        )
 
 
 @login_required(login_url="login/")
@@ -55,6 +88,92 @@ def package(request):
 
 
 @login_required(login_url="login/")
+def packageSearch(request):
+    success= False
+    if request.method == 'POST':
+        form = SearchBoxForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            startDate = data['startDate']
+            startDate = startDate
+            finishDate = data['finishDate']
+            finishDate = finishDate
+            search = data['search']
+            status = data['status']
+            binicial = data['binicial']
+            bfinal = data['bfinal']
+            
+            request.session['packageSearch']= data
+
+            success=True
+
+            packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
+
+            paginator = Paginator(packages, 25)
+
+            num_page = 1
+            
+            page = paginator.page(num_page)
+            
+            packages = page
+
+            return render(request, 'intranet/packages/search.html', {
+                'form': form,
+                'success': success,
+                'packages': packages,
+            })
+    else:
+        form = SearchBoxForm()
+        if 'packageSearch' in request.session:
+            data = request.session['packageSearch']
+            num_page = request.GET.get('page')
+            if num_page:
+                startDate = data['startDate']
+                startDate = startDate
+                finishDate = data['finishDate']
+                finishDate = finishDate
+                search = data['search']
+                status = data['status']
+                binicial = data['binicial']
+                bfinal = data['bfinal']
+                success=True
+                packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
+                paginator = Paginator(packages, 25)
+                page = paginator.page(num_page)
+                packages = page
+                return render(request, 'intranet/packages/search.html', {
+                    'form': form,
+                    'success': success,
+                    'packages': packages,
+                })
+
+    return render(request, 'intranet/packages/search.html', {
+        'form': form,
+    })
+
+@login_required(login_url="login/")
+def packagesFilter(request, start, finish, value, status, binicial, bfinal):
+    if status == "1":
+        packages = Package.LogicPackage.filter(is_waiting=True)
+    elif status == "2":
+        packages = Package.LogicPackage.filter(is_traveling=True)
+    elif status == "3":
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
+    elif status == "4":
+        packages = Package.LogicPackage.filter(is_delivered=True)
+    else:
+        packages = Package.LogicPackage.all()
+    if binicial:
+        packages = packages.filter(start=binicial)
+    if bfinal:
+        packages = packages.filter(finish=bfinal)
+    if start:
+        packages = packages.filter(createDate__gte=start)
+    if finish:
+        packages = packages.filter(createDate__lte=finish)
+    return packages
+
+@login_required(login_url="login/")
 def changePassword(request):
     if request.method == 'POST':
         success=False
@@ -78,22 +197,16 @@ def changePassword(request):
 
 
 @login_required(login_url="login/")
-def packageIndex(request, traveling=False, finish=False, delivered=False, transmitter=False, reciever=False):
+def packageIndex(request, traveling=False, finish=False, delivered=False):
     if traveling:
         packages = Package.LogicPackage.filter(is_traveling=True)
         page = "traveling"
     elif finish:
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False, is_receiver=False)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
         page = "finish"
-    elif transmitter:
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=True)
-        page = "transmitter"
     elif delivered:
         packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=True)
         page = "delivered"
-    elif reciever:
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_receiver=True)
-        page = "reciever"
     else:
         packages = Package.LogicPackage.filter(is_waiting=True)
         for i in packages:
@@ -481,3 +594,19 @@ def freightTruck(request):
             return JsonResponse({'error': False})
         else:
             return freightIndex(request)
+
+def paginator25(request, list, pag):
+    paginator = Paginator(list, 2)
+
+    num_page = pag 
+    try:
+        page = paginator.page(num_page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
+
+    return page
+

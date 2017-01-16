@@ -11,6 +11,10 @@
                 <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
                 <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
                 <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
+                <script src = "{% static 'js/jquery.min.js' %}"></script>
+                <script src = "{% static 'js/jquery-ui.js' %}"></script>
+                <script src = "{% static 'js/bootstrap.min.js' %}"></script>
+
                 {% block extra_head %}
                 {% endblock %}
                 
@@ -81,9 +85,6 @@
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a href="{% url 'packageTransmitter'%}">Retirar</a>
-                                            </li>
-                                            <li>
                                                 <a href="{% url 'packageIndex'%}">Origen</a>
                                             </li>
                                             <li>
@@ -93,10 +94,10 @@
                                                 <a href="{% url 'packageFinish'%}">Bodega Destino</a>
                                             </li>
                                             <li>
-                                                <a href="{% url 'packageReciever'%}">Entrega a Direccion</a>
+                                                <a href="{% url 'packageDelivered'%}">Entregado</a>
                                             </li>
                                             <li>
-                                                <a href="{% url 'packageDelivered'%}">Entregado</a>
+                                                <a href="{% url 'packageSearch'%}">Buscar</a>
                                             </li>
                                         </ul>
                                     </li>
@@ -127,9 +128,7 @@
 
 
                     <!-- Core Scripts - Include with every page -->
-                    <script src = "{% static 'js/jquery.min.js' %}"></script>
-                    <script src = "{% static 'js/bootstrap.min.js' %}"></script>
-                    <script src = "{% static 'js/jquery-ui.js' %}"></script>
+
         {% block javascript %}
         {% endblock %}
 

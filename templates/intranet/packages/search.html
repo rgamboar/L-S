@@ -1,17 +1,46 @@
 {% extends 'intranet/base.html' %}
 {% load staticfiles %}
 {% block extra_head %}
-    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+    {{ form.media }}
 {% endblock %}
-
-
 {% block content %}
+
 <div class="container">
         <div class="jumbotron">
         <div class="row">
-            
-            <div class="col-sm-12 default-form">
-            {% if packages %}
+        {% if success %}
+        
+        {% endif %}
+
+        {% if form %}
+            <div class="col-sm-6 default-form">
+            <form action="{% url 'packageSearch'%}" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        {% if forloop.counter == 5 %}
+                        
+                            </div>
+                            <div class="col-sm-6">
+
+                        {% endif %}
+      
+                        <div class="form-group">
+                            {{ field.label_tag }} {{ field }}
+                            {% for err in field.errors %}
+                                <span class="error_message">{{ err }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <input type="hidden" name="clicked_button" id="clicked_button" value=""/>
+                    <input type="submit" value="Buscar" />
+                </form>
+            </div>  
+        {% endif %}
+
+        </div>
+        <div class="row">
+
+        {% if packages %}
             <div class="table-responsive">   
                 <table class="table">
                     <thead>
@@ -71,24 +100,47 @@
                     </tbody>
                 </table>
                 </div>
-                {% else %}
+                {% elif success %}
                     <div class="alert alert-info">
                       <strong>No hay ningun paquete en este estado!</strong>
                     </div>
                 {% endif %}
 
+                </div>
+                <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 text-center">
 
-            </div>
-        </div>
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if packages.has_previous %}
+                            <a href="?page={{ packages.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Pagina {{ packages.number }} de {{ packages.paginator.num_pages }}.
+                        </span>
+
+                        {% if packages.has_next %}
+                            <a href="?page={{ packages.next_page_number }}">Siguiente</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+                </div>
+                <div class="col-sm-4">
+                </div>
+
+                </div>
+                </div>
     </div>
 </div>
 
-<script>
-    var change = "{% url 'packageFreight' %}";
-    var csrf_token = "{{ csrf_token }}";
-</script>
+{% endblock %}
 
-<script src="{% static 'js/package.js' %}"></script>
+{% block javascript %}
+
 
 
 {% endblock %}

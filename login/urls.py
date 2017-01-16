@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 from django.conf.urls import url
 from . import views
 
@@ -8,6 +8,9 @@ urlpatterns = [
     url(r'^password/$',  views.changePassword, name='changePassword'),
 
     url(r'^paquete/crear/$',  views.package, name='package'),
+    url(r'^paquete/buscar/$',  views.packageSearch, name='packageSearch'),
+    
+    url(r'^test/$',  views.test, name='test'),
     
     url(r'^paquete/origen/$',  views.packageIndex, name='packageIndex'),
     url(r'^paquete/transito/$',  views.packageIndex, {'traveling': True}, name='packageTraveling'),
@@ -19,8 +22,6 @@ urlpatterns = [
 
     url(r'^paquete/flete/$', views.packageFreight, name='packageFreight'),
     url(r'^paquete/(?P<package_id>.*)/$', views.packageProfile, name='packageProfile'),
-
-
 
     url(r'^accounts/profile/$',  views.home, name='adminAcount'),
 

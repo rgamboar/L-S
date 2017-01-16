@@ -3,6 +3,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django import forms
 from login.models import *
+from django.contrib.admin import widgets                                       
+from bootstrap3_datetime.widgets import DateTimePicker
+from datetime import datetime
 
 
 class LoginForm(AuthenticationForm):
@@ -134,8 +137,21 @@ class PackageForm(forms.ModelForm):
 		model = Package
 		fields = ['name','start','startAddress', 'finish','finishAddress','customer','risk','volume','quantity','weight','chance','rate','pay']
 
-class ChangePasswordForm(forms.ModelForm):
-    password = forms.CharField(label="Contraseña", max_length=30, 
-                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'name': 'password'}))
-    password2 = forms.CharField(label="Repetir contraseña", max_length=30, 
-                               widget=forms.PasswordInput(attrs={'class': 'form-control', 'name': 'password2'}))
+
+class SearchBoxForm(forms.Form):
+	search = forms.CharField(label='Buscar',max_length=100, required=False)
+	status = forms.ChoiceField(choices=[("5", "Todos"),("1", "Origen"),("2", "Transito"),("3", "Destino"),("4", "Entregado")])
+	binicial = forms.ModelChoiceField(label='Bodega Inicial',queryset=Warehouse.LogicWarehouse.all(), required=False)
+	bfinal = forms.ModelChoiceField(label='Bodega Final',queryset=Warehouse.LogicWarehouse.all(), required=False)
+
+	startDate = forms.DateTimeField(
+		label='Creacion desde',
+        required=False,
+        widget=DateTimePicker(options={"format": "YYYY-MM-DD HH:mm",
+                                       "pickSeconds": False
+                                       }))
+	finishDate = forms.DateTimeField(
+		label='Hasta',
+        required=False,
+        widget=DateTimePicker(options={"format": "YYYY-MM-DD HH:mm",
+                                       "pickSeconds": False}))

@@ -1,0 +1,96 @@
+%PDF-1.4
+%“Œ‹ž ReportLab Generated PDF document http://www.reportlab.com
+% 'BasicFonts': class PDFDictionary 
+1 0 obj
+% The standard fonts dictionary
+<< /F1 2 0 R >>
+endobj
+% 'F1': class PDFType1Font 
+2 0 obj
+% Font Helvetica
+<< /BaseFont /Helvetica
+ /Encoding /WinAnsiEncoding
+ /Name /F1
+ /Subtype /Type1
+ /Type /Font >>
+endobj
+% 'Page1': class PDFPage 
+3 0 obj
+% Page dictionary
+<< /Contents 7 0 R
+ /MediaBox [ 0
+ 0
+ 612
+ 792 ]
+ /Parent 6 0 R
+ /Resources << /Font 1 0 R
+ /ProcSet [ /PDF
+ /Text
+ /ImageB
+ /ImageC
+ /ImageI ] >>
+ /Rotate 0
+ /Trans <<  >>
+ /Type /Page >>
+endobj
+% 'R4': class PDFCatalog 
+4 0 obj
+% Document Root
+<< /Outlines 8 0 R
+ /PageMode /UseNone
+ /Pages 6 0 R
+ /Type /Catalog >>
+endobj
+% 'R5': class PDFInfo 
+5 0 obj
+<< /Author (\(anonymous\))
+ /CreationDate (D:20170115204048+04'00')
+ /Creator (\(unspecified\))
+ /Keywords ()
+ /Producer (ReportLab PDF Library - www.reportlab.com)
+ /Subject (\(unspecified\))
+ /Title (\(anonymous\)) >>
+endobj
+% 'R6': class PDFPages 
+6 0 obj
+% page tree
+<< /Count 1
+ /Kids [ 3 0 R ]
+ /Type /Pages >>
+endobj
+% 'R7': class PDFStream 
+7 0 obj
+% page stream
+<< /Filter [ /ASCII85Decode
+ /FlateDecode ]
+ /Length 624 >>
+stream
+Gat=h;/=o?'SYEHq%%,BLMRYpZ=V(ugI=-c=J;LEYt)dD::)EI-Hl(f?U*4Z9>_YV`j1[Pq0qMj9&a7;iI+uQJ<'lrT/h.TU&l-n5k,S]MWs3RFM]-_/oiLF*2`JDXRC;dkp62M?\Bp>013]aT\4a'n3n8b'JWgK;"DukMg$RuU3PRZ^@gTXQRu@dqgTa$@t`X;4lP+o]!PWOd^*a(6u\0500P"M)MFnqS.k/PS^cBJem.1r"&d.fI#o]7$O`E-;)5:G3cqF6)FX2pF`b2367:H%C`Y=VZXmgZR!g?h[a?&X0#QP?-!f4,iFJGGdl%\YZ`Zs!f&X'$25.;cG:1/37b(i)<c7"@A`sSPf]L9bl_6n+8<Q+&6*8QRN_31[e-Suph,"RFiHGG$?'<cL4I#B]DOT!XGJ_b,P$ffQ>qRAA,2?nt'KE+RenhQSSagq=o->,T%qNePV=SY0=Q^n7FoIN,bdOkPD!^AN239!<QN#"*_Ci<72m76ifW*)ti0=TN8tR8>4#srTe+?NF`OM+0m%i>/.=.Yk9S]M#p%hmE[W^P>W0M8L)^kAjGZ\T&0'J6ahI"Eij@GoGL<sCL!A1TskaR4CI8fRU%AM>7b7`:G?`6"ml2~>endstream
+endobj
+% 'R8': class PDFOutlines 
+8 0 obj
+<< /Count 0
+ /Type /Outlines >>
+endobj
+xref
+0 9
+0000000000 65535 f
+0000000113 00000 n
+0000000209 00000 n
+0000000372 00000 n
+0000000639 00000 n
+0000000773 00000 n
+0000001042 00000 n
+0000001147 00000 n
+0000001913 00000 n
+trailer
+<< /ID 
+ % ReportLab generated PDF document -- digest (http://www.reportlab.com) 
+ [(\262\030\321\362\327\021J\205\304\001\317\252\013\303\207n) (\262\030\321\362\327\021J\205\304\001\317\252\013\303\207n)] 
+
+ /Info 5 0 R
+ /Root 4 0 R
+ /Size 9 >>
+startxref
+1964
+%%EOF
