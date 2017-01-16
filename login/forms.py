@@ -115,7 +115,7 @@ class FreightForm(forms.ModelForm):
 		fields = ['start','finish','truck','driver']
 
 class PackageForm(forms.ModelForm):
-	name = forms.CharField(label='Nombre',max_length=300)
+	name = forms.CharField(label='Descripción',max_length=300)
 	
 	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
 	startAddress = forms.CharField(label='Direccion de origen',max_length=300, required=False)
