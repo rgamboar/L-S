@@ -7,19 +7,19 @@ urlpatterns = [
 
     url(r'^password/$',  views.changePassword, name='changePassword'),
 
-    url(r'^paquete/crear/$',  views.package, name='package'),
-    url(r'^paquete/buscar/$',  views.packageSearch, name='packageSearch'),
+    url(r'^guia/crear/$',  views.package, name='package'),
+    url(r'^guia/buscar/$',  views.packageSearch, name='packageSearch'),
     
-    url(r'^paquete/origen/$',  views.packageIndex, name='packageIndex'),
-    url(r'^paquete/transito/$',  views.packageIndex, {'traveling': True}, name='packageTraveling'),
-    url(r'^paquete/destino/$',  views.packageIndex, {'finish': True}, name='packageFinish'),
-    url(r'^paquete/entregado/$',  views.packageIndex, {'delivered': True}, name='packageDelivered'),
-    url(r'^paquete/direccion/$',  views.packageIndex, {'reciever': True}, name='packageReciever'),
-    url(r'^paquete/retirar/$',  views.packageIndex, {'transmitter': True}, name='packageTransmitter'),
-    url(r'^paquete/estado/$', views.packageState, name='packageState'),
+    url(r'^guia/origen/$',  views.packageIndex, name='packageIndex'),
+    url(r'^guia/transito/$',  views.packageIndex, {'traveling': True}, name='packageTraveling'),
+    url(r'^guia/destino/$',  views.packageIndex, {'finish': True}, name='packageFinish'),
+    url(r'^guia/entregado/$',  views.packageIndex, {'delivered': True}, name='packageDelivered'),
+    url(r'^guia/direccion/$',  views.packageIndex, {'reciever': True}, name='packageReciever'),
+    url(r'^guia/retirar/$',  views.packageIndex, {'transmitter': True}, name='packageTransmitter'),
+    url(r'^guia/estado/$', views.packageState, name='packageState'),
 
-    url(r'^paquete/flete/$', views.packageFreight, name='packageFreight'),
-    url(r'^paquete/(?P<package_id>.*)/$', views.packageProfile, name='packageProfile'),
+    url(r'^guia/flete/$', views.packageFreight, name='packageFreight'),
+    url(r'^guia/(?P<package_id>.*)/$', views.packageProfile, name='packageProfile'),
 
     url(r'^accounts/profile/$',  views.home, name='adminAcount'),
 
