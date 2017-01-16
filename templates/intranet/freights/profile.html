@@ -22,7 +22,7 @@
                         <th>Conductor</th>
                         <th>Patente</th>
                         <th>Fecha creacion</th>
-                        <th></th>
+                        <th>Estado</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -53,11 +53,33 @@
                                 </select>
                             </td>
                             <td>{{freight.createDate}}</td>
-                            <td onclick="change_freight_state({{freight.id}},'traveling');" class="send">Enviar</td>
+                            <td>
+                            {% if freight.is_waiting %}
+                                En espera
+                            {% elif freight.is_traveling %}
+                                En transito
+                            {% else %}
+                                Finalizado
+                            {% endif %}
+                            </td>
+                            
                         </tr>
                     </tbody>
                 </table>
                 </div>
+
+
+
+                <a href="{% url 'freightPdf' freight.id %}" class="btn btn-primary" role="button">Imprimir</a>
+
+                {% if send %}
+                <a href="{% url 'freightProfileLoad' freight.id %}" class="btn btn-primary" role="button">Ver paquetes en el recorrido</a>
+                {% endif %}
+
+
+                <a onclick="change_freight_state({{freight.id}},'traveling');" class="btn btn-success pull-right">Enviar</a>
+
+
                     <h4 class="text-center">Paquetes dentro del flete.</h4>
                 <div class="table-responsive">   
                 <table class="table">
@@ -124,8 +146,6 @@
                                 </tbody>
                             </table>
                         </div>
-                {% else %}
-                      <a href="{% url 'freightProfileLoad' freight.id %}" class="btn btn-primary" role="button">Ver paquetes en el recorrido</a>
                 {% endif %}
 
             </div> 

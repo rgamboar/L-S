@@ -130,7 +130,7 @@ class PackageForm(forms.ModelForm):
 	quantity = forms.CharField(label='Cantidad',max_length=100)
 	weight = forms.CharField(label='Peso',max_length=100)
 	chance = forms.CharField(label='Oportunidad',max_length=100)
-	rate = forms.CharField(label='Tarifado',max_length=100)
+	rate = forms.IntegerField(label='Tarifado')
 	pay = forms.CharField(label='F. Pago',max_length=100)
 
 	class Meta:

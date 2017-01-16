@@ -10,8 +10,6 @@ urlpatterns = [
     url(r'^paquete/crear/$',  views.package, name='package'),
     url(r'^paquete/buscar/$',  views.packageSearch, name='packageSearch'),
     
-    url(r'^test/$',  views.test, name='test'),
-    
     url(r'^paquete/origen/$',  views.packageIndex, name='packageIndex'),
     url(r'^paquete/transito/$',  views.packageIndex, {'traveling': True}, name='packageTraveling'),
     url(r'^paquete/destino/$',  views.packageIndex, {'finish': True}, name='packageFinish'),
@@ -37,6 +35,11 @@ urlpatterns = [
     url(r'^flete/origen/$',  views.freightIndex, name='freightIndex'),
     url(r'^flete/transito/$',  views.freightIndex, {'traveling': True}, name='freightTraveling'),
     url(r'^flete/destino/$',  views.freightIndex, {'finish': True}, name='freightFinish'),
+    
+    url(r'^flete/pdf/(?P<freight_id>.*)/$',  views.freightPdf, name='freightPdf'),
+    
+    url(r'^flete/test/$',  views.freightPdf, name='freightPdf'),
+    
 
     url(r'^flete/cargar/(?P<freight_id>.*)/$', views.freightProfile, {'load': True}, name='freightProfileLoad'),
     url(r'^flete/camion/$', views.freightTruck, name='freightTruck'),

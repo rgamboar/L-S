@@ -1,8 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html>
     <head>
-        <title>My Title</title>
-        
+        <title>Manifiesto de carga</title>
+
         <style type="text/css">
             @page {
                 size: {{ pagesize }};
@@ -15,12 +15,84 @@
                     height: 1cm;
                 }
             }
+            table {
+                margin: 10px;
+                border-style: solid;
+                border-color: black black;
+            }
+
+            th {
+                padding-top: 2px;
+            }
+
+            td {
+                padding-top: 2px;
+            }
+
+            .text-center {
+                width: 20px;
+                text-align: center;
+            }
+
         </style>
     </head>
     <body>
+
+    <h1> Manifiesto de carga </h1>
+    <h2> Transportes L&amp;S </h2>
+    <h2> Generado: {{date}} </h2>
+
                 <table class="table">
                     <thead>
                       <tr>
+                        <th class="text-center">ID</th>
+                        <th>Origen</th>
+                        <th>Destino</th>
+                        <th>Conductor</th>
+                        <th>Patente</th>
+                        <th>Fecha creacion</th>
+                        {% if not freight.is_waiting %}
+                            <th>Hora de salida</th>
+                            {% if not freight.is_traveling %}
+                                <th>Hora de llegada</th>
+                            {% endif %}
+                        {% endif %}
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{freight.id}}</td>
+                            <td>{{freight.start.name}}</td>
+                            <td>{{freight.finish.name}}</td>
+                            <td>{{freight.driver.name}}</td>
+                            <td>{{freight.truck.plate}}</td>                                                        
+                            <td>{{freight.createDate}}</td>
+                            {% if not freight.is_waiting %}
+                                <td>{{freight.sendDate}}</td>
+                                {% if not freight.is_traveling %}
+                                    <td>{{freight.receiveDate}}</td>
+                                {% endif %}
+                            {% endif %}    
+                            <td>
+                            {% if freight.is_waiting %}
+                                En espera
+                            {% elif freight.is_traveling %}
+                                En transito
+                            {% else %}
+                                Finalizado
+                            {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+    <h2> Guias de flete </h2>
+
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
                         <th>Cliente</th>
                         <th>Riesgo</th>
                         <th>Volumen</th>
@@ -31,8 +103,9 @@
                       </tr>
                     </thead>
                     <tbody id="own">
-                        {% for package in mylist %}
+                        {% for package in packages %}
                         <tr>
+                            <td class="text-center">{{package.id}}</td>
                             <td>{{package.customer.name}}</td>
                             <td>{{package.risk}}</td>
                             <td>{{package.volume}}</td>

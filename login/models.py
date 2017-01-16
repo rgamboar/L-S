@@ -147,7 +147,7 @@ class Package(models.Model):
 	quantity = models.CharField(max_length=100, null=True)
 	weight = models.CharField(max_length=100, null=True)
 	chance = models.CharField(max_length=100, null=True)
-	rate = models.CharField(max_length=100, null=True)
+	rate = models.IntegerField(null=False)
 	pay = models.CharField(max_length=100, null=True)
 
 	customer = models.ForeignKey(Customer, null=False)

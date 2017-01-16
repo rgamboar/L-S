@@ -30,14 +30,17 @@ def render_to_pdf(template_src, context_dict):
         return HttpResponse(result.getvalue(), content_type='application/pdf')
     return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
 
-def test(request):
-    results = Package.LogicPackage.all()
+def freightPdf(request, freight_id=1):
+    freight = Freight.LogicFreight.get(id=freight_id)
+    packages = Package.LogicPackage.filter(freight=freight)
 
     return render_to_pdf(
             'pdf.html',
             {
                 'pagesize':'A4',
-                'mylist': results,
+                'packages': packages,
+                'freight': freight,
+                'date': datetime.now(),
             }
         )
 
@@ -74,12 +77,13 @@ def package(request):
         if form.is_valid():
             obj = form.save(commit=False)
             if obj.startAddress:
-                obj.is_waiting=False
+                obj.is_waiting=True
                 obj.is_transmitter=True
             if obj.finishAddress:
                 obj.is_reciever=True
             obj.creator = request.user
             obj.save()
+            success=True
     else:
         form = PackageForm()
     return render(request, 'intranet/packages/create.html', {
@@ -324,11 +328,11 @@ def packageState(request):
             if temp == 'transmitter':
                 package.is_waiting = True
                 package.transmitter= request.user
-                package.transmitDate = datetime.datetime.now()
+                package.transmitDate = datetime.now()
             elif temp == 'delivered':
                 package.is_delivered = True
                 package.deliverer= request.user
-                package.deliverDate = datetime.datetime.now()
+                package.deliverDate = datetime.now()
             package.save()
             return JsonResponse({'error': False})
         else:
@@ -560,12 +564,12 @@ def freightState(request):
                 freight.is_traveling = True
                 freight.is_waiting = False
                 freight.sender= request.user
-                freight.sendDate = datetime.datetime.now()
+                freight.sendDate = datetime.now()
             elif temp == 'finish':
                 freight.is_traveling= False
                 freight.is_waiting= False
                 freight.receiver= request.user
-                freight.receiveDate = datetime.datetime.now()
+                freight.receiveDate = datetime.now()
             packages = Package.LogicPackage.filter(freight=freight)
             for p in packages:
                 p.is_waiting=freight.is_waiting
