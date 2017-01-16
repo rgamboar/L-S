@@ -212,11 +212,15 @@ def packageIndex(request, traveling=False, finish=False, delivered=False):
         page = "delivered"
     else:
         packages = Package.LogicPackage.filter(is_waiting=True)
+        page = "inicio"
+    num_page = request.GET.get('page', 1)
+    paginator = Paginator(packages, 25)
+    packages = paginator.page(num_page)
+    if page == "inicio":
         for i in packages:
             i.posibleFreight= Freight.LogicFreight.filter(start=i.start, finish= i.finish, is_waiting= True)
             if i.freight:
                 i.posibleFreight = i.posibleFreight.exclude(id= i.freight.id)
-        page = "inicio"
 
     return render(request, 'intranet/packages/index.html', 
         {
@@ -252,13 +256,6 @@ def packageProfileFinish(request, package):
 @login_required(login_url="login/")
 def packageProfileReceiver(request, package):
     return render(request, 'intranet/packages/profileReceiver.html', 
-        {
-            'package': package,
-        })
-
-@login_required(login_url="login/")
-def freightProfileTraveling(request, package):
-    return render(request, 'intranet/packages/profileTraveling.html', 
         {
             'package': package,
         })
@@ -376,7 +373,9 @@ def customer(request):
 def customerIndex(request):
 
     customers = Customer.LogicCustomer.filter()
-
+    num_page = request.GET.get('page', 1)
+    paginator = Paginator(customers, 25)
+    customers = paginator.page(num_page)
     return render(request, 'intranet/customers/index.html', 
         {
             'customers': customers,
@@ -456,6 +455,12 @@ def freightIndex(request, traveling=False, finish=False):
         page = "finish"
     else:
         freights= Freight.LogicFreight.filter(is_waiting=True)
+        page = "inicio"
+
+    num_page = request.GET.get('page', 1)
+    paginator = Paginator(freights, 25)
+    freights = paginator.page(num_page)
+    if page == "inicio":
         for freight in freights:
             freight.posibleDriver = Driver.LogicDriver.all()
             freight.posibleTruck= Truck.LogicTruck.all()
@@ -463,7 +468,7 @@ def freightIndex(request, traveling=False, finish=False):
                 freight.posibleDriver = freight.posibleDriver.exclude(id=freight.driver.id)
             if freight.truck:
                 freight.posibleTruck= freight.posibleTruck.exclude(id=freight.truck.id)
-        page = "inicio"
+
 
     return render(request, 'intranet/freights/index.html', 
         {
@@ -598,18 +603,4 @@ def freightTruck(request):
         else:
             return freightIndex(request)
 
-def paginator25(request, list, pag):
-    paginator = Paginator(list, 2)
-
-    num_page = pag 
-    try:
-        page = paginator.page(num_page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        page = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        page = paginator.page(paginator.num_pages)
-
-    return page
 

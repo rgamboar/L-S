@@ -77,6 +77,32 @@
 
             </div>
         </div>
+        <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 text-center">
+
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if freights.has_previous %}
+                            <a href="?page={{ freights.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Pagina {{ freights.number }} de {{ freights.paginator.num_pages }}.
+                        </span>
+
+                        {% if freights.has_next %}
+                            <a href="?page={{ freights.next_page_number }}">Siguiente</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+                </div>
+                <div class="col-sm-4">
+                </div>
+
+                </div>
     </div>
 </div>
 

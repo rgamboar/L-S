@@ -8,9 +8,7 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">
-        {% if success %}
-        
-        {% endif %}
+
 
         {% if form %}
             <div class="col-sm-6 default-form">
@@ -107,6 +105,8 @@
                 {% endif %}
 
                 </div>
+                {% if success %}
+        
                 <div class="row">
                 <div class="col-sm-4">
                 </div>
@@ -133,6 +133,8 @@
                 </div>
 
                 </div>
+
+                {% endif %}
                 </div>
     </div>
 </div>

@@ -50,6 +50,32 @@
 
             </div>
         </div>
+         <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 text-center">
+
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if customers.has_previous %}
+                            <a href="?page={{ customers.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Pagina {{ customers.number }} de {{ customers.paginator.num_pages }}.
+                        </span>
+
+                        {% if customers.has_next %}
+                            <a href="?page={{ customers.next_page_number }}">Siguiente</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+                </div>
+                <div class="col-sm-4">
+                </div>
+
+                </div>
     </div>
 </div>
 
