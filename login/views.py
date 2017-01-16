@@ -8,7 +8,8 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from reportlab.pdfgen import canvas
-
+from bson import json_util
+import json
 
 import cStringIO as StringIO
 from xhtml2pdf import pisa
@@ -95,15 +96,15 @@ def packageSearch(request):
         if form.is_valid():
             data = form.cleaned_data
             startDate = data['startDate']
-            startDate = startDate
             finishDate = data['finishDate']
-            finishDate = finishDate
             search = data['search']
             status = data['status']
             binicial = data['binicial']
             bfinal = data['bfinal']
-            
-            request.session['packageSearch']= data
+            save = data
+            save['startDate']= json.dumps(save['startDate'], default=json_util.default)
+            save['finishDate']= json.dumps(save['finishDate'], default=json_util.default)
+            request.session['packageSearch']= save
 
             success=True
 
@@ -128,10 +129,8 @@ def packageSearch(request):
             data = request.session['packageSearch']
             num_page = request.GET.get('page')
             if num_page:
-                startDate = data['startDate']
-                startDate = startDate
-                finishDate = data['finishDate']
-                finishDate = finishDate
+                startDate = json.loads(data['startDate'], object_hook=json_util.object_hook)
+                finishDate = json.loads(data['finishDate'], object_hook=json_util.object_hook)
                 search = data['search']
                 status = data['status']
                 binicial = data['binicial']
