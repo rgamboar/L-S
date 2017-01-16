@@ -5,6 +5,11 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">
+                {% if success %}
+                    <div class="alert alert-success">
+                      <strong>Se ha creado con exito!</strong>
+                    </div>
+                {% endif %}
         {% if form %}
             <div class="col-sm-1">
             </div>
@@ -20,9 +25,7 @@
                         </div>
                     {% endfor %}
                     <input type="submit" value="Crear" />
-                    {% if success %}
-                        Se ha creado con exito
-                    {% endif %}
+
                 </form>
             </div>
             <div class="col-sm-1">
