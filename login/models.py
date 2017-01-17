@@ -166,8 +166,11 @@ class Package(models.Model):
 	transmitter = models.ForeignKey(User, null=True, related_name='packageTransmitter')
 	delete = models.BooleanField(default=False)
 	LogicPackage = LogicPackageManager()
+
+	class Meta:
+		ordering = ['-id']
+	
 	
 	def __unicode__(self):
 		return unicode(self.id)
-
 
