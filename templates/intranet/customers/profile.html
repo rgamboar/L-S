@@ -47,23 +47,34 @@
                     <table class="table">
                         <thead>
                           <tr>
+                            <th class="text-center">ID</th>
                             <th>Riesgo</th>
                             <th>Volumen</th>
                             <th>Cantidad</th>
                             <th>Peso</th>
                             <th>Oportunidad</th>
                             <th>Tarifado</th>
+                            <th>Fecha creacion</th>
+                            <th>Fecha entrega</th>
                           </tr>
                         </thead>
                         <tbody id="own">
                             {% for package in own_packages %}
                             <tr>
+                                <td class="link" onclick="location.href='{% url 'packageProfile' package.id %}'"><a>{{package.id}}</a></td>
                                 <td>{{package.risk}}</td>
                                 <td>{{package.volume}}</td>
                                 <td>{{package.quantity}}</td>
                                 <td>{{package.weight}}</td>
                                 <td>{{package.chance}}</td>
                                 <td>{{package.rate}}</td>
+                                <td>{{package.createDate}}</td>
+                                {% if package.deliverDate %}
+                                <td>{{package.deliverDate}}</td>
+                                {% else %}
+                                <td>----</td>
+                                {% endif%} 
+
                             </tr>
                             {% endfor %}
                         </tbody>
