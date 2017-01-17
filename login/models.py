@@ -168,7 +168,7 @@ class Package(models.Model):
 	LogicPackage = LogicPackageManager()
 
 	class Meta:
-		ordering = ['-id']
+		ordering = ['-createDate']
 	
 	
 	def __unicode__(self):

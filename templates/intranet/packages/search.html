@@ -53,13 +53,7 @@
                         <th>Precio</th>
                         <th>Riesgo</th>
                         <th>Fecha creacion</th>
-                        <th>
-                            {% if page == 'transmitter' %}
-                                
-                            {% else %}
-                                Camion
-                            {% endif %} 
-                        </th>
+                        <th>Camion</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -75,23 +69,13 @@
                                 <td>{{package.rate}}</td>
                                 <td>{{package.risk}}</td>
                                 <td>{{package.createDate}}</td>
-                                <td>
-                                    {% if page == 'inicio' %}
-                                        <select id="{{package.id}}" onchange="change_package_freight(this);">
-                                            {% if package.freight %}
-                                              <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
-                                            {% endif %}
-                                              <option value="-">----</option>
-                                            {% for a in package.posibleFreight %}
-                                              <option value="{{a.id}}">{{a.truck.plate}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    {% elif page == 'transmitter' %}
-                                        Llego a bodega
+
+                                    {% if package.freight %}
+                                        <td class="link" onclick="location.href='{% url 'freightProfile' package.freight %}'"><a>{{package.freight}}: {{package.freight.truck.plate}} </a></td>
                                     {% else %}
-                                        {{package.freight.truck.plate}}
+                                        <td></td>
                                     {% endif %}
-                                </td>
+
                             </tr>
                         {% endfor %}
                         

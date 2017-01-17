@@ -26,13 +26,7 @@
                         <th>Precio</th>
                         <th>Riesgo</th>
                         <th>Fecha creacion</th>
-                        <th>
-                            {% if page == 'transmitter' %}
-                                
-                            {% else %}
-                                Camion
-                            {% endif %} 
-                        </th>
+                        <th>Camion</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -48,23 +42,24 @@
                                 <td>{{package.rate}}</td>
                                 <td>{{package.risk}}</td>
                                 <td>{{package.createDate}}</td>
-                                <td>
                                     {% if page == 'inicio' %}
+                                    <td>
                                         <select id="{{package.id}}" onchange="change_package_freight(this);">
                                             {% if package.freight %}
-                                              <option value="{{package.freight.id}}">{{package.freight.truck.plate}}</option>
+                                              <option value="{{package.freight.id}}">{{package.freight}}: {{package.freight.truck.plate}}</option>
                                             {% endif %}
                                               <option value="-">----</option>
                                             {% for a in package.posibleFreight %}
-                                              <option value="{{a.id}}">{{a.truck.plate}}</option>
+                                              <option value="{{a.id}}">{{a}}: {{a.truck.plate}}</option>
                                             {% endfor %}
                                         </select>
-                                    {% elif page == 'transmitter' %}
-                                        Llego a bodega
+                                    </td>
                                     {% else %}
-                                        {{package.freight.truck.plate}}
+
+                                    <td class="link" onclick="location.href='{% url 'freightProfile' package.freight %}'"><a>{{package.freight}}: {{package.freight.truck.plate}} </a></td>
+                                        
                                     {% endif %}
-                                </td>
+
                             </tr>
                         {% endfor %}
                         
@@ -73,7 +68,7 @@
                 </div>
                 {% else %}
                     <div class="alert alert-info">
-                      <strong>No hay ningun paquete en este estado!</strong>
+                      <strong>No hay ninguna guia de flete en este estado!</strong>
                     </div>
                 {% endif %}
 
