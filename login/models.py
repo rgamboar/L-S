@@ -121,6 +121,12 @@ class Freight(models.Model):
 	def __unicode__(self):
 		return unicode(self.id)
 
+	def totalRate(self):
+		packages= Package.LogicPackage.filter(freight=self)
+		total = 0
+		for package in packages:
+			total = total + package.rate
+		return total
 
 
 class Package(models.Model):

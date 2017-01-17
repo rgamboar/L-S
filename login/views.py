@@ -385,6 +385,9 @@ def customerIndex(request):
 def customerProfile(request, customer_id):
     customer = Customer.LogicCustomer.get(id=customer_id)
     own_packages = Package.LogicPackage.filter(customer=customer)
+    num_page = request.GET.get('page', 1)
+    paginator = Paginator(own_packages, 25)
+    own_packages = paginator.page(num_page)
     return render(request, 'intranet/customers/profile.html', 
         {
             'customer': customer,

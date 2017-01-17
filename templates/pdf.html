@@ -34,6 +34,11 @@
                 text-align: center;
             }
 
+            .last-line {
+                border-style: none;
+
+            }
+
         </style>
     </head>
     <body>
@@ -115,6 +120,16 @@
                             <td>{{package.rate}}</td>
                         </tr>
                         {% endfor %}
+                        <tr>
+                            <td class="last-line"></td>
+                            <td class="last-line"></td>
+                            <td class="last-line"></td>
+                            <td class="last-line"></td>
+                            <td class="last-line"></td>
+                            <td class="last-line"></td>
+                            <td>Total</td>
+                            <td>{{freight.totalRate}}</td>
+                        </tr>
                     </tbody>
                 </table>
         <div id="footerContent">

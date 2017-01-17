@@ -72,6 +72,32 @@
 
 
             </div>
+            <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 text-center">
+
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if own_packages.has_previous %}
+                            <a href="?page={{ own_packages.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Pagina {{ own_packages.number }} de {{ own_packages.paginator.num_pages }}.
+                        </span>
+
+                        {% if own_packages.has_next %}
+                            <a href="?page={{ own_packages.next_page_number }}">Siguiente</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+                </div>
+                <div class="col-sm-4">
+                </div>
+
+                </div>
         </div>
     </div>
 </div>
