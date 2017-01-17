@@ -33,7 +33,7 @@
                     <tbody>
                         <tr onclick="location.href="">
                             <td class="text-center">{{package.id}}</td>
-                            <td>{{package.customer.name}}</td>
+                            <td class="link" onclick="location.href='{% url 'customerProfile' package.customer.id %}'"><a>{{package.customer.name}}</a></td>
                             <td>{{package.start.name}}</td>
                             <td>{{package.finish.name}}</td>
                             <td>{{package.volume}}</td>
@@ -42,7 +42,7 @@
                             <td>{{package.rate}}</td>
                             <td>{{package.risk}}</td>
                             <td>{{package.createDate}}</td>
-                            <td>{{package.freight.truck.plate}}</td>
+                            <td class="link" onclick="location.href='{% url 'freightProfile' package.freight %}'"><a>{{package.freight}}: {{package.freight.truck.plate}} </a></td>
                         </tr>
 
                     
