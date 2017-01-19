@@ -27,7 +27,7 @@
                     <tbody>
                         {% for customer in customers %}
                             <tr>
-                                <td class="link" onclick="location.href='{% url 'customerProfile' customer.id %}'"><a>{{customer.rut}}</a></td>
+                                <td class="link rut" onclick="location.href='{% url 'customerProfile' customer.id %}'"><a>{{customer.rut}}</a></td>
                                 <td>{{customer.name}}</td>
                                 <td>{{customer.phone}}</td>
                                 <td>{{customer.rep}}</td>
