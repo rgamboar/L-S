@@ -29,3 +29,20 @@ function change_freight_state(package, state){
 		location.reload(true);
 	});
 };
+
+function change_package_rate(){
+	var rate = $("#id_rate").val()
+	$.ajax({
+	url: changePackageRate,
+	method: 'POST',
+	beforeSend: function(xhr){
+		xhr.setRequestHeader("X-CSRFToken", csrf_token);
+	},
+	data: {
+		'id': package_id,
+		'rate': rate 
+		},
+	}).done(function(html){
+		location.reload(true);
+	});
+};

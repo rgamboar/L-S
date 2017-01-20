@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^$', views.freightIndex, name='home'),
 
     url(r'^password/$',  views.changePassword, name='changePassword'),
+    url(r'^guia/$',  views.help, name='help'),
 
     url(r'^guia/crear/$',  views.package, name='package'),
     url(r'^guia/buscar/$',  views.packageSearch, name='packageSearch'),
@@ -17,6 +18,7 @@ urlpatterns = [
     url(r'^guia/direccion/$',  views.packageIndex, {'reciever': True}, name='packageReciever'),
     url(r'^guia/retirar/$',  views.packageIndex, {'transmitter': True}, name='packageTransmitter'),
     url(r'^guia/estado/$', views.packageState, name='packageState'),
+    url(r'^guia/tarifado/$', views.packageRate, name='packageRate'),
 
     url(r'^guia/flete/$', views.packageFreight, name='packageFreight'),
     url(r'^guia/(?P<package_id>.*)/$', views.packageProfile, name='packageProfile'),

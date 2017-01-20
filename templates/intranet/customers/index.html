@@ -9,6 +9,7 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">
+            <h3 class="text-center"> Lista de Clientes</h3>
             <div class="col-sm-12 default-form">
             {% if customers %}
             <div class="table-responsive">   
@@ -79,11 +80,14 @@
     </div>
 </div>
 
+
 <script>
     var changeTruck = "{% url 'freightTruck' %}";
     var changeDriver = "{% url 'freightDriver' %}";
     var csrf_token = "{{ csrf_token }}";
 </script>
+
+
 
 
 <script src="{% static 'js/freight.js' %}"></script>

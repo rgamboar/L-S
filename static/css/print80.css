@@ -1,0 +1,24 @@
+#print{
+  width:80mm;
+  visibility: hidden;"
+}
+@media print {
+  @page{
+    size: 80mm 200mm;
+    size: landscape;
+  }
+  body * {
+    visibility: hidden;
+  }
+  body {
+  	width: 80mm;
+  }
+  #print p{
+    visibility: visible;
+  }
+  #print {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

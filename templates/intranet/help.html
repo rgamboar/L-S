@@ -1,0 +1,45 @@
+{% extends 'intranet/base.html' %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+        <h3 class="text-center"> Guia de Usuario </h3>
+        </div>
+        <div class="row">
+            <div class="col-sm-1">
+            </div>  
+            <div class="col-sm-10">
+               
+                  <dl>
+                    <dt>Guias de flete:</dt>
+                    <dd>- Crear: En menu guias de flete, crear, rellenar informacion y enviar.</dd>
+                    <dd>- Asignar camion: En menu guias de flete, origen, seleccionas el numero del manifiesto de carga que se muestra con el camión o en un manifiesto de carga agregas las guias de flete.</dd>
+                    <dd>- Agregar tarifa tardia: En menu guias de flete, origen.</dd>
+                    <dd>- Imprimir: .</dd>
+                </dl>
+                <dl>
+                    <dt>Manifiesto de carga:</dt>
+                    <dd>- Crear: En menu manifiesto de carga, crear, seleccionar origen y destino. No es necesario rellenar otra información.</dd>
+                    <dd>- Seleccionar camión y conductor: En menu manifiesto de carga, origen, se selecciona para cada manifiesto el camión y conductor asociado.</dd>
+                    <dd>- Cambiar estado:En manu manifiesto de carga, en cualquier categoria, se puede entrar a un manifiesto en especifico y seleccionar que este esta en transito o llego a bodega destino.</dd>
+                    <dd>- Imprimir: En menu manifiesto de carga, cualquier categoria, al entrar a un manifiesto se apreta imprimir y se vera el documento a imprimir.<dd>
+                </dl>
+                <dl>
+                    <dt>Clientes:</dt>
+                    <dd>- Crear: En menu Añadir otros, cliente, agregas la informacion del cliente y envias.</dd>
+                    <dd>- Modificar: En menu Consultas, clientes, buscas el cliente y dentro de la pagina de este ingresas a modificar.</dd>
+                </dl>
+
+            </div>
+            <div class="col-sm-1">
+            </div>  
+        </div>
+        <div class="row">
+            
+        </div>  
+        </div>
+    </div>
+</div>
+{% endblock %}

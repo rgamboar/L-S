@@ -10,6 +10,7 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">
+        <h3 class="text-center"> Guia de Flete </h3>
             
             <div class="col-sm-12 default-form">
             
@@ -39,7 +40,13 @@
                             <td>{{package.volume}}</td>
                             <td>{{package.quantity}}</td>
                             <td>{{package.weight}}</td>
-                            <td>{{package.rate}}</td>
+                            <td>
+                                {% if package.rate == 0 %}
+                                      No definido
+                                {% else %}
+                                    {{package.rate}}    
+                                {% endif %}
+                            </td>
                             <td>{{package.risk}}</td>
                             <td>{{package.createDate}}</td>
                             <td class="link" onclick="location.href='{% url 'freightProfile' package.freight %}'"><a>{{package.freight}}: {{package.freight.truck.plate}} </a></td>
@@ -49,16 +56,30 @@
                     </tbody>
                 </table>
                 </div>
+
+                {% if package.rate == 0 %}
+                    <div class="form-group">
+                            <label for="id_rate">Tarifado:</label> <input id="id_rate" name="rate" type="number" required />
+                            
+                        </div>
+                    <a onclick="change_package_rate();" class="btn btn-primary" role="button">Cambiar Tarifado</a>
+
+                {% endif %}
             </div>
-            
         </div>
     </div>
 </div>
 
 
+
+
+
 <script>
     var change = "{% url 'packageFreight' %}";
+    var changePackageState = "{% url 'packageState' %}";
+    var changePackageRate = "{% url 'packageRate' %}";
     var csrf_token = "{{ csrf_token }}";
+    var package_id = "{{ package.id }}"; 
 </script>
 
 

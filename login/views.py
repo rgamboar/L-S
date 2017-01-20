@@ -47,10 +47,15 @@ def freightPdf(request, freight_id=1):
 
 @login_required(login_url="login/")
 def home(request):
-	if request.user.is_superuser:
-		return HttpResponseRedirect(reverse('admin:index'))
-	else:
-	    return render(request,"intranet/home.html")
+    if request.user.is_superuser:
+        return HttpResponseRedirect(reverse('admin:index'))
+    else:
+        return render(request,"intranet/freights/index.html")
+
+@login_required(login_url="login/")
+def help(request):
+    return render(request,"intranet/help.html")
+
 
 @login_required(login_url="login/")
 def warehouse(request):
@@ -84,6 +89,14 @@ def package(request):
             obj.creator = request.user
             obj.save()
             success=True
+        oldForm= form
+        form = PackageForm(initial={
+            'start': oldForm.cleaned_data['start'],
+            'startAddress': oldForm.cleaned_data['startAddress'],
+            'finish': oldForm.cleaned_data['finish'],
+            'finishAddress': oldForm.cleaned_data['finishAddress'],
+            'customer': oldForm.cleaned_data['customer'],
+            })
     else:
         form = PackageForm()
     return render(request, 'intranet/packages/create.html', {
@@ -331,6 +344,19 @@ def packageState(request):
                 package.deliverer= request.user
                 package.deliverDate = datetime.now()
             package.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
+
+@login_required(login_url="login/")   
+def packageRate(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.LogicPackage.get(id=request.POST['id'])
+            rate= request.POST['rate']
+            if rate> 0:
+                package.rate= rate
+                package.save()
             return JsonResponse({'error': False})
         else:
             return freightIndex(request)

@@ -75,7 +75,7 @@ class CustomerForm(forms.ModelForm):
 	repAddress = forms.CharField(label='Direccion representante',max_length=150)
 	repEmail = forms.CharField(label='Mail representante',max_length=150)
 	repPhone = forms.CharField(label='Telefono representante',max_length=150)
-	pay = forms.CharField(label='Forma de pago',max_length=150)
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
 
 	class Meta:
 		model = Customer
@@ -97,7 +97,7 @@ class CustomerFormUpdate(forms.ModelForm):
 	repAddress = forms.CharField(label='Direccion representante',max_length=150)
 	repEmail = forms.CharField(label='Mail representante',max_length=150)
 	repPhone = forms.CharField(label='Telefono representante',max_length=150)
-	pay = forms.CharField(label='Forma de pago',max_length=150)
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
 
 	class Meta:
 		model = Customer
@@ -125,13 +125,13 @@ class PackageForm(forms.ModelForm):
 
 	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), empty_label=None)
 
-	risk = forms.CharField(label='Riesgo',max_length=100)
+	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
 	volume = forms.CharField(label='Volumen',max_length=100)
 	quantity = forms.CharField(label='Cantidad',max_length=100)
 	weight = forms.CharField(label='Peso',max_length=100)
 	chance = forms.CharField(label='Oportunidad',max_length=100)
 	rate = forms.IntegerField(label='Tarifado')
-	pay = forms.CharField(label='F. Pago',max_length=100)
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
 
 	class Meta:
 		model = Package

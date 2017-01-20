@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block extra_head %}
     <link href="{% static 'css/freight.css' %}" rel="stylesheet">
-
+    <link href="{% static 'css/print80.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -10,6 +10,7 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">
+            <h3 class="text-center"> Guia de Flete </h3>
             
             <div class="col-sm-12 default-form">
             
@@ -39,7 +40,13 @@
                             <td>{{package.volume}}</td>
                             <td>{{package.quantity}}</td>
                             <td>{{package.weight}}</td>
-                            <td>{{package.rate}}</td>
+                            <td>
+                                {% if package.rate == 0 %}
+                                      No definido
+                                {% else %}
+                                    {{package.rate}}    
+                                {% endif %}
+                            </td>
                             <td>{{package.risk}}</td>
                             <td>{{package.createDate}}</td>
                             <td>
@@ -57,17 +64,59 @@
                     </tbody>
                 </table>
                 </div>
-            
+
+
+<a href="javascript:window.print()" class="btn btn-primary" role="button">Imprimir</a>
+
+                {% if package.rate == 0 %}
+                    <div class="form-group">
+                            <label for="id_rate">Tarifado:</label> <input id="id_rate" name="rate" type="number" required />
+                            
+                        </div>
+                    <a onclick="change_package_rate();" class="btn btn-primary" role="button">Cambiar Tarifado</a>
+
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
 
+
+<div id="print">
+<p>
+ID: {{package.id}}
+</p><p>
+Cliente: {{package.customer.name}}
+</p><p>
+Origen: {{package.start.name}}
+</p><p>
+Destino: {{package.finish.name}}
+</p><p>
+Volumen: {{package.volume}}
+</p><p>
+Cantidad: {{package.quantity}}
+</p><p>
+Peso: {{package.weight}}
+</p><p>
+Tarifa: {{package.rate}}
+</p><p>
+Riesgo: {{package.risk}}
+</p><p>
+Fecha creacion: {{package.createDate}}
+</p>
+</div>
+
+
+
 <script>
     var change = "{% url 'packageFreight' %}";
+    var changePackageState = "{% url 'packageState' %}";
+    var changePackageRate = "{% url 'packageRate' %}";
     var csrf_token = "{{ csrf_token }}";
+    var package_id = "{{ package.id }}"; 
 </script>
+
 
 
 

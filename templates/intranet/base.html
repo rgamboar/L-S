@@ -8,6 +8,7 @@
                 <title>L&amp;S</title>
                 <!-- Core CSS - Include with every page -->
                 <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+                <link href="{% static 'css/intranet.css' %}" rel="stylesheet">
                 <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
                 <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
                 <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
@@ -32,18 +33,62 @@
                                 <a class="navbar-brand" href="{% url 'home'%}">L&amp;S</a>
                             </div>
                             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                
+
                                 <ul class="nav navbar-nav">
                                     <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Añadir<span class="caret"></span>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Guias de Flete<span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a href="{% url 'package'%}">Guia de Flete</a>
-                                            </li>
-                                            <li>
-                                                <a href="{% url 'freight'%}">Manifiestos de Carga</a>
+                                                <a href="{% url 'package'%}">Crear</a>
                                             </li>
                                             <li class="divider"></li>
+                                            <li>
+                                                <a href="{% url 'packageIndex'%}">Origen</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'packageTraveling'%}">Transito</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'packageFinish'%}">Bodega Destino</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'packageDelivered'%}">Entregado</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                
+
+
+                                <ul class="nav navbar-nav">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Manifiestos de carga<span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li>
+                                                <a href="{% url 'freight'%}">Crear</a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="{% url 'freightIndex'%}">Origen</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'freightTraveling'%}">Transito</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'freightFinish'%}">Destino</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                                <ul class="nav navbar-nav">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Añadir otros<span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" role="menu">
                                             <li>
                                                 <a href="{% url 'warehouse'%}">Bodegas</a>
                                             </li>
@@ -63,52 +108,19 @@
 
                                 <ul class="nav navbar-nav">
                                     <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Manifiestos de carga<span class="caret"></span>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Consultas<span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" role="menu">
                                             <li>
-                                                <a href="{% url 'freightIndex'%}">Origen</a>
+                                                <a href="{% url 'packageSearch'%}">Guias de flete</a>
                                             </li>
                                             <li>
-                                                <a href="{% url 'freightTraveling'%}">Transito</a>
+                                                <a href="{% url 'customerIndex'%}">Clientes</a>
                                             </li>
-                                            <li>
-                                                <a href="{% url 'freightFinish'%}">Destino</a>
                                             </li>
                                         </ul>
                                     </li>
                                 </ul>
-
-                                <ul class="nav navbar-nav">
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Guias de Flete<span class="caret"></span>
-                                        </a>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li>
-                                                <a href="{% url 'packageIndex'%}">Origen</a>
-                                            </li>
-                                            <li>
-                                                <a href="{% url 'packageTraveling'%}">Transito</a>
-                                            </li>
-                                            <li>
-                                                <a href="{% url 'packageFinish'%}">Bodega Destino</a>
-                                            </li>
-                                            <li>
-                                                <a href="{% url 'packageDelivered'%}">Entregado</a>
-                                            </li>
-                                            <li>
-                                                <a href="{% url 'packageSearch'%}">Buscar</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-
-
-                                <ul class="nav navbar-nav">
-                                    <li class="dropdown">
-                                        <a href="{% url 'customerIndex'%}">Clientes</a>
-                                    </li>
-                                </ul>  
                                 <ul class="nav navbar-nav navbar-right">
                                     <li class="dropdown">
                                         <a href="/logout">Cerrar Sesión</a>
@@ -117,6 +129,11 @@
                                 <ul class="nav navbar-nav navbar-right">
                                     <li class="dropdown">
                                         <a href="{% url 'changePassword'%}">Cambiar Contraseña</a>
+                                    </li>
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a href="{% url 'help'%}">Guia</a>
                                     </li>
                                 </ul>
                             </div>
