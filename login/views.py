@@ -129,7 +129,7 @@ def packageSearch(request):
 
             packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
 
-            paginator = Paginator(packages, 5)
+            paginator = Paginator(packages, 25)
 
             num_page = 1
             
@@ -156,7 +156,7 @@ def packageSearch(request):
                 bfinal = data['bfinal']
                 success=True
                 packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
-                paginator = Paginator(packages, 5)
+                paginator = Paginator(packages, 25)
                 page = paginator.page(num_page)
                 packages = page
                 return render(request, 'intranet/packages/search.html', {
@@ -172,7 +172,7 @@ def packageSearch(request):
 
 
 @login_required(login_url="login/")
-def packagesFilter(request, start, finish, value, status, binicial, bfinal):
+def packagesFilter(request, start, finish, search, status, binicial, bfinal):
     if status == "1":
         packages = Package.LogicPackage.filter(is_waiting=True)
     elif status == "2":
@@ -195,6 +195,16 @@ def packagesFilter(request, start, finish, value, status, binicial, bfinal):
         packages = packages.filter(createDate__gte=start)
     if finish:
         packages = packages.filter(createDate__lte=finish)
+    if search:
+        packages_client = packages.filter(customer__name__icontains=search)
+        packages_risk = packages.filter(risk__icontains=search)
+        packages_volume = packages.filter(volume__icontains=search)
+        packages_quantity = packages.filter(quantity__icontains=search)
+        packages_weight = packages.filter(weight__icontains=search)
+        packages_chance = packages.filter(chance__icontains=search)
+        packages_rate = packages.filter(rate__icontains=search)
+        packages_pay = packages.filter(pay__icontains=search)
+        packages = packages_client | packages_risk | packages_volume | packages_quantity | packages_weight | packages_chance | packages_rate | packages_pay
     return packages
 
 @login_required(login_url="login/")
