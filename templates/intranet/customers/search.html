@@ -1,0 +1,119 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block extra_head %}
+    {{ form.media }}
+{% endblock %}
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+        <h3 class="text-center"> Buscar Clientes </h3>
+
+        {% if form %}
+            <div class="col-sm-6 default-form">
+            <form action="{% url 'customerSearch'%}" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        {% if forloop.counter == 5 %}
+                        
+                            </div>
+                            <div class="col-sm-6">
+
+                        {% endif %}
+      
+                        <div class="form-group">
+                            {{ field.label_tag }} {{ field }}
+                            {% for err in field.errors %}
+                                <span class="error_message">{{ err }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <input type="hidden" name="clicked_button" id="clicked_button" value=""/>
+                    <input type="submit" value="Buscar" />
+                </form>
+            </div>  
+        {% endif %}
+
+        </div>
+        <div class="row">
+
+        {% if customers %}
+            <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Rut</th>
+                        <th>Nombre</th>
+                        <th>Telefono</th>
+                        <th>Representante</th>
+                        <th>Email</th>
+                        <th>Telefono</th>
+                        <th>Metodo de pago</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                            <tr>
+                                <td class="link rut" onclick="location.href='{% url 'customerProfile' customer.id %}'"><a>{{customer.rut}}</a></td>
+                                <td>{{customer.name}}</td>
+                                <td>{{customer.phone}}</td>
+                                <td>{{customer.rep}}</td>
+                                <td>{{customer.repEmail}}</td>
+                                <td>{{customer.repPhone}}</td>
+                                <td>{{customer.pay}}</td>
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                </div>
+                {% elif success %}
+                    <div class="alert alert-info">
+                      <strong>No hay ningun cliente con estas especificaciones.!</strong>
+                    </div>
+                    
+                {% endif %}
+
+                </div>
+                {% if success %}
+        
+                <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 text-center">
+
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if customers.has_previous %}
+                            <a href="?page={{ customers.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Pagina {{ customers.number }} de {{ customers.paginator.num_pages }}.
+                        </span>
+
+                        {% if customers.has_next %}
+                            <a href="?page={{ customers.next_page_number }}">Siguiente</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+                </div>
+                <div class="col-sm-4">
+                </div>
+
+                </div>
+
+                {% endif %}
+                </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+
+
+{% endblock %}

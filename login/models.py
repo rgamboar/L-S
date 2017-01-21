@@ -29,8 +29,14 @@ class LogicPackageManager(models.Manager):
     def get_queryset(self):
         return super(LogicPackageManager, self).get_queryset().filter(delete=False)
 
+class WarehouseManager(models.Manager):
+	def get_by_natural_key(self, name):
+		return self.get(name=name)
+
 
 class Warehouse(models.Model):
+	objects = WarehouseManager()
+
 	name = models.CharField(max_length=150, null=False, unique=True)
 	phone = models.CharField(max_length=150, null=False)
 	rep = models.CharField(max_length=150, null=False)
@@ -41,6 +47,9 @@ class Warehouse(models.Model):
 	creator = models.ForeignKey(User, null=False, related_name='warehouseCreator')
 	delete = models.BooleanField(default=False)
 	LogicWarehouse = LogicWarehouseManager()
+
+	def natural_key(self):
+		return (self.name)
 
 	def __unicode__(self):
 		return self.name

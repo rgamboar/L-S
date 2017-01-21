@@ -155,3 +155,9 @@ class SearchBoxForm(forms.Form):
         required=False,
         widget=DateTimePicker(options={"format": "YYYY-MM-DD HH:mm",
                                        "pickSeconds": False}))
+
+class SearchCustomerForm(forms.Form):
+	name = forms.CharField(label='Nombre',max_length=150, required=False)
+	rut = forms.CharField(label='Rut',max_length=150, required=False)
+	repEmail = forms.CharField(label='Email',max_length=150, required=False)
+	phone = forms.CharField(label='Telefono',max_length=150, required=False)

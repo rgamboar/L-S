@@ -121,13 +121,15 @@ def packageSearch(request):
             save = data
             save['startDate']= json.dumps(save['startDate'], default=json_util.default)
             save['finishDate']= json.dumps(save['finishDate'], default=json_util.default)
+            save['binicial'] = str(save['binicial'])
+            save['bfinal'] = str(save['bfinal'])
             request.session['packageSearch']= save
 
             success=True
 
             packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
 
-            paginator = Paginator(packages, 25)
+            paginator = Paginator(packages, 5)
 
             num_page = 1
             
@@ -154,7 +156,7 @@ def packageSearch(request):
                 bfinal = data['bfinal']
                 success=True
                 packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
-                paginator = Paginator(packages, 25)
+                paginator = Paginator(packages, 5)
                 page = paginator.page(num_page)
                 packages = page
                 return render(request, 'intranet/packages/search.html', {
@@ -166,6 +168,8 @@ def packageSearch(request):
     return render(request, 'intranet/packages/search.html', {
         'form': form,
     })
+
+
 
 @login_required(login_url="login/")
 def packagesFilter(request, start, finish, value, status, binicial, bfinal):
@@ -179,10 +183,14 @@ def packagesFilter(request, start, finish, value, status, binicial, bfinal):
         packages = Package.LogicPackage.filter(is_delivered=True)
     else:
         packages = Package.LogicPackage.all()
-    if binicial:
-        packages = packages.filter(start=binicial)
-    if bfinal:
-        packages = packages.filter(finish=bfinal)
+    if (binicial and binicial != 'None'):
+        print(binicial)
+        warehouse = Warehouse.LogicWarehouse.get(name=binicial)
+        packages = packages.filter(start=warehouse)
+    if (bfinal and bfinal != 'None'): 
+        print(bfinal)
+        warehouse = Warehouse.LogicWarehouse.get(name=bfinal)
+        packages = packages.filter(finish=warehouse)
     if start:
         packages = packages.filter(createDate__gte=start)
     if finish:
@@ -393,6 +401,76 @@ def customer(request):
         'form': form,
         'success': success
     })
+
+@login_required(login_url="login/")
+def customerSearch(request):
+    success= False
+    if request.method == 'POST':
+        form = SearchCustomerForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            rut = data['rut']
+            name = data['name']
+            phone = data['phone']
+            repEmail = data['repEmail']
+            save = data
+            request.session['customerSearch']= save
+
+            success=True
+
+            customers = customerFilter(request, rut, name, phone, repEmail)
+
+            paginator = Paginator(customers, 25)
+
+            num_page = 1
+            
+            page = paginator.page(num_page)
+            
+            customers = page
+
+            return render(request, 'intranet/customers/search.html', {
+                'form': form,
+                'success': success,
+                'customers': customers,
+            })
+    else:
+        form = SearchCustomerForm()
+        if 'customerSearch' in request.session:
+            data = request.session['customerSearch']
+            num_page = request.GET.get('page')
+            if num_page:
+                rut = data['rut']
+                name = data['name']
+                phone = data['phone']
+                repEmail = data['repEmail']
+                success=True
+                customers = customerFilter(request, rut, name, phone, repEmail)
+                paginator = Paginator(customers, 25)
+                page = paginator.page(num_page)
+                customers = page
+                return render(request, 'intranet/customers/search.html', {
+                    'form': form,
+                    'success': success,
+                    'customers': customers,
+                })
+
+    return render(request, 'intranet/customers/search.html', {
+        'form': form,
+    })
+
+@login_required(login_url="login/")
+def customerFilter(request, rut, name, phone, repEmail):
+    customer = Customer.LogicCustomer.all()
+    if rut:
+        customer = customer.filter(rut__icontains=rut)
+    if name:
+        customer = customer.filter(name__icontains=name)
+    if phone:
+        customer = customer.filter(phone__icontains=phone)
+    if repEmail:
+        customer = customer.filter(repEmail__icontains=repEmail)
+    return customer
+
 
 
 @login_required(login_url="login/")
