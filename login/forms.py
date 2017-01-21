@@ -6,6 +6,8 @@ from login.models import *
 from django.contrib.admin import widgets                                       
 from bootstrap3_datetime.widgets import DateTimePicker
 from datetime import datetime
+from dal import autocomplete
+
 
 
 class LoginForm(AuthenticationForm):
@@ -123,7 +125,7 @@ class PackageForm(forms.ModelForm):
 	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
 	finishAddress = forms.CharField(label='Direccion de destino',max_length=300, required=False)
 
-	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), empty_label=None)
+	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'))
 
 	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
 	volume = forms.CharField(label='Volumen',max_length=100)

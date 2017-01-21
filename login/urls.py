@@ -27,6 +27,9 @@ urlpatterns = [
 
     url(r'^bodega/crear/$',  views.warehouse, name='warehouse'),
 
+
+    url(r'^cliente/completar$', views.CustomerAutocomplete.as_view(), name='customer-autocomplete',),
+
     url(r'^cliente/crear/$',  views.customer, name='customer'),
     url(r'^cliente/indice/$',  views.customerIndex, name='customerIndex'),
     url(r'^cliente/modificar/(?P<customer_id>.*)/$', views.customerUpdate, name='customerUpdate'),
