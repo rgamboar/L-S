@@ -19,7 +19,12 @@ class LoginForm(AuthenticationForm):
 def validate_rut(value):
 	dv= value[-1]
 	value= value[:-1]
-	rut = int(filter(unicode.isdigit, value))
+	try:
+		rut = int(filter(unicode.isdigit, value))
+	except ValueError:
+		raise ValidationError(
+			('No es un rut valido'),
+		)
 	add= 0
 	y = 2
 	for x in range ( 1 , 20):
@@ -73,10 +78,10 @@ class CustomerForm(forms.ModelForm):
 	address = forms.CharField(label='Direccion',max_length=150)
 	phone = forms.CharField(label='Telefono',max_length=150)
 
-	rep = forms.CharField(label='Representante',max_length=150)
-	repAddress = forms.CharField(label='Direccion representante',max_length=150)
-	repEmail = forms.CharField(label='Mail representante',max_length=150)
-	repPhone = forms.CharField(label='Telefono representante',max_length=150)
+	rep = forms.CharField(label='Representante',max_length=150, required=False)
+	repAddress = forms.CharField(label='Direccion representante',max_length=150, required=False)
+	repEmail = forms.CharField(label='Mail representante',max_length=150, required=False)
+	repPhone = forms.CharField(label='Telefono representante',max_length=150, required=False)
 	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
 
 	class Meta:
@@ -128,10 +133,10 @@ class PackageForm(forms.ModelForm):
 	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'))
 
 	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
-	volume = forms.CharField(label='Volumen',max_length=100)
+	volume = forms.CharField(label='Volumen',max_length=100, required=False)
 	quantity = forms.CharField(label='Cantidad',max_length=100)
-	weight = forms.CharField(label='Peso',max_length=100)
-	chance = forms.CharField(label='Oportunidad',max_length=100)
+	weight = forms.CharField(label='Peso',max_length=100, required=False)
+	chance = forms.CharField(label='Oportunidad',max_length=100, required=False)
 	rate = forms.IntegerField(label='Tarifado')
 	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
 

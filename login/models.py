@@ -90,10 +90,10 @@ class Customer(models.Model):
 	address = models.CharField(max_length=150, null=False)
 	phone = models.CharField(max_length=150, null=False)
 
-	rep = models.CharField(max_length=150, null=False)
-	repAddress = models.CharField(max_length=150, null=False)
-	repEmail = models.CharField(max_length=150, null=False)
-	repPhone = models.CharField(max_length=150, null=False)
+	rep = models.CharField(max_length=150, null=True)
+	repAddress = models.CharField(max_length=150, null=True)
+	repEmail = models.CharField(max_length=150, null=True)
+	repPhone = models.CharField(max_length=150, null=True)
 	pay = models.CharField(max_length=150, null=False)
 
 	createDate = models.DateTimeField(auto_now=True)
@@ -107,7 +107,6 @@ class Customer(models.Model):
 		return self.name
 
 class Freight(models.Model):
-	authorName= models.CharField(max_length=300, null=False)
 	createDate = models.DateTimeField(auto_now=True)
 	sendDate = models.DateTimeField(null=True)
 	receiveDate = models.DateTimeField(null=True)
@@ -140,7 +139,6 @@ class Freight(models.Model):
 
 class Package(models.Model):
 	name = models.CharField(max_length=300, null=True)
-	authorName= models.CharField(max_length=300, null=False)
 	address= models.CharField(max_length=300, null=True)
 	lastDate = models.DateTimeField(auto_now=True)
 	createDate = models.DateTimeField(auto_now_add=True)
