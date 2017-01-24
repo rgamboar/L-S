@@ -1,11 +1,39 @@
 #print{
   width:80mm;
-  visibility: hidden;"
+  visibility: visible;
 }
+
+.line{
+  font-size: 12pt;
+}
+.title{
+  font-size: 80pt;
+  text-align: center;
+}
+
+.sign {
+  border-top: 1px solid black;
+  text-align: center;
+
+}
+
+.jump{
+  height: 100px;
+}
+
+.price{
+  margin-top: 30px;
+  font-size: 12pt;
+}
+
+.bold {
+  font-weight: bold;
+}
+
 @media print {
   @page{
-    size: 80mm 200mm;
-    size: landscape;
+    size: 80mm;
+    size: portrait;
   }
   body * {
     visibility: hidden;
@@ -13,11 +41,12 @@
   body {
   	width: 80mm;
   }
-  #print p{
+  #print div{
     visibility: visible;
   }
   #print {
     position: absolute;
+    visibility: visible;
     left: 0;
     top: 0;
   }

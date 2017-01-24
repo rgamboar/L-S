@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'^guia/estado/$', views.packageState, name='packageState'),
     url(r'^guia/tarifado/$', views.packageRate, name='packageRate'),
 
+    url(r'^guia/pdf/(?P<package_id>.*)/$',  views.packagePdf, name='packagePdf'),
+
     url(r'^guia/flete/$', views.packageFreight, name='packageFreight'),
     url(r'^guia/(?P<package_id>.*)/$', views.packageProfile, name='packageProfile'),
 

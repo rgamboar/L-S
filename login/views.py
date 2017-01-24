@@ -51,11 +51,23 @@ def freightPdf(request, freight_id=1):
     packages = Package.LogicPackage.filter(freight=freight)
 
     return render_to_pdf(
-            'pdf.html',
+            'freightPdf.html',
             {
                 'pagesize':'A4',
                 'packages': packages,
                 'freight': freight,
+                'date': datetime.now(),
+            }
+        )
+
+def packagePdf(request, package_id=1):
+    package = Package.LogicPackage.get(id=package_id)
+
+    return render_to_pdf(
+            'packagePdf.html',
+            {
+                'pagesize':'A6',
+                'package': package,
                 'date': datetime.now(),
             }
         )
