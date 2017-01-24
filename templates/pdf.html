@@ -117,7 +117,13 @@
                             <td>{{package.quantity}}</td>
                             <td>{{package.weight}}</td>
                             <td>{{package.chance}}</td>
-                            <td>{{package.rate}}</td>
+                            <td>
+                            {% if package.rate == 0 %}
+                                Por tarifar
+                            {% else %}
+                                {{package.rate}}
+                            {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                         <tr>
