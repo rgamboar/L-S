@@ -3,7 +3,10 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.freightIndex, name='home'),
+    url(r'^$', views.home, name='home'),
+    url(r'^buscar/guia/$', views.home, {'entity': 'package'}, name='homePackage'),
+    url(r'^buscar/manifiesto/$', views.home, {'entity': 'freight'}, name='homeFreight'),
+
 
     url(r'^password/$',  views.changePassword, name='changePassword'),
     url(r'^guia/$',  views.help, name='help'),

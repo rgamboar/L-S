@@ -74,11 +74,38 @@ def packagePdf(request, package_id=1):
 
 
 @login_required(login_url="login/")
-def home(request):
+def home(request, entity=None):
     if request.user.is_superuser:
         return HttpResponseRedirect(reverse('admin:index'))
     else:
-        return render(request,"intranet/freights/index.html")
+        fail=False
+        if request.method == 'POST':
+            form = SearchIdForm(request.POST)
+            form2 = SearchIdForm()
+            if form.is_valid():
+                data = form.cleaned_data
+                entity_id = data['entity_id']
+                if entity == 'package':
+                    try:
+                        package = Package.LogicPackage.get(id=entity_id)
+                        return packageProfile(request, entity_id)
+                    except Package.DoesNotExist:
+                        fail=True
+                elif entity == 'freight':
+                    try:
+                        freight = Freight.LogicFreight.get(id=entity_id)
+                        return freightProfile(request, entity_id)
+                    except Freight.DoesNotExist:
+                        fail=True
+        form = SearchIdForm()
+        form2 = SearchIdForm()
+        return render(request, 'intranet/home.html', {
+            'formFreight': form,
+            'formPackage': form2,
+            'fail': fail
+        })
+
+
 
 @login_required(login_url="login/")
 def help(request):

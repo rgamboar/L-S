@@ -168,3 +168,7 @@ class SearchCustomerForm(forms.Form):
 	rut = forms.CharField(label='Rut',max_length=150, required=False)
 	repEmail = forms.CharField(label='Email',max_length=150, required=False)
 	phone = forms.CharField(label='Telefono',max_length=150, required=False)
+
+
+class SearchIdForm(forms.Form):
+	entity_id = forms.IntegerField(label='ID', required=True)
