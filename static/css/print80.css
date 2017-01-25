@@ -1,6 +1,7 @@
 #print{
-  width:80mm;
+  width:79mm;
   visibility: hidden;
+  margin: auto;
 }
 
 .line{
