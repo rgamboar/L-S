@@ -134,7 +134,7 @@ class PackageForm(forms.ModelForm):
 
 	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
 	volume = forms.CharField(label='Volumen',max_length=100, required=False)
-	quantity = forms.CharField(label='Cantidad',max_length=100)
+	quantity = forms.IntegerField(label='Cantidad')
 	weight = forms.CharField(label='Peso',max_length=100, required=False)
 	chance = forms.CharField(label='Oportunidad',max_length=100, required=False)
 	rate = forms.IntegerField(label='Tarifado')

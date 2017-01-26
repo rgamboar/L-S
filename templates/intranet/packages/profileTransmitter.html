@@ -160,13 +160,26 @@ L&amp;S
 
 <div class="price col-xs-12">
     <div class="col-xs-4">
-        Tarifa:
+        Unitario:
+    </div>
+    <div class="col-xs-8">
+        {% if package.rate == 0 %}
+              No definido
+        {% else %}
+            {{package.rate}}    
+        {% endif %}
+    </div>
+</div>
+
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Total:
     </div>
     <div class="col-xs-8 bold">
         {% if package.rate == 0 %}
-              No definida
+              No definido
         {% else %}
-            {{package.rate}}    
+            {{package.total}}    
         {% endif %}
     </div>
 </div>

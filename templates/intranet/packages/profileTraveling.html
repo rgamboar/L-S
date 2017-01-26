@@ -161,18 +161,32 @@ L&amp;S
     </div>
 </div>
 
-<div class="price col-sm-12">
-    <div class="col-sm-4">
-        Tarifa:
+<div class="price col-xs-12">
+    <div class="col-xs-4">
+        Unitario:
     </div>
-    <div class="col-sm-8 bold">
+    <div class="col-xs-8">
         {% if package.rate == 0 %}
-              No definida
+              No definido
         {% else %}
             {{package.rate}}    
         {% endif %}
     </div>
 </div>
+
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Total:
+    </div>
+    <div class="col-xs-8 bold">
+        {% if package.rate == 0 %}
+              No definido
+        {% else %}
+            {{package.total}}    
+        {% endif %}
+    </div>
+</div>
+
 
 
 <div class="jump col-sm-12">
@@ -206,4 +220,5 @@ L&amp;S
 
 
 <script src="{% static 'js/freight.js' %}"></script>
+<script src="{% static 'js/package.js' %}"></script>
 {% endblock %}

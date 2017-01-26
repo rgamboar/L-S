@@ -157,7 +157,7 @@ class Package(models.Model):
 
 	risk = models.CharField(max_length=100, null=True)
 	volume = models.CharField(max_length=100, null=True)
-	quantity = models.CharField(max_length=100, null=True)
+	quantity = models.IntegerField(null=True)
 	weight = models.CharField(max_length=100, null=True)
 	chance = models.CharField(max_length=100, null=True)
 	rate = models.IntegerField(null=False)
@@ -181,3 +181,5 @@ class Package(models.Model):
 	def __unicode__(self):
 		return unicode(self.id)
 
+	def total(self):
+		return self.quantity*self.rate
