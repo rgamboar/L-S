@@ -19,6 +19,7 @@
                 margin: 10px;
                 border-style: solid;
                 border-color: black black;
+                font-size: 15px;
             }
 
             th {
@@ -30,7 +31,7 @@
             }
 
             .text-center {
-                width: 20px;
+                width: 30px;
                 text-align: center;
             }
 
@@ -39,51 +40,49 @@
 
             }
 
+            .title {
+                font-size: 25px;
+            }
+
+            .subtitle {
+                font-size: 22px;
+            }
+            .subsubtitle {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
         </style>
     </head>
     <body>
 
-    <h1> Guia de flete N°{{package.id}}</h1>
-    <h2> Transportes L&amp;S </h2>
-    <h3> Generado: {{date}} </h3>
+    <div class="title"> Guia de flete N°{{package.id}}</div>
+    <div class="subtitle"> Transportes L&amp;S </div>
+    <div class="subsubtitle"> Generado: {{date}} </div>
 
                 <table class="table">
                     <thead>
                       <tr>
                         <th class="text-center">ID</th>
+                        <th>Cliente</th>
                         <th>Origen</th>
                         <th>Destino</th>
-                        <th>Conductor</th>
-                        <th>Patente</th>
-                        <th>Fecha creacion</th>
-                        {% if not freight.is_waiting %}
-                            <th>Hora de salida</th>
-                            {% if not freight.is_traveling %}
-                                <th>Hora de llegada</th>
-                            {% endif %}
-                        {% endif %}
                         <th>Estado</th>
                       </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center">{{freight.id}}</td>
-                            <td>{{freight.start.name}}</td>
-                            <td>{{freight.finish.name}}</td>
-                            <td>{{freight.driver.name}}</td>
-                            <td>{{freight.truck.plate}}</td>                                                        
-                            <td>{{freight.createDate}}</td>
-                            {% if not freight.is_waiting %}
-                                <td>{{freight.sendDate}}</td>
-                                {% if not freight.is_traveling %}
-                                    <td>{{freight.receiveDate}}</td>
-                                {% endif %}
-                            {% endif %}    
+                            <td class="text-center">{{package.id}}</td>
+                            <td>{{package.customer.name}}</td>
+                            <td>{{package.start.name}}</td>
+                            <td>{{package.finish.name}}</td>
                             <td>
-                            {% if freight.is_waiting %}
+                            {% if package.is_waiting %}
                                 En espera
-                            {% elif freight.is_traveling %}
+                            {% elif package.is_traveling %}
                                 En transito
+                            {% elif package.is_delivered %}
+                                Entregado a Cliente
                             {% else %}
                                 Finalizado
                             {% endif %}
@@ -92,55 +91,122 @@
                     </tbody>
                 </table>
 
-    <h2> Guias de flete </h2>
 
                 <table class="table">
                     <thead>
                       <tr>
-                        <th class="text-center">ID</th>
-                        <th>Cliente</th>
-                        <th>Riesgo</th>
                         <th>Volumen</th>
                         <th>Cantidad</th>
                         <th>Peso</th>
-                        <th>Oportunidad</th>
-                        <th>Tarifado</th>
+                        <th>Riesgo</th>
+                        <th>Valor Unitario</th>
+                        <th>Total</th>
                       </tr>
                     </thead>
-                    <tbody id="own">
-                        {% for package in packages %}
+                    <tbody>
                         <tr>
-                            <td class="text-center">{{package.id}}</td>
-                            <td>{{package.customer.name}}</td>
-                            <td>{{package.risk}}</td>
-                            <td>{{package.volume}}</td>
+                            <td>{{package.volumen}}</td>
                             <td>{{package.quantity}}</td>
                             <td>{{package.weight}}</td>
-                            <td>{{package.chance}}</td>
+                            <td>{{package.risk}}</td>
                             <td>
-                            {% if package.rate == 0 %}
-                                Por tarifar
-                            {% else %}
-                                {{package.rate}}
-                            {% endif %}
+                                {% if package.rate == 0 %}
+                                      No definido
+                                {% else %}
+                                    {{package.rate}}    
+                                {% endif %}
                             </td>
-                        </tr>
-                        {% endfor %}
-                        <tr>
-                            <td class="last-line"></td>
-                            <td class="last-line"></td>
-                            <td class="last-line"></td>
-                            <td class="last-line"></td>
-                            <td class="last-line"></td>
-                            <td class="last-line"></td>
-                            <td>Total</td>
-                            <td>{{freight.totalRate}}</td>
+                            <td>
+                                {% if package.rate == 0 %}
+                                      No definido
+                                {% else %}
+                                    {{package.total}}    
+                                {% endif %}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Hora creacion</th>
+                        <th>Hora de entrega</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>                                                       
+                            <td>{{package.createDate}}</td>
+                            {% if package.is_delivered %}
+                                <td>{{package.freight.deliverDate}}</td>
+                            {% else %}
+                                <td>No entregado</td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                </table>
+
+                {% if package.freight%}
+
+                <div class="subsubtitle"> Manifiesto de carga </div>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Conductor</th>
+                        <th>Patente</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{package.freight.id}}</td>
+                            <td>{{package.freight.driver.name}}</td>
+                            <td>{{package.freight.truck.plate}}</td>
+                            <td>
+                            {% if package.freight.is_waiting %}
+                                En espera
+                            {% elif package.freight.is_traveling %}
+                                En transito
+                            {% else %}
+                                Finalizado
+                            {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Hora creacion</th>
+                        {% if not package.is_waiting %}
+                            <th>Hora de salida</th>
+                            {% if not package.is_traveling %}
+                                <th>Hora de llegada</th>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>                                                       
+                            <td>{{package.freight.createDate}}</td>
+                            {% if not package.is_waiting %}
+                                <td>{{package.freight.sendDate}}</td>
+                                {% if not package.is_traveling %}
+                                    <td>{{package.freight.receiveDate}}</td>
+                                {% endif %}
+                            {% endif %}    
+                            
+                        </tr>
+                    </tbody>
+                </table>
+                {% endif %}
+
         <div id="footerContent">
             {%block page_foot%}
-                Page <pdf:pagenumber>
+                Pagina <pdf:pagenumber>
             {%endblock%}
         </div>
     </body>

@@ -133,7 +133,7 @@ class Freight(models.Model):
 		packages= Package.LogicPackage.filter(freight=self)
 		total = 0
 		for package in packages:
-			total = total + package.rate
+			total = total + package.total()
 		return total
 
 

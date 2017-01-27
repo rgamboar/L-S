@@ -10,7 +10,7 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">  
-            <h3 class="text-center"> Guia de Flete </h3>
+            <h3 class="text-center"> Guia de Flete N°{{package.id}}</h3>
             
             <div class="col-sm-12 default-form">
             
@@ -55,18 +55,19 @@
                     </tbody>
                 </table>
                 </div>
-                {% if package.rate == 0 %}
+                <a href="javascript:window.print()" class="btn btn-primary" role="button">Imprimir en 80mm</a>
+                <a href="{% url 'packagePdf' package.id %}" class="btn btn-primary" role="button">Imprimir</a>
+            </div>
+
+            {% if package.rate == 0 %}
+                <div class="col-sm-12 default-form" style="margin-top: 20px;">
                     <div class="form-group">
                             <label for="id_rate">Tarifado:</label> <input id="id_rate" name="rate" type="number" required />
                             
                         </div>
                     <a onclick="change_package_rate();" class="btn btn-primary" role="button">Cambiar Tarifado</a>
-
-                {% endif %}
-            </div>
-            <div class="col-sm-12">
-            <a href="javascript:window.print()" class="btn btn-primary" role="button">Imprimir</a>
-            </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

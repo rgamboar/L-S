@@ -19,6 +19,7 @@
                 margin: 10px;
                 border-style: solid;
                 border-color: black black;
+                font-size: 15px;
             }
 
             th {
@@ -30,7 +31,7 @@
             }
 
             .text-center {
-                width: 20px;
+                width: 30px;
                 text-align: center;
             }
 
@@ -38,14 +39,25 @@
                 border-style: none;
 
             }
+            .title {
+                font-size: 25px;
+            }
+
+            .subtitle {
+                font-size: 22px;
+            }
+            .subsubtitle {
+                font-size: 18px;
+                font-weight: bold;
+            }
 
         </style>
     </head>
     <body>
 
-    <h1> Manifiesto de carga </h1>
-    <h2> Transportes L&amp;S </h2>
-    <h2> Generado: {{date}} </h2>
+    <div class="title"> Manifiesto de carga N°{{freight.id}}</div>
+    <div class="subtitle"> Transportes L&amp;S </div>
+    <div class="subsubtitle"> Generado: {{date}} </div>
 
                 <table class="table">
                     <thead>
@@ -55,13 +67,6 @@
                         <th>Destino</th>
                         <th>Conductor</th>
                         <th>Patente</th>
-                        <th>Fecha creacion</th>
-                        {% if not freight.is_waiting %}
-                            <th>Hora de salida</th>
-                            {% if not freight.is_traveling %}
-                                <th>Hora de llegada</th>
-                            {% endif %}
-                        {% endif %}
                         <th>Estado</th>
                       </tr>
                     </thead>
@@ -71,14 +76,7 @@
                             <td>{{freight.start.name}}</td>
                             <td>{{freight.finish.name}}</td>
                             <td>{{freight.driver.name}}</td>
-                            <td>{{freight.truck.plate}}</td>                                                        
-                            <td>{{freight.createDate}}</td>
-                            {% if not freight.is_waiting %}
-                                <td>{{freight.sendDate}}</td>
-                                {% if not freight.is_traveling %}
-                                    <td>{{freight.receiveDate}}</td>
-                                {% endif %}
-                            {% endif %}    
+                            <td>{{freight.truck.plate}}</td>
                             <td>
                             {% if freight.is_waiting %}
                                 En espera
@@ -92,7 +90,32 @@
                     </tbody>
                 </table>
 
-    <h2> Guias de flete </h2>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Hora creacion</th>
+                        {% if not freight.is_waiting %}
+                            <th>Hora de salida</th>
+                            {% if not freight.is_traveling %}
+                                <th>Hora de llegada</th>
+                            {% endif %}
+                        {% endif %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>                                                       
+                            <td>{{freight.createDate}}</td>
+                            {% if not freight.is_waiting %}
+                                <td>{{freight.sendDate}}</td>
+                                {% if not freight.is_traveling %}
+                                    <td>{{freight.receiveDate}}</td>
+                                {% endif %}
+                            {% endif %}    
+                        </tr>
+                    </tbody>
+                </table>
+
+    <div class="subsubtitle"> Guias de flete </div>
 
                 <table class="table">
                     <thead>
@@ -104,7 +127,8 @@
                         <th>Cantidad</th>
                         <th>Peso</th>
                         <th>Oportunidad</th>
-                        <th>Tarifado</th>
+                        <th>Valor unitario</th>
+                        <th>Total</th>
                       </tr>
                     </thead>
                     <tbody id="own">
@@ -124,6 +148,13 @@
                                 {{package.rate}}
                             {% endif %}
                             </td>
+                            <td>
+                            {% if package.rate == 0 %}
+                                Por tarifar
+                            {% else %}
+                                {{package.total}}
+                            {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                         <tr>
@@ -133,6 +164,7 @@
                             <td class="last-line"></td>
                             <td class="last-line"></td>
                             <td class="last-line"></td>
+                            <td class="last-line"></td>                            
                             <td>Total</td>
                             <td>{{freight.totalRate}}</td>
                         </tr>
@@ -140,7 +172,7 @@
                 </table>
         <div id="footerContent">
             {%block page_foot%}
-                Page <pdf:pagenumber>
+                Pagina <pdf:pagenumber>
             {%endblock%}
         </div>
     </body>

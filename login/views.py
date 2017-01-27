@@ -66,7 +66,7 @@ def packagePdf(request, package_id=1):
     return render_to_pdf(
             'packagePdf.html',
             {
-                'pagesize':'A6',
+                'pagesize':'A4',
                 'package': package,
                 'date': datetime.now(),
             }
