@@ -82,7 +82,7 @@ class CustomerForm(forms.ModelForm):
 	repAddress = forms.CharField(label='Direccion representante',max_length=150, required=False)
 	repEmail = forms.CharField(label='Mail representante',max_length=150, required=False)
 	repPhone = forms.CharField(label='Telefono representante',max_length=150, required=False)
-	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Contado Envio", "Contado Envio"),("Contado Destino", "Contado Destino")])
 
 	class Meta:
 		model = Customer
@@ -104,7 +104,7 @@ class CustomerFormUpdate(forms.ModelForm):
 	repAddress = forms.CharField(label='Direccion representante',max_length=150)
 	repEmail = forms.CharField(label='Mail representante',max_length=150)
 	repPhone = forms.CharField(label='Telefono representante',max_length=150)
-	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Contado Envio", "Contado Envio"),("Contado Destino", "Contado Destino")])
 
 	class Meta:
 		model = Customer
@@ -122,7 +122,7 @@ class FreightForm(forms.ModelForm):
 		fields = ['start','finish','truck','driver']
 
 class PackageForm(forms.ModelForm):
-	name = forms.CharField(label='Descripción',max_length=300)
+	name = forms.CharField(label='Descripción',max_length=300, required=False)
 	
 	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
 	startAddress = forms.CharField(label='Direccion de origen',max_length=300, required=False)
@@ -138,7 +138,7 @@ class PackageForm(forms.ModelForm):
 	weight = forms.CharField(label='Peso',max_length=100, required=False)
 	chance = forms.CharField(label='Oportunidad',max_length=100, required=False)
 	rate = forms.IntegerField(label='Tarifado')
-	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Efectivo Envio", "Efectivo Envio"),("Efectivo Destino", "Efectivo Destino")])
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Contado Envio", "Contado Envio"),("Contado Destino", "Contado Destino")])
 
 	class Meta:
 		model = Package

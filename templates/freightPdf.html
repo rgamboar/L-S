@@ -50,6 +50,9 @@
                 font-size: 18px;
                 font-weight: bold;
             }
+            .chance {
+                width: 130px;
+            }
 
         </style>
     </head>
@@ -126,7 +129,7 @@
                         <th>Volumen</th>
                         <th>Cantidad</th>
                         <th>Peso</th>
-                        <th>Oportunidad</th>
+                        <th class="chance">Oportunidad</th>
                         <th>Valor unitario</th>
                         <th>Total</th>
                       </tr>
@@ -140,7 +143,7 @@
                             <td>{{package.volume}}</td>
                             <td>{{package.quantity}}</td>
                             <td>{{package.weight}}</td>
-                            <td>{{package.chance}}</td>
+                            <td class="chance">{{package.chance}}</td>
                             <td>
                             {% if package.rate == 0 %}
                                 Por tarifar
