@@ -53,6 +53,9 @@
             .chance {
                 width: 130px;
             }
+            .customer {
+                width: 150px;
+            }
 
         </style>
     </head>
@@ -120,11 +123,11 @@
 
     <div class="subsubtitle"> Guias de flete </div>
 
-                <table class="table">
+                <table class="table" style="font-size: 12px;">
                     <thead>
                       <tr>
                         <th class="text-center">ID</th>
-                        <th>Cliente</th>
+                        <th class="customer">Cliente</th>
                         <th>Riesgo</th>
                         <th>Volumen</th>
                         <th>Cantidad</th>
@@ -143,7 +146,7 @@
                             <td>{{package.volume}}</td>
                             <td>{{package.quantity}}</td>
                             <td>{{package.weight}}</td>
-                            <td class="chance">{{package.chance}}</td>
+                            <td>{{package.chance}}</td>
                             <td>
                             {% if package.rate == 0 %}
                                 Por tarifar
