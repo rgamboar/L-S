@@ -150,6 +150,7 @@ class SearchBoxForm(forms.Form):
 	status = forms.ChoiceField(choices=[("5", "Todos"),("1", "Origen"),("2", "Transito"),("3", "Destino"),("4", "Entregado")])
 	binicial = forms.ModelChoiceField(label='Bodega Inicial',queryset=Warehouse.LogicWarehouse.all(), required=False)
 	bfinal = forms.ModelChoiceField(label='Bodega Final',queryset=Warehouse.LogicWarehouse.all(), required=False)
+	rate = forms.BooleanField(label='Mostrar solo por tarifar', required=False)
 
 	startDate = forms.DateTimeField(
 		label='Creacion desde',
@@ -162,6 +163,24 @@ class SearchBoxForm(forms.Form):
         required=False,
         widget=DateTimePicker(options={"format": "YYYY-MM-DD HH:mm",
                                        "pickSeconds": False}))
+
+class SearchFreightForm(forms.Form):
+	status = forms.ChoiceField(label='Status', choices=[("4", "Todos"),("1", "Origen"),("2", "Transito"),("3", "Destino")])
+	binicial = forms.ModelChoiceField(label='Bodega Inicial',queryset=Warehouse.LogicWarehouse.all(), required=False)
+	bfinal = forms.ModelChoiceField(label='Bodega Final',queryset=Warehouse.LogicWarehouse.all(), required=False)
+
+	startDate = forms.DateTimeField(
+		label='Creacion desde',
+        required=False,
+        widget=DateTimePicker(options={"format": "YYYY-MM-DD HH:mm",
+                                       "pickSeconds": False
+                                       }))
+	finishDate = forms.DateTimeField(
+		label='Hasta',
+        required=False,
+        widget=DateTimePicker(options={"format": "YYYY-MM-DD HH:mm",
+                                       "pickSeconds": False}))
+
 
 class SearchCustomerForm(forms.Form):
 	name = forms.CharField(label='Nombre',max_length=150, required=False)

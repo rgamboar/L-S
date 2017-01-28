@@ -50,8 +50,7 @@ urlpatterns = [
     
     url(r'^flete/pdf/(?P<freight_id>.*)/$',  views.freightPdf, name='freightPdf'),
     
-    url(r'^flete/test/$',  views.freightPdf, name='freightPdf'),
-    
+    url(r'^flete/buscar/$',  views.freightSearch, name='freightSearch'),
 
     url(r'^flete/cargar/(?P<freight_id>.*)/$', views.freightProfile, {'load': True}, name='freightProfileLoad'),
     url(r'^flete/camion/$', views.freightTruck, name='freightTruck'),

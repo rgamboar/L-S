@@ -173,6 +173,7 @@ def packageSearch(request):
             status = data['status']
             binicial = data['binicial']
             bfinal = data['bfinal']
+            rate = data['rate']
             save = data
             save['startDate']= json.dumps(save['startDate'], default=json_util.default)
             save['finishDate']= json.dumps(save['finishDate'], default=json_util.default)
@@ -182,7 +183,7 @@ def packageSearch(request):
 
             success=True
 
-            packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
+            packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal, rate)
 
             paginator = Paginator(packages, 25)
 
@@ -227,7 +228,7 @@ def packageSearch(request):
 
 
 @login_required(login_url="login/")
-def packagesFilter(request, start, finish, search, status, binicial, bfinal):
+def packagesFilter(request, start, finish, search, status, binicial, bfinal, rate):
     if status == "1":
         packages = Package.LogicPackage.filter(is_waiting=True)
     elif status == "2":
@@ -238,6 +239,8 @@ def packagesFilter(request, start, finish, search, status, binicial, bfinal):
         packages = Package.LogicPackage.filter(is_delivered=True)
     else:
         packages = Package.LogicPackage.all()
+    if rate:
+        packages= packages.filter(rate='0')
     if (binicial and binicial != 'None'):
         print(binicial)
         warehouse = Warehouse.LogicWarehouse.get(name=binicial)
@@ -776,3 +779,89 @@ def freightTruck(request):
             return freightIndex(request)
 
 
+
+@login_required(login_url="login/")
+def freightSearch(request):
+    success= False
+    if request.method == 'POST':
+        form = SearchFreightForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            startDate = data['startDate']
+            finishDate = data['finishDate']
+            status = data['status']
+            binicial = data['binicial']
+            bfinal = data['bfinal']
+            save = data
+            save['startDate']= json.dumps(save['startDate'], default=json_util.default)
+            save['finishDate']= json.dumps(save['finishDate'], default=json_util.default)
+            save['binicial'] = str(save['binicial'])
+            save['bfinal'] = str(save['bfinal'])
+            request.session['freightSearch']= save
+
+            success=True
+
+            freights = freightsFilter(request,startDate, finishDate, status, binicial, bfinal)
+
+            paginator = Paginator(freights, 25)
+
+            num_page = 1
+            
+            page = paginator.page(num_page)
+            
+            freights = page
+
+            return render(request, 'intranet/freights/search.html', {
+                'form': form,
+                'success': success,
+                'freights': freights,
+            })
+    else:
+        form = SearchFreightForm()
+        if 'freightSearch' in request.session:
+            data = request.session['freightSearch']
+            num_page = request.GET.get('page')
+            if num_page:
+                startDate = json.loads(data['startDate'], object_hook=json_util.object_hook)
+                finishDate = json.loads(data['finishDate'], object_hook=json_util.object_hook)
+                status = data['status']
+                binicial = data['binicial']
+                bfinal = data['bfinal']
+                success=True
+                freights = freightsFilter(request,startDate, finishDate, status, binicial, bfinal)
+                paginator = Paginator(freights, 25)
+                page = paginator.page(num_page)
+                freights = page
+                return render(request, 'intranet/freights/search.html', {
+                    'form': form,
+                    'success': success,
+                    'freights': freights,
+                })
+
+    return render(request, 'intranet/freights/search.html', {
+        'form': form,
+    })
+
+
+
+@login_required(login_url="login/")
+def freightsFilter(request, start, finish, status, binicial, bfinal):
+    if status == "1":
+        freights = Freight.LogicFreight.filter(is_waiting=True)
+    elif status == "2":
+        freights = Freight.LogicFreight.filter(is_traveling=True)
+    elif status == "3":
+        freights= Freight.LogicFreight.filter(is_waiting=False, is_traveling=False)
+    else:
+        freights = Freight.LogicFreight.all()
+    if (binicial and binicial != 'None'):
+        warehouse = Warehouse.LogicWarehouse.get(name=binicial)
+        freights = freights.filter(start=warehouse)
+    if (bfinal and bfinal != 'None'):
+        warehouse = Warehouse.LogicWarehouse.get(name=bfinal)
+        freights = freights.filter(finish=warehouse)
+    if start:
+        freights = freights.filter(createDate__gte=start)
+    if finish:
+        freights = freights.filter(createDate__lte=finish)
+    return freights

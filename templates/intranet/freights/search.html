@@ -8,14 +8,14 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">
-        <h3 class="text-center"> Buscar guias de flete </h3>
+        <h3 class="text-center"> Buscar manifiestos de carga </h3>
 
         {% if form %}
             <div class="col-sm-6 default-form">
-            <form action="{% url 'packageSearch'%}" method="post">
+            <form action="{% url 'freightSearch'%}" method="post">
                     {% csrf_token %}
                     {% for field in form %}
-                        {% if forloop.counter == 6 %}
+                        {% if forloop.counter == 4 %}
                         
                             </div>
                             <div class="col-sm-6">
@@ -38,46 +38,43 @@
         </div>
         <div class="row">
 
-        {% if packages %}
+        {% if freights %}
             <div class="table-responsive">   
                 <table class="table">
                     <thead>
                       <tr>
                         <th class="text-center">ID</th>
-                        <th>Cliente</th>
                         <th>Origen</th>
                         <th>Destino</th>
-                        <th>Volumen</th>
-                        <th>Cantidad</th>
-                        <th>Peso</th>
-                        <th>Precio</th>
-                        <th>Riesgo</th>
-                        <th>Oportunidad</th>
-                        <th>Pago</th>
-                        <th>Fecha creacion</th>
                         <th>Camion</th>
+                        <th>Conductor</th>
+                        <th>Valor</th>
+                        <th>Fecha creacion</th>
+                        <th>Transito</th> 
+                        <th>Destino</th>                                                
                       </tr>
                     </thead>
                     <tbody>
-                        {% for package in packages %}
+                        {% for freight in freights %}
                             <tr>
-                                <td class="link" onclick="location.href='{% url 'packageProfile' package.id %}'"><a>{{package.id}}</a></td>
-                                <td class="link" onclick="location.href='{% url 'customerProfile' package.customer.id %}'"><a>{{package.customer.name}}</a></td>
-                                <td>{{package.start.name}}</td>
-                                <td>{{package.finish.name}}</td>
-                                <td>{{package.volume}}</td>
-                                <td>{{package.quantity}}</td>
-                                <td>{{package.weight}}</td>
-                                <td>{{package.rate}}</td>
-                                <td>{{package.risk}}</td>
-                                <td>{{package.chance}}</td>
-                                <td>{{package.pay}}</td>
-                                <td>{{package.createDate}}</td>
+                                <td class="link" onclick="location.href='{% url 'freightProfile' freight.id %}'"><a>{{freight.id}}</a></td>
+                                <td>{{freight.start.name}}</td>
+                                <td>{{freight.finish.name}}</td>
+                                <td>{{freight.truck.plate}}</td>
+                                <td>{{freight.driver.name}}</td>
+                                <td>{{freight.totalRate}}</td>
+                                <td>{{freight.createDate}}</td>
 
-                                    {% if package.freight %}
-                                        <td class="link" onclick="location.href='{% url 'freightProfile' package.freight %}'"><a>{{package.freight}}: {{package.freight.truck.plate}} </a></td>
+                                    {% if freight.sendDate %}
+                                        <td>{{freight.sendDate}}</td>
                                     {% else %}
-                                        <td></td>
+                                        <td>-</td>
+                                    {% endif %}
+
+                                    {% if freight.receiveDate %}
+                                        <td>{{freight.receiveDate}}</td>
+                                    {% else %}
+                                        <td>-</td>
                                     {% endif %}
 
                             </tr>
@@ -102,16 +99,16 @@
 
                     <div class="pagination">
                     <span class="step-links">
-                        {% if packages.has_previous %}
-                            <a href="?page={{ packages.previous_page_number }}">Anterior</a>
+                        {% if freights.has_previous %}
+                            <a href="?page={{ freights.previous_page_number }}">Anterior</a>
                         {% endif %}
 
                         <span class="current">
-                            Pagina {{ packages.number }} de {{ packages.paginator.num_pages }}.
+                            Pagina {{ freights.number }} de {{ freights.paginator.num_pages }}.
                         </span>
 
-                        {% if packages.has_next %}
-                            <a href="?page={{ packages.next_page_number }}">Siguiente</a>
+                        {% if freights.has_next %}
+                            <a href="?page={{ freights.next_page_number }}">Siguiente</a>
                         {% endif %}
                     </span>
                 </div>
