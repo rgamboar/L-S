@@ -47,6 +47,7 @@ class Warehouse(models.Model):
 
 	creator = models.ForeignKey(User, null=False, related_name='warehouseCreator', verbose_name="U. Creado")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
+	objects = models.Manager()
 	LogicWarehouse = LogicWarehouseManager()
 
 	def natural_key(self):
@@ -67,6 +68,7 @@ class Driver(models.Model):
 
 	creator = models.ForeignKey(User, null=False, related_name='driverCreator', verbose_name="U. Creado")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
+	objects = models.Manager()
 	LogicDriver = LogicDriverManager()
 
 	def __unicode__(self):
@@ -82,7 +84,9 @@ class Truck(models.Model):
 	lastDate = models.DateTimeField(auto_now_add=True, verbose_name="Ultima fecha modificado")
 	creator = models.ForeignKey(User, null=False, related_name='truckCreator', verbose_name="U. Creado")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
+	objects = models.Manager()
 	LogicTruck = LogicTruckManager()
+
 
 	def __unicode__(self):
 		return self.plate
@@ -108,6 +112,7 @@ class Customer(models.Model):
 
 	creator = models.ForeignKey(User, null=False, related_name='customerCreator', verbose_name="U. Creado")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
+	objects = models.Manager()
 	LogicCustomer = LogicCustomerManager()
 
 	def __unicode__(self):
@@ -134,6 +139,7 @@ class Freight(models.Model):
 	sender = models.ForeignKey(User, null=True, related_name='freightSender', verbose_name="U. Envio")
 	receiver = models.ForeignKey(User, null=True, related_name='freightReceiver', verbose_name="U. recibido")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
+	objects = models.Manager()
 	LogicFreight = LogicFreightManager()
 
 	def __unicode__(self):
@@ -184,6 +190,7 @@ class Package(models.Model):
 	deliverer = models.ForeignKey(User, null=True, related_name='packageDeliverer', verbose_name="U. Entregado")
 	transmitter = models.ForeignKey(User, null=True, related_name='packageTransmitter', verbose_name="U. Ir a buscar")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
+	objects = models.Manager()
 	LogicPackage = LogicPackageManager()
 
 	class Meta:
