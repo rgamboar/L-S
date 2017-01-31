@@ -115,6 +115,7 @@ def help(request):
 @login_required(login_url="login/")
 def warehouse(request):
     success=False
+    warehouses = Warehouse.LogicWarehouse.all()
     if request.method == 'POST':
         form = WarehouseForm(request.POST)
         if form.is_valid():
@@ -126,7 +127,8 @@ def warehouse(request):
         form = WarehouseForm()
     return render(request, 'intranet/warehouse.html', {
         'form': form,
-        'success': success
+        'success': success,
+        'warehouses': warehouses
     })
 
 @login_required(login_url="login/")
@@ -570,6 +572,7 @@ def customerProfile(request, customer_id):
 @login_required(login_url="login/")
 def truck(request):
     success=False
+    trucks = Truck.LogicTruck.all()
     if request.method == 'POST':
         form = TruckForm(request.POST)
         if form.is_valid():
@@ -581,12 +584,14 @@ def truck(request):
         form = TruckForm()
     return render(request, 'intranet/truck.html', {
         'form': form,
-        'success': success
+        'success': success,
+        'trucks' : trucks
     })
 
 @login_required(login_url="login/")
 def driver(request):
     success=False
+    drivers = Driver.LogicDriver.all()
     if request.method == 'POST':
         form = DriverForm(request.POST)
         if form.is_valid():
@@ -598,7 +603,8 @@ def driver(request):
         form = DriverForm()
     return render(request, 'intranet/driver.html', {
         'form': form,
-        'success': success
+        'success': success,
+        'drivers': drivers
     })
 
 

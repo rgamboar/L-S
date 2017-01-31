@@ -14,7 +14,7 @@
         {% if form %}
             <div class="col-sm-1">
             </div>
-            <div class="col-sm-10 default-form">
+            <div class="col-sm-5 default-form">
             <form action="{% url 'truck'%}" method="post">
                     {% csrf_token %}
                     {% for field in form %}
@@ -28,9 +28,41 @@
                     <input type="submit" value="Crear" />
                 </form>
             </div>
+        {% endif %}
+
+            <div class="col-sm-5">
+            <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Patente</th>
+                        <th>Es arrendado?</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for truck in trucks %}
+                            <tr>
+                                <td>{{truck.id}}</td>
+                                <td>{{truck.plate}}</td>
+                                <td>
+                                {% if truck.is_rent %}
+                                    Si
+                                {% else %}
+                                    No
+                                {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+
             <div class="col-sm-1">
             </div>  
-        {% endif %}
         </div>
     </div>
 </div>

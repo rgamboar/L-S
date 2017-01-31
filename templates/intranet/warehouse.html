@@ -14,7 +14,7 @@
         {% if form %}
             <div class="col-sm-1">
             </div>
-            <div class="col-sm-10 default-form">
+            <div class="col-sm-5 default-form">
             <form action="{% url 'warehouse'%}" method="post">
                     {% csrf_token %}
                     {% for field in form %}
@@ -29,9 +29,37 @@
 
                 </form>
             </div>
+        {% endif %}
+
+            <div class="col-sm-5">
+            <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Nombre</th>
+                        <th>Telefono</th>
+                        <th>Encargado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for warehouse in warehouses %}
+                            <tr>
+                                <td>{{warehouse.id}}</td>
+                                <td>{{warehouse.name}}</td>
+                                <td>{{warehouse.phone}}</td>
+                                <td>{{warehouse.rep}}</td>
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+
             <div class="col-sm-1">
             </div>  
-        {% endif %}
         </div>
     </div>
 </div>
