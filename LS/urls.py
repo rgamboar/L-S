@@ -23,6 +23,10 @@ urlpatterns = [
 
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'', include('login.urls')),
+    url(r'', include('customers.urls')),
+    url(r'', include('freights.urls')),
+    url(r'', include('intranet.urls')),
+    url(r'', include('packages.urls')),
     url(r'^login/$', views.login, {'template_name': 'intranet/login.html', 'authentication_form': LoginForm} , name='login'),  
     url(r'^logout/$', views.logout, {'next_page': '/login'}, name='logout'),  
 ]
