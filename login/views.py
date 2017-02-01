@@ -134,31 +134,113 @@ def warehouse(request):
 @login_required(login_url="login/")
 def package(request):
     success=False
+    customerCheck= False
     if request.method == 'POST':
-        form = PackageForm(request.POST)
+        form = PackageForm(request.POST, prefix="f")
+        provider=  FastCustomerForm(request.POST,prefix="p")
+        consignee= FastCustomerForm(request.POST,prefix="c")
         if form.is_valid():
-            obj = form.save(commit=False)
-            if obj.startAddress:
-                obj.is_waiting=True
-                obj.is_transmitter=True
-            if obj.finishAddress:
-                obj.is_reciever=True
-            obj.creator = request.user
-            obj.save()
-            success=True
+            data = form.cleaned_data
+            if data['provider'] and data['consignee']:
+                obj = form.save(commit=False)
+                if obj.payer:
+                    obj.customer=obj.provider
+                else:
+                    obj.customer=obj.consignee
+                if obj.startAddress:
+                    obj.is_waiting=True
+                    obj.is_transmitter=True
+                if obj.finishAddress:
+                    obj.is_reciever=True
+                obj.creator = request.user
+                obj.save()
+                success=True
+            elif data['provider']:
+                if consignee.is_valid() and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
+                    data= consignee.cleaned_data
+                    consigneeInstance = Customer(name=data['name'] ,rut=data['rut'], address=data['address'], phone=data['phone'], repEmail=data['repEmail'], creator_id= request.user.id)
+                    consigneeInstance.save()
+                    obj = form.save(commit=False)
+                    obj.consignee=consigneeInstance
+                    if obj.payer:
+                        obj.customer=obj.provider
+                    else:
+                        obj.customer=obj.consignee
+                    if obj.startAddress:
+                        obj.is_waiting=True
+                        obj.is_transmitter=True
+                    if obj.finishAddress:
+                        obj.is_reciever=True
+                    obj.creator = request.user
+                    obj.save()
+                    success=True
+                else:
+                    customerCheck=True
+            elif data['consignee']:
+                if provider.is_valid() and not Customer.objects.filter(rut=provider.cleaned_data['rut']):
+                    data= provider.cleaned_data
+                    providerInstance = Customer(name=data['name'] ,rut=data['rut'], address=data['address'], phone=data['phone'], repEmail=data['repEmail'], creator_id= request.user.id)
+                    providerInstance.save()
+                    obj = form.save(commit=False)
+                    obj.provider=providerInstance
+                    if obj.payer:
+                        obj.customer=obj.provider
+                    else:
+                        obj.customer=obj.consignee
+                    if obj.startAddress:
+                        obj.is_waiting=True
+                        obj.is_transmitter=True
+                    if obj.finishAddress:
+                        obj.is_reciever=True
+                    obj.creator = request.user
+                    obj.save()
+                    success=True
+                else:
+                    customerCheck=True
+            else:
+                if provider.is_valid() and consignee.is_valid() and not Customer.objects.filter(rut=provider.cleaned_data['rut']) and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
+                    data= provider.cleaned_data
+                    providerInstance = Customer(name=data['name'] ,rut=data['rut'], address=data['address'], phone=data['phone'], repEmail=data['repEmail'], creator_id= request.user.id)
+                    data= consignee.cleaned_data
+                    consigneeInstance = Customer(name=data['name'] ,rut=data['rut'], address=data['address'], phone=data['phone'], repEmail=data['repEmail'], creator_id= request.user.id)
+                    providerInstance.save()
+                    consigneeInstance.save()
+                    obj = form.save(commit=False)
+                    obj.provider=providerInstance
+                    obj.consignee=consigneeInstance                    
+                    if obj.payer:
+                        obj.customer=obj.provider
+                    else:
+                        obj.customer=obj.consignee
+                    if obj.startAddress:
+                        obj.is_waiting=True
+                        obj.is_transmitter=True
+                    if obj.finishAddress:
+                        obj.is_reciever=True
+                    obj.creator = request.user
+                    obj.save()
+                    success=True
+                else:
+                    customerCheck=True
         oldForm= form
         form = PackageForm(initial={
             'start': oldForm.cleaned_data['start'],
             'startAddress': oldForm.cleaned_data['startAddress'],
             'finish': oldForm.cleaned_data['finish'],
             'finishAddress': oldForm.cleaned_data['finishAddress'],
-            'customer': oldForm.cleaned_data['customer'],
-            })
+            'provider': oldForm.cleaned_data['provider'],
+            'consignee': oldForm.cleaned_data['consignee'],
+            }, prefix="f")
     else:
-        form = PackageForm()
+        form = PackageForm(prefix="f")
+        provider=  FastCustomerForm(prefix="p")
+        consignee= FastCustomerForm(prefix="c")
     return render(request, 'intranet/packages/create.html', {
         'form': form,
-        'success': success
+        'success': success,
+        'provider': provider,
+        'consignee': consignee,
+        'customerCheck': customerCheck
     })
 
 

@@ -82,7 +82,7 @@ class CustomerForm(forms.ModelForm):
 	repAddress = forms.CharField(label='Direccion representante',max_length=150, required=False)
 	repEmail = forms.CharField(label='Mail representante',max_length=150, required=False)
 	repPhone = forms.CharField(label='Telefono representante',max_length=150, required=False)
-	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Contado Envio", "Contado Envio"),("Contado Destino", "Contado Destino")])
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito", "Credito"),("Contado", "Contado")])
 
 	class Meta:
 		model = Customer
@@ -104,7 +104,7 @@ class CustomerFormUpdate(forms.ModelForm):
 	repAddress = forms.CharField(label='Direccion representante',max_length=150)
 	repEmail = forms.CharField(label='Mail representante',max_length=150)
 	repPhone = forms.CharField(label='Telefono representante',max_length=150)
-	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Contado Envio", "Contado Envio"),("Contado Destino", "Contado Destino")])
+	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito", "Credito"),("Contado", "Contado")])
 
 	class Meta:
 		model = Customer
@@ -130,7 +130,10 @@ class PackageForm(forms.ModelForm):
 	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
 	finishAddress = forms.CharField(label='Direccion de destino',max_length=300, required=False)
 
-	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'))
+	provider = forms.ModelChoiceField(label='Proveedor',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'), required=False)
+	consignee = forms.ModelChoiceField(label='Consignatario',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'), required=False)
+
+	payer = forms.TypedChoiceField(label="Cliente" ,coerce=lambda x: x =='True', choices=((True, 'Proveedor'),(False, 'Consignatario')))
 
 	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
 	volume = forms.CharField(label='Volumen',max_length=100, required=False)
@@ -138,11 +141,32 @@ class PackageForm(forms.ModelForm):
 	weight = forms.CharField(label='Peso',max_length=100, required=False)
 	chance = forms.CharField(label='Oportunidad',max_length=100, required=False)
 	rate = forms.IntegerField(label='Tarifado')
-	pay = forms.ChoiceField(label="F. Pago", choices=[("Credito Envio", "Credito Envio"),("Credito Destino", "Credito Destino"),("Contado Envio", "Contado Envio"),("Contado Destino", "Contado Destino")])
+	pay = forms.TypedChoiceField(label="F. Pago" ,coerce=lambda x: x =='True', choices=((False, 'Contado'), (True, 'Credito')))
+
+	is_boleta = forms.TypedChoiceField(label="Boleta o Factura?" ,coerce=lambda x: x =='True', choices=((False, 'Factura'), (True, 'Boleta')))
+	boleta = forms.IntegerField(required=False, label="Numero de boleta")
 
 	class Meta:
 		model = Package
-		fields = ['name','start','startAddress', 'finish','finishAddress','customer','risk','volume','quantity','weight','chance','rate','pay']
+		fields = ['name','start','startAddress', 'finish','finishAddress','provider','consignee','payer' ,'risk','volume','quantity','weight','chance','rate','pay','is_boleta','boleta']
+
+
+class FastCustomerForm(forms.Form):
+	name = forms.CharField(label='Nombre',max_length=150, required=False)
+	rut = forms.CharField(label='Rut',max_length=150,validators=[validate_rut], error_messages={'unique':"Este rut ya existe en el sistema"}, required=False)
+	address = forms.CharField(label='Direccion',max_length=150, required=False)
+	repEmail = forms.CharField(label='Email',max_length=150, required=False)
+	phone = forms.CharField(label='Telefono',max_length=150, required=False)
+
+	def clean_rut(self):
+		value = self.cleaned_data['rut']
+		if not value:
+			raise forms.ValidationError("")
+		dv= value[-1]
+		value= value[:-1]
+		rut = int(filter(unicode.isdigit, value))
+		return unicode(rut) + '-' + dv
+
 
 
 class SearchBoxForm(forms.Form):

@@ -172,6 +172,8 @@ class Package(models.Model):
 	is_transmitter =models.BooleanField(default=False, verbose_name="Ir a buscar?")
 	is_receiver =models.BooleanField(default=False, verbose_name="Ir a entregar?")
 
+	is_boleta =models.BooleanField(default=False, verbose_name="Es boleta?")
+	boleta = models.IntegerField(null=True, verbose_name="Boleta")
 
 	risk = models.CharField(max_length=100, null=True, verbose_name="Riesgo")
 	volume = models.CharField(max_length=100, null=True, verbose_name="Volumen")
@@ -179,9 +181,13 @@ class Package(models.Model):
 	weight = models.CharField(max_length=100, null=True, verbose_name="Peso")
 	chance = models.CharField(max_length=100, null=True, verbose_name="Oportunidad")
 	rate = models.IntegerField(null=False, verbose_name="Tarifado")
-	pay = models.CharField(max_length=100, null=True, verbose_name="Forma de pago")
+	credit = models.BooleanField(default=False, verbose_name="Forma de pago")
 
-	customer = models.ForeignKey(Customer, null=False, verbose_name="Cliente")
+	customer = models.ForeignKey(Customer, null=False, verbose_name="Cliente", related_name='packageCustomer')
+	provider = models.ForeignKey(Customer, null=False, verbose_name="Prooveedor", related_name='packageProvider')
+	consignee = models.ForeignKey(Customer, null=False, verbose_name="Consignatario", related_name='packageConsignee')
+	payer = models.BooleanField(default=False, verbose_name="Paga el proveedor?")
+
 	freight = models.ForeignKey(Freight, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Manifiesto de carga")
 	start = models.ForeignKey(Warehouse, null=False, related_name='packageStart', verbose_name="Origen")
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish', verbose_name="Destino")

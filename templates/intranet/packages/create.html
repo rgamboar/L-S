@@ -11,27 +11,103 @@
                       <strong>Se ha creado con exito!</strong>
                     </div>
                 {% endif %}
+                {% if customerCheck %}
+                    <div class="alert alert-danger">
+                      <strong>No ingreso a un proveedor o consignatario correctamente!</strong>
+                    </div>
+                {% endif %}
         {% if form %}
             <div class="col-sm-1">
             </div>
-            <div class="col-sm-10 default-form">
             <form action="{% url 'package'%}" method="post">
+            <div class="col-sm-5 default-form">
                     {% csrf_token %}
                     {% for field in form %}
-                        <div class="form-group">
+                        <div class="form-group" {% if forloop.counter == 6 %}id="selectProvider"{% endif %}{% if forloop.counter == 7 %}id="selectConsignee"{% endif %}>
                             {{ field.label_tag }} {{ field }}
                             {% for err in field.errors %}
                                 <span class="error_message">{{ err }}</span>
                             {% endfor %}
                         </div>
+                        {% if forloop.counter == 6 %}
+                            <div class="form-group">
+                                <label for="checkProvider">Agregar Proveedor:</label>
+                                <input name="checkbox" type="checkbox" id="checkProvider" />
+                            </div>
+                        {% endif %}
+                        {% if forloop.counter == 7 %}
+                            <div class="form-group">
+                                <label for="checkboxConsignee">Agregar Consignatario:</label>
+                                <input name="checkbox" type="checkbox" id="checkboxConsignee" />
+                            </div>
+                        {% endif %}
+
                     {% endfor %}
-                    <input type="submit" value="Crear" />
-                </form>
+                <input type="submit" value="Crear" />
             </div>
+            <div class="col-sm-5 default-form">
+                <div class="panel-group">
+                  <div id="provider" class="panel panel-default hidden">
+                    <div class="panel-heading">Nuevo Proovedor</div>
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                        {% for field in provider %}
+                                <div class="form-group">
+                                    {{ field.label_tag }} {{ field }}
+                                    {% for err in field.errors %}
+                                        <span class="error_message">{{ err }}</span>
+                                    {% endfor %}
+                                </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                  </div>
+                  <div id="consignee" class="panel panel-default hidden">
+                    <div class="panel-heading">Nuevo Consignatario</div>
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                        {% for field in consignee %}
+                                <div class="form-group">
+                                    {{ field.label_tag }} {{ field }}
+                                    {% for err in field.errors %}
+                                        <span class="error_message">{{ err }}</span>
+                                    {% endfor %}
+                                </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+                
+                
+
+            </div>
+            </form>
             <div class="col-sm-1">
             </div>  
+            
+
         {% endif %}
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    
+$(function() {
+  $(checkProvider).click(function() {
+    $("span").click();
+    $("#provider").toggleClass('hidden');
+    $("#selectProvider").toggleClass('hidden');
+    
+  });
+  $(checkboxConsignee).click(function() {
+    $("#consignee").toggleClass('hidden');
+    $("#selectConsignee").toggleClass('hidden');
+  });
+});
+
+
+</script>
 {% endblock %}
