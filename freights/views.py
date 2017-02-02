@@ -93,10 +93,10 @@ def freightIndex(request, traveling=False, finish=False):
         })
 
 @login_required(login_url="login/")
-def freightProfile(request, freight_id, load=False):
+def freightProfile(request, freight_id):
     freight = Freight.LogicFreight.get(id=freight_id)
     if freight.is_waiting:
-        return freightProfileWaiting(request, freight, load)
+        return freightProfileWaiting(request, freight)
     elif freight.is_traveling:
         return freightProfileTraveling(request, freight)
     else:
@@ -123,40 +123,61 @@ def freightProfileTraveling(request, freight):
 
 
 @login_required(login_url="login/")
-def freightProfileWaiting(request, freight, load):
-    if load:
-        own_packages = Package.LogicPackage.filter(freight=freight)
-        packages = Package.LogicPackage.filter(start=freight.start, finish= freight.finish, is_waiting= True)
-        packages = packages.exclude(freight=freight)
-        
-        freight.posibleDriver = Driver.LogicDriver.all()
-        freight.posibleTruck= Truck.LogicTruck.all()
-        if freight.driver:
-            freight.posibleDriver = freight.posibleDriver.exclude(id=freight.driver.id)
-        if freight.truck:
-            freight.posibleTruck= freight.posibleTruck.exclude(id=freight.truck.id)
-        return render(request, 'intranet/freights/profile.html', 
-            {
-                'freight': freight,
-                'packages' : packages,
-                'own_packages' : own_packages,
+def freightProfileWaiting(request, freight):
+    own_packages = Package.LogicPackage.filter(freight=freight)
+    packages = Package.LogicPackage.filter(start=freight.start, is_waiting= True, freight=None)
+    search = 'All'
+    if request.method == 'POST':
+        form = IndexFreightForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            bfinal = data['bfinal']
+            save = data
+            save['bfinal'] = str(save['bfinal'])
+            search = str(save['bfinal'])
+            request.session['freightIndex']= save
+            if (bfinal and bfinal != 'None'): 
+                warehouse = Warehouse.LogicWarehouse.get(name=bfinal)
+                packages = packages.filter(finish=warehouse)
+            paginator = Paginator(packages, 25)
+            num_page = 1
+            packages = paginator.page(num_page)
 
-            })
     else:
-        own_packages = Package.LogicPackage.filter(freight=freight)
-        freight.posibleDriver = Driver.LogicDriver.all()
-        freight.posibleTruck= Truck.LogicTruck.all()
-        if freight.driver:
-            freight.posibleDriver = freight.posibleDriver.exclude(id=freight.driver.id)
-        if freight.truck:
-            freight.posibleTruck= freight.posibleTruck.exclude(id=freight.truck.id)
-        return render(request, 'intranet/freights/profile.html', 
-            {
-                'freight': freight,
-                'own_packages' : own_packages,
-                'send' : True,
+        form = IndexFreightForm()
+        if 'freightIndex' in request.session:
+            data = request.session['freightIndex']
+            num_page = request.GET.get('page')
+            if request.GET.__contains__('page'):
+                bfinal = data['bfinal']
+                search = bfinal
+                success=True
+                if (bfinal and bfinal != 'None'): 
+                    warehouse = Warehouse.LogicWarehouse.get(name=bfinal)
+                    packages = packages.filter(finish=warehouse)
+            else:
+                num_page = 1
+        else:
+            num_page = 1
+        paginator = Paginator(packages, 25)
+        packages = paginator.page(num_page)
+    if search == 'None':
+        search = 'All'
+    freight.posibleDriver = Driver.LogicDriver.all()
+    freight.posibleTruck= Truck.LogicTruck.all()
+    if freight.driver:
+        freight.posibleDriver = freight.posibleDriver.exclude(id=freight.driver.id)
+    if freight.truck:
+        freight.posibleTruck= freight.posibleTruck.exclude(id=freight.truck.id)
+    return render(request, 'intranet/freights/profile.html', 
+        {
+            'freight': freight,
+            'packages' : packages,
+            'own_packages' : own_packages,
+            'form': form,
+            'search' : search,
 
-            })
+        })
 
 @login_required(login_url="login/")   
 def freightDriver(request):
@@ -306,3 +327,21 @@ def freightsFilter(request, start, finish, status, binicial, bfinal):
     if finish:
         freights = freights.filter(createDate__lte=finish)
     return freights
+
+@login_required(login_url="login/")
+def freightLoad(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            freight = Freight.LogicFreight.get(id=request.POST['id'])
+            packages = Package.LogicPackage.filter(start=freight.start, is_waiting= True, freight=None)
+            name= request.POST['finish']
+            if not name == 'All':
+                warehouse = Warehouse.LogicWarehouse.get(name=name)
+                packages = packages.filter(finish=warehouse)
+
+            for package in packages:
+                package.freight = freight
+                package.save()
+
+            return JsonResponse({'error': False})
+

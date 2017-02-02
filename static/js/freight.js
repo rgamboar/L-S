@@ -62,6 +62,24 @@ function change_freight_driver(freight, freight_id){
 };
 
 
+function change_freight_load(freight_id, package_finish){
+	console.log(package_finish);
+	$.ajax({
+		url: freightLoad,
+		method: 'POST',
+		beforeSend: function(xhr){
+			xhr.setRequestHeader("X-CSRFToken", csrf_token);
+		},
+		data: {
+			'id': freight_id,
+			'finish': package_finish
+			},
+	}).done(function(html){
+		location.reload(true);
+	});
+};
+
+
 function change_freight_state(freight, state){
 	if ($("#selectDriver").val() == '-' || $("#selectTruck").val() == '-'){
 		console.log("Logrado");

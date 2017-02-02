@@ -32,3 +32,5 @@ class SearchFreightForm(forms.Form):
         widget=DateTimePicker(options={"format": "YYYY-MM-DD HH:mm",
                                        "pickSeconds": False}))
 
+class IndexFreightForm(forms.Form):
+	bfinal = forms.ModelChoiceField(label='Destino',queryset=Warehouse.LogicWarehouse.all(), required=False)

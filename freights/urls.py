@@ -13,7 +13,7 @@ urlpatterns = [
     
     url(r'^flete/buscar/$',  views.freightSearch, name='freightSearch'),
 
-    url(r'^flete/cargar/(?P<freight_id>.*)/$', views.freightProfile, {'load': True}, name='freightProfileLoad'),
+    url(r'^flete/cargar/$', views.freightLoad, name='freightLoad'),
     url(r'^flete/camion/$', views.freightTruck, name='freightTruck'),
     url(r'^flete/conductor/$', views.freightDriver, name='freightDriver'),
     url(r'^flete/estado/$', views.freightState, name='freightState'),

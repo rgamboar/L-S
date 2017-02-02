@@ -73,20 +73,19 @@
 
                 <a href="{% url 'freightPdf' freight.id %}" class="btn btn-primary" role="button">Imprimir</a>
 
-                {% if send %}
-                <a href="{% url 'freightProfileLoad' freight.id %}" class="btn btn-primary" role="button">Ver paquetes en el recorrido</a>
-                {% endif %}
-
 
                 <a onclick="change_freight_state({{freight.id}},'traveling');" class="btn btn-success pull-right">Enviar</a>
 
 
                     <h4 class="text-center">Paquetes dentro del flete.</h4>
+
+                <div class="col-sm-12 default-form">
                 <div class="table-responsive">   
                 <table class="table">
                     <thead>
                       <tr>
                         <th>Cliente</th>
+                        <th>Destino</th>  
                         <th>Riesgo</th>
                         <th>Volumen</th>
                         <th>Cantidad</th>
@@ -100,6 +99,7 @@
                         {% for package in own_packages %}
                         <tr>
                             <td>{{package.customer.name}}</td>
+                            <td>{{package.finish.name}}</td>  
                             <td>{{package.risk}}</td>
                             <td>{{package.volume}}</td>
                             <td>{{package.quantity}}</td>
@@ -112,42 +112,74 @@
                     </tbody>
                 </table>
             </div>
+            </div>
 
 
+                <h4 class="text-center">Paquetes que coinciden con el recorrido.</h4>
+                    {% if form %}
+                        <div class="col-sm-3 default-form">
+                        <form action="{% url 'freightProfile' freight.id %}" method="post">
+                                {% csrf_token %}
+                                {% for field in form %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }} {{ field }}
+                                        {% for err in field.errors %}
+                                            <span class="error_message">{{ err }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="submit" value="Buscar" />
+                                </div> 
+                            </form>
+                            <div class="col-sm-6">
+                                <a onclick="change_freight_load({{freight.id}},'{{ search }}');" class="btn btn-success pull-right">
 
-                {% if not send %}
-                        <h4 class="text-center">Paquetes que coinciden con el recorrido.</h4>
-                        <div class="table-responsive">   
-                            <table class="table">
-                                <thead>
-                                  <tr>
-                                    <th>Cliente</th>
-                                    <th>Riesgo</th>
-                                    <th>Volumen</th>
-                                    <th>Cantidad</th>
-                                    <th>Peso</th>
-                                    <th>Oportunidad</th>
-                                    <th>Tarifado</th>
-                                    <th></th>
-                                  </tr>
-                                </thead>
-                                <tbody id="not_own">
-                                    {% for package in packages %}
-                                    <tr id="{{package.id}}">
-                                        <td>{{package.customer.name}}</td>
-                                        <td>{{package.risk}}</td>
-                                        <td>{{package.volume}}</td>
-                                        <td>{{package.quantity}}</td>
-                                        <td>{{package.weight}}</td>
-                                        <td>{{package.chance}}</td>
-                                        <td>{{package.rate}}</td>
-                                        <td><i id="icon{{package.id}}" onclick="change_package_freight(this);" package="{{package.id}}" freight="{{freight.id}}" class="fa fa-plus" aria-hidden="true"></i></td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                {% endif %}
+                                    {% if search == 'All' %}
+                                        Subir todo
+                                    {% else %}
+                                        Subir paquetes con destino a {{search}}
+                                    {% endif %}
+
+                                </a>
+
+                            </div> 
+                    {% endif %}
+                <div class="col-sm-12 default-form">
+                <div class="table-responsive">   
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Cliente</th>
+                            <th>Destino</th>                            
+                            <th>Riesgo</th>
+                            <th>Volumen</th>
+                            <th>Cantidad</th>
+                            <th>Peso</th>
+                            <th>Oportunidad</th>
+                            <th>Tarifado</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody id="not_own">
+                            {% for package in packages %}
+                            <tr id="{{package.id}}">
+                                <td>{{package.customer.name}}</td>
+                                <td>{{package.finish.name}}</td>                                
+                                <td>{{package.risk}}</td>
+                                <td>{{package.volume}}</td>
+                                <td>{{package.quantity}}</td>
+                                <td>{{package.weight}}</td>
+                                <td>{{package.chance}}</td>
+                                <td>{{package.rate}}</td>
+                                <td><i id="icon{{package.id}}" onclick="change_package_freight(this);" package="{{package.id}}" freight="{{freight.id}}" class="fa fa-plus" aria-hidden="true"></i></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
 
             </div> 
         </div>
@@ -158,6 +190,7 @@
 <script>
     var change = "{% url 'packageFreight' %}";
     var changeTruck = "{% url 'freightTruck' %}";
+    var freightLoad = "{% url 'freightLoad' %}";
     var changeDriver = "{% url 'freightDriver' %}";
     var changeFreightState = "{% url 'freightState' %}";
     var csrf_token = "{{ csrf_token }}";
