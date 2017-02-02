@@ -65,6 +65,11 @@
                       <tr>
                         <th class="text-center">ID</th>
                         <th>Cliente</th>
+                        {% if payer %}
+                        <th>Consignatario</th>
+                        {% else %}
+                        <th>Proveedor</th>
+                        {% endif %}
                         <th>Origen</th>
                         <th>Destino</th>
                         <th>Estado</th>
@@ -74,6 +79,11 @@
                         <tr>
                             <td class="text-center">{{package.id}}</td>
                             <td>{{package.customer.name}}</td>
+                            {% if payer %}
+                            <td>{{package.consignee.name}}</td>
+                            {% else %}
+                            <td>{{package.provider.name}}</td>
+                            {% endif %}
                             <td>{{package.start.name}}</td>
                             <td>{{package.finish.name}}</td>
                             <td>

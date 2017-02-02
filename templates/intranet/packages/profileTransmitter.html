@@ -20,8 +20,36 @@
                       <tr>
                         <th class="text-center">ID</th>
                         <th>Cliente</th>
+                        {% if package.payer %}
+                        <th>Consignatario</th>
+                        {% else %}
+                        <th>Proveedor</th>
+                        {% endif %}
                         <th>Origen</th>
                         <th>Destino</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{package.id}}</td>
+                            <td class="link" onclick="location.href='{% url 'customerProfile' package.customer.id %}'"><a>{{package.customer.name}}</a></td>
+                            {% if package.payer %}
+                            <td>{{package.consignee.name}}</td>
+                            {% else %}
+                            <td>{{package.provider.name}}</td>
+                            {% endif %}
+                            <td>{{package.start.name}}</td>
+                            <td>{{package.finish.name}}</td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+              <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
                         <th>Volumen</th>
                         <th>Cantidad</th>
                         <th>Peso</th>
@@ -33,10 +61,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center">{{package.id}}</td>
-                            <td class="link" onclick="location.href='{% url 'customerProfile' package.customer.id %}'"><a>{{package.customer.name}}</a></td>
-                            <td>{{package.start.name}}</td>
-                            <td>{{package.finish.name}}</td>
                             <td>{{package.volume}}</td>
                             <td>{{package.quantity}}</td>
                             <td>{{package.weight}}</td>
@@ -87,6 +111,7 @@ L&amp;S
     </div>
 </div>
 
+
 <div class="line col-xs-12">
     <div class="col-xs-4">
         Cliente:
@@ -95,6 +120,27 @@ L&amp;S
         {{package.customer.name}} 
     </div>
 </div>
+
+{% if package.payer %}
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Consig.:
+    </div>
+    <div class="col-xs-8">
+        {{package.consignee.name}} 
+    </div>
+</div>
+
+{% else %}
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Proveedor:
+    </div>
+    <div class="col-xs-8">
+        {{package.provider.name}} 
+    </div>
+</div>
+{% endif %}
 
 <div class="line col-xs-12">
     <div class="col-xs-4">
