@@ -8,6 +8,7 @@ from dal import autocomplete
 from django.contrib.auth.models import User
 from .forms import *
 from .models import *
+from packages.models import *
 from django.core.paginator import Paginator
 
 
