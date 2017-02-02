@@ -20,8 +20,9 @@ class CustomerAutocomplete(autocomplete.Select2QuerySetView):
         qs = Customer.LogicCustomer.all()
 
         if self.q:
-            qs = qs.filter(name__icontains=self.q)
-
+            qs1 = qs.filter(name__icontains=self.q)
+            qs2 = qs.filter(rut__icontains=self.q)
+            qs = qs1 | qs2
         return qs
 
 
