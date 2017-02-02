@@ -128,6 +128,7 @@
                       <tr>
                         <th class="text-center">ID</th>
                         <th class="customer">Cliente</th>
+                        <th>Destino</th>
                         <th>Riesgo</th>
                         <th>Volumen</th>
                         <th>Cantidad</th>
@@ -142,6 +143,7 @@
                         <tr>
                             <td class="text-center">{{package.id}}</td>
                             <td>{{package.customer.name}}</td>
+                            <td>{{package.finish.name}}</td>
                             <td>{{package.risk}}</td>
                             <td>{{package.volume}}</td>
                             <td>{{package.quantity}}</td>
@@ -171,8 +173,10 @@
                             <td class="last-line"></td>
                             <td class="last-line"></td>
                             <td class="last-line"></td>                            
+                            <td class="last-line"></td>
                             <td>Total</td>
                             <td>{{freight.totalRate}}</td>
+
                         </tr>
                     </tbody>
                 </table>
