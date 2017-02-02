@@ -124,8 +124,8 @@ def freightProfileTraveling(request, freight):
 
 @login_required(login_url="login/")
 def freightProfileWaiting(request, freight):
-    own_packages = Package.LogicPackage.filter(freight=freight)
-    packages = Package.LogicPackage.filter(start=freight.start, is_waiting= True, freight=None)
+    own_packages = Package.LogicPackage.filter(freight=freight).order_by('finish__name')
+    packages = Package.LogicPackage.filter(start=freight.start, is_waiting= True, freight=None).order_by('finish__name')
     search = 'All'
     if request.method == 'POST':
         form = IndexFreightForm(request.POST)
