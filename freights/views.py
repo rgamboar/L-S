@@ -31,7 +31,7 @@ def render_to_pdf(template_src, context_dict):
 
 def freightPdf(request, freight_id=1):
     freight = Freight.LogicFreight.get(id=freight_id)
-    packages = Package.LogicPackage.filter(freight=freight)
+    packages = Package.LogicPackage.filter(freight=freight).order_by('finish__name')
 
     return render_to_pdf(
             'freightPdf.html',
