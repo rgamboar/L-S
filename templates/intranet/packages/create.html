@@ -107,11 +107,13 @@
     
 $(function() {
   $(checkProvider).click(function() {
+    $('#id_f-provider').val(null).trigger('change');
     $("#provider").toggleClass('hidden');
     $("#selectProvider").toggleClass('hidden');
     
   });
   $(checkboxConsignee).click(function() {
+    $('#id_f-consignee').val(null).trigger('change');    
     $("#consignee").toggleClass('hidden');
     $("#selectConsignee").toggleClass('hidden');
   });
