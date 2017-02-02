@@ -15,6 +15,7 @@ from bson import json_util
 import json
 
 from customers.forms import *
+from freights.forms import *
 from customers.models import *
 
 
@@ -46,12 +47,21 @@ def packagePdf(request, package_id=1):
 def package(request):
     success=False
     customerCheck= False
+    makeProvider= False
+    makeConsignee= False
+    rutProvider = False
+    rutConsignee = False
     if request.method == 'POST':
         form = PackageForm(request.POST, prefix="f")
         provider=  FastCustomerForm(request.POST,prefix="p")
         consignee= FastCustomerForm(request.POST,prefix="c")
+
         if form.is_valid():
             data = form.cleaned_data
+            if not data['provider']:
+                makeProvider = True
+            if not data['consignee']:
+                makeConsignee = True
             if data['provider'] and data['consignee']:
                 obj = form.save(commit=False)
                 if obj.payer:
@@ -87,6 +97,8 @@ def package(request):
                     success=True
                 else:
                     customerCheck=True
+                    if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
+                        rutConsignee = True                    
             elif data['consignee']:
                 if provider.is_valid() and not Customer.objects.filter(rut=provider.cleaned_data['rut']):
                     data= provider.cleaned_data
@@ -108,6 +120,8 @@ def package(request):
                     success=True
                 else:
                     customerCheck=True
+                    if Customer.objects.filter(rut=provider.cleaned_data['rut']):
+                        rutProvider = True
             else:
                 if provider.is_valid() and consignee.is_valid() and not Customer.objects.filter(rut=provider.cleaned_data['rut']) and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
                     data= provider.cleaned_data
@@ -133,6 +147,10 @@ def package(request):
                     success=True
                 else:
                     customerCheck=True
+                    if Customer.objects.filter(rut=provider.cleaned_data['rut']):
+                        rutProvider = True
+                    if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
+                        rutConsignee = True 
         oldForm= form
         form = PackageForm(initial={
             'start': oldForm.cleaned_data['start'],
@@ -151,7 +169,11 @@ def package(request):
         'success': success,
         'provider': provider,
         'consignee': consignee,
-        'customerCheck': customerCheck
+        'customerCheck': customerCheck,
+        'makeProvider': makeProvider,
+        'makeConsignee': makeConsignee,
+        'rutProvider': rutProvider,
+        'rutConsignee': rutConsignee
     })
 
 
@@ -237,11 +259,9 @@ def packagesFilter(request, start, finish, search, status, binicial, bfinal, rat
     if rate:
         packages= packages.filter(rate='0')
     if (binicial and binicial != 'None'):
-        print(binicial)
         warehouse = Warehouse.LogicWarehouse.get(name=binicial)
         packages = packages.filter(start=warehouse)
     if (bfinal and bfinal != 'None'): 
-        print(bfinal)
         warehouse = Warehouse.LogicWarehouse.get(name=bfinal)
         packages = packages.filter(finish=warehouse)
     if start:
@@ -275,9 +295,48 @@ def packageIndex(request, traveling=False, finish=False, delivered=False):
     else:
         packages = Package.LogicPackage.filter(is_waiting=True)
         page = "inicio"
-    num_page = request.GET.get('page', 1)
-    paginator = Paginator(packages, 25)
-    packages = paginator.page(num_page)
+    if request.method == 'POST':
+        form = IndexPackageForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            binicial = data['binicial']
+            bfinal = data['bfinal']
+            save = data
+            save['binicial'] = str(save['binicial'])
+            save['bfinal'] = str(save['bfinal'])
+            request.session['packageIndex']= save
+            if (binicial and binicial != 'None'):
+                warehouse = Warehouse.LogicWarehouse.get(name=binicial)
+                packages = packages.filter(start=warehouse)
+            if (bfinal and bfinal != 'None'): 
+                warehouse = Warehouse.LogicWarehouse.get(name=bfinal)
+                packages = packages.filter(finish=warehouse)
+            paginator = Paginator(packages, 25)
+            num_page = 1
+            packages = paginator.page(num_page)
+
+    else:
+        form = IndexPackageForm()
+        if 'packageIndex' in request.session:
+            data = request.session['packageIndex']
+            num_page = request.GET.get('page')
+            if request.GET.__contains__('page'):
+                binicial = data['binicial']
+                bfinal = data['bfinal']
+                success=True
+                if (binicial and binicial != 'None'):
+                    warehouse = Warehouse.LogicWarehouse.get(name=binicial)
+                    packages = packages.filter(start=warehouse)
+                if (bfinal and bfinal != 'None'): 
+                    warehouse = Warehouse.LogicWarehouse.get(name=bfinal)
+                    packages = packages.filter(finish=warehouse)
+            else:
+                num_page = 1
+        else:
+            num_page = 1
+        paginator = Paginator(packages, 25)
+        packages = paginator.page(num_page)
+
     if page == "inicio":
         for i in packages:
             i.posibleFreight= Freight.LogicFreight.filter(start=i.start, finish= i.finish, is_waiting= True)
@@ -288,6 +347,7 @@ def packageIndex(request, traveling=False, finish=False, delivered=False):
         {
             'packages': packages,
             'page': page,
+            'form': form,
         })
 
 

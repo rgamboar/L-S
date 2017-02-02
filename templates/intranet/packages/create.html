@@ -51,6 +51,11 @@
                     <div class="panel-heading">Nuevo Proovedor</div>
                     <div class="panel-body">
                         <div class="col-sm-12">
+                            {% if rutProvider %}
+                                <div class="alert alert-danger">
+                                  <strong>Rut ya existe en el sistema!</strong>
+                                </div>
+                            {% endif %}
                         {% for field in provider %}
                                 <div class="form-group">
                                     {{ field.label_tag }} {{ field }}
@@ -66,6 +71,11 @@
                     <div class="panel-heading">Nuevo Consignatario</div>
                     <div class="panel-body">
                         <div class="col-sm-12">
+                            {% if rutConsignee %}
+                                <div class="alert alert-danger">
+                                  <strong>Rut ya existe en el sistema!</strong>
+                                </div>
+                            {% endif %}
                         {% for field in consignee %}
                                 <div class="form-group">
                                     {{ field.label_tag }} {{ field }}
@@ -97,7 +107,6 @@
     
 $(function() {
   $(checkProvider).click(function() {
-    $("span").click();
     $("#provider").toggleClass('hidden');
     $("#selectProvider").toggleClass('hidden');
     
@@ -108,6 +117,19 @@ $(function() {
   });
 });
 
+
+$( document ).ready(function() {
+    {% if makeProvider %}
+    $('#checkProvider')[0].checked = true;
+    $("#provider").toggleClass('hidden');
+    $("#selectProvider").toggleClass('hidden');
+    {% endif %}
+    {% if makeConsignee %}
+    $('#checkboxConsignee')[0].checked = true;
+    $("#consignee").toggleClass('hidden');
+    $("#selectConsignee").toggleClass('hidden');
+    {% endif %}
+});
 
 </script>
 {% endblock %}
