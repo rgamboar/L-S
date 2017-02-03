@@ -46,3 +46,20 @@ function change_package_rate(){
 		location.reload(true);
 	});
 };
+
+function change_pickup_package(pickup_id){
+	console.log($('#'+pickup_id).val());
+	$.ajax({
+	url: changePickUpPackage,
+	method: 'POST',
+	beforeSend: function(xhr){
+		xhr.setRequestHeader("X-CSRFToken", csrf_token);
+	},
+	data: {
+		'pickup_id': pickup_id,
+		'package_id': $('#'+pickup_id).val()
+		},
+	}).done(function(html){
+		location.reload(true);
+	});
+};

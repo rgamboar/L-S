@@ -21,5 +21,12 @@ urlpatterns = [
 
     url(r'^guia/flete/$', views.packageFreight, name='packageFreight'),
     url(r'^guia/(?P<package_id>.*)/$', views.packageProfile, name='packageProfile'),
+
+    url(r'^recogida/crear/$',  views.pickup, name='pickup'),   
+    url(r'^recogida/esperando/$',  views.pickupWaiting, name='pickupWaiting'),
+    url(r'^recogida/listos/$',  views.pickupReady , name='pickupReady'),
+    url(r'^recogida/guia/$',  views.pickupPackage, name='pickupPackage'),
+    url(r'^recogida/(?P<pickup_id>.*)/$',  views.pickupProfile, name='pickupProfile'),
+
 ]
 

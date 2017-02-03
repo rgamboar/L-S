@@ -35,6 +35,17 @@ class PackageForm(forms.ModelForm):
 		model = Package
 		fields = ['name','start','startAddress', 'finish','finishAddress','provider','consignee','payer' ,'risk','volume','quantity','weight','chance','rate','pay','is_boleta','boleta']
 
+class PickUpForm(forms.ModelForm):
+	warehouse = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
+	address = forms.CharField(label='Direccion de origen',max_length=300)
+	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'))
+	quantity = forms.IntegerField(label='Cantidad')
+	weight = forms.CharField(label='Peso',max_length=100, required=False)
+
+	class Meta:
+		model = PickUp
+		fields = ['warehouse','address','customer', 'quantity','weight']
+
 
 
 class SearchBoxForm(forms.Form):

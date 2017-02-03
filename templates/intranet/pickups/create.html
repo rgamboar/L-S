@@ -1,0 +1,38 @@
+{% extends 'intranet/base.html' %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+        <h3 class="text-center"> Crear Manifiesto de Carga </h3>
+                {% if success %}
+                    <div class="alert alert-success">
+                      <strong>Se ha creado con exito!</strong>
+                    </div>
+                {% endif %}
+        {% if form %}
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-10 default-form">
+            <form action="{% url 'pickup'%}" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag }} {{ field }}
+                            {% for err in field.errors %}
+                                <span class="error_message">{{ err }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <input type="submit" value="Crear" />
+
+                </form>
+            </div>
+            <div class="col-sm-1">
+            </div>  
+        {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

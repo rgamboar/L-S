@@ -1,0 +1,81 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block extra_head %}
+    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+        <h3 class="text-center"> Recogida de Carga N°{{pickup.id}}</h3>
+            <div class="col-sm-12 default-form">
+            
+              <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Bodega</th>
+                        <th>Dirección</th>
+                        <th>Cantidad</th>
+                        <th>Peso</th>
+                        <th>Fecha creacion</th>
+                        <th>Guia de flete</th>
+                        {% if is_waiting %}
+                            <th></th>
+                        {% else %}
+                            <th>Fecha recibido</th>
+                        {% endif %}
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{pickup.id}}</td>
+                            <td>{{pickup.warehouse.name}}</td>
+                            <td>{{pickup.address}}</td>
+                            <td>{{pickup.quantity}}</td>
+                            <td>{{pickup.weight}}</td>
+                            <td>{{pickup.createDate}}</td>
+                            {% if is_waiting %}
+                                <td>
+                                    <div class="form-group">
+                                        <input id="{{pickup.id}}" name="package" type="number">
+                                    </div>
+                                </td>
+                                <td>
+                                    <a onclick="change_pickup_package({{pickup.id}});" class="btn btn-success pull-right">Enviar</a>
+                                </td>
+                            {% else %}
+                                <td>{{pickup.package}}</td>
+                                <td>{{pickup.pickUpDate}}</td>
+                            {% endif %}
+
+                            
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <a href="javascript:window.print()" class="btn btn-primary" role="button">Imprimir en 80mm</a>
+                <a href="{% url 'packagePdf' package.id %}" class="btn btn-primary" role="button">Imprimir</a>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var changePickUpPackage = "{% url 'pickupPackage' %}";
+
+    var csrf_token = "{{ csrf_token }}";
+</script>
+
+
+
+
+<script src="{% static 'js/package.js' %}"></script>
+{% endblock %}

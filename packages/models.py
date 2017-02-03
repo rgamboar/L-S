@@ -9,6 +9,10 @@ class LogicPackageManager(models.Manager):
     def get_queryset(self):
         return super(LogicPackageManager, self).get_queryset().filter(delete=False)
 
+class LogicPickUpManager(models.Manager):
+    def get_queryset(self):
+        return super(LogicPickUpManager, self).get_queryset().filter(delete=False)
+
 class Package(models.Model):
 	name = models.CharField(max_length=300, null=True, verbose_name="Descripción")
 	lastDate = models.DateTimeField(auto_now=True, verbose_name="Ultima modificación")
@@ -58,3 +62,36 @@ class Package(models.Model):
 
 	def total(self):
 		return self.quantity*self.rate
+
+
+class PickUp(models.Model):
+	lastDate = models.DateTimeField(auto_now=True, verbose_name="Ultima modificación")
+	createDate = models.DateTimeField(auto_now_add=True, verbose_name="Creacion")
+	pickUpDate = models.DateTimeField(null=True, verbose_name="Entrega")
+
+	address = models.CharField(max_length=300, null=True, verbose_name="Dirección destino")
+
+	is_waiting =models.BooleanField(default=True, verbose_name="Esta esperando?")
+
+	quantity = models.IntegerField(null=False, verbose_name="Cantidad")
+	weight = models.CharField(max_length=100, null=True, verbose_name="Peso")
+
+	customer = models.ForeignKey(Customer, null=False, verbose_name="Cliente", related_name='pickUpCustomer')
+
+	warehouse = models.ForeignKey(Warehouse, null=False, related_name='pickUpWarehouse', verbose_name="Bodega")
+
+	package = models.ForeignKey(Package, null=True, related_name='pickUpPackage', verbose_name="Guia de flete")
+	
+	creator = models.ForeignKey(User, null=False, related_name='pickUpCreator', verbose_name="U. Creado")
+	deliverer = models.ForeignKey(User, null=True, related_name='pickUpDeliverer', verbose_name="U. Recibido")
+	delete = models.BooleanField(default=False, verbose_name="Borrado")
+	objects = models.Manager()
+	LogicPickUp = LogicPickUpManager()
+
+	class Meta:
+		ordering = ['-createDate']
+		verbose_name = 'Recogida de carga'
+		verbose_name_plural = 'Recogidas de carga'
+	
+	def __unicode__(self):
+		return unicode(self.id)

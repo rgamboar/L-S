@@ -1,0 +1,107 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block extra_head %}
+    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+            <h3 class="text-center"> Lista de Recogidas de Carga </h3>
+            <div class="col-sm-12 default-form">
+            {% if pickups %}
+            <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-center">ID</th>
+                        <th>Bodega</th>
+                        <th>Dirección</th>
+                        <th>Cantidad</th>
+                        <th>Peso</th>
+                        <th>Fecha creacion</th>
+                        <th>Guia de flete</th>
+                        {% if not ready %}
+                            <th></th>
+                        {% else %}
+                            <th>Fecha recibido</th>
+                        {% endif %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for pickup in pickups %}
+                            <tr>
+                                <td class="link" onclick="location.href='{% url 'pickupProfile' pickups.id %}'"><a>{{pickup.id}}</a></td>
+                                <td>{{pickup.warehouse.name}}</td>
+                                <td>{{pickup.address}}</td>
+                                <td>{{pickup.quantity}}</td>
+                                <td>{{pickup.weight}}</td>
+                                <td>{{pickup.createDate}}</td>
+                                {% if not ready %}
+                                    <td>
+                                        <div class="form-group">
+                                            <input id="{{pickup.id}}" name="package" type="number">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a onclick="change_pickup_package({{pickup.id}});" class="btn btn-success pull-right">Enviar</a>
+                                    </td>
+                                {% else %}
+                                    <td>{{pickup.package}}</td>
+                                    <td>{{pickup.pickUpDate}}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                </table>
+                </div>
+                {% else %}
+                    <div class="alert alert-info">
+                      <strong>No hay ninguna recogida de carga en este estado!</strong>
+                    </div>
+                {% endif %}
+
+
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 text-center">
+
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if pickups.has_previous %}
+                            <a href="?page={{ pickups.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Pagina {{ pickups.number }} de {{ pickups.paginator.num_pages }}.
+                        </span>
+
+                        {% if pickups.has_next %}
+                            <a href="?page={{ pickups.next_page_number }}">Siguiente</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+                </div>
+                <div class="col-sm-4">
+                </div>
+
+                </div>
+    </div>
+</div>
+
+<script>
+    var changePickUpPackage = "{% url 'pickupPackage' %}";
+
+    var csrf_token = "{{ csrf_token }}";
+</script>
+
+
+<script src="{% static 'js/package.js' %}"></script>
+{% endblock %}

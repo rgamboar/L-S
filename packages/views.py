@@ -445,3 +445,78 @@ def packageRate(request):
         else:
             return freightIndex(request)
 
+
+@login_required(login_url="login/")   
+def pickup(request):
+    success=False
+    if request.method == 'POST':
+        form = PickUpForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.creator = request.user
+            obj.save()
+            success=True
+    else:
+        form = PickUpForm()
+    return render(request, 'intranet/pickups/create.html', {
+        'form': form,
+        'success': success
+    })
+
+
+
+@login_required(login_url="login/")   
+def pickupWaiting(request):
+    pickups = PickUp.LogicPickUp.filter(is_waiting=True)
+
+    num_page = request.GET.get('page', 1)
+    paginator = Paginator(pickups, 25)
+    pickups = paginator.page(num_page)
+
+    return render(request, 'intranet/pickups/index.html', 
+        {
+            'pickups': pickups,
+        })
+
+
+
+
+@login_required(login_url="login/")   
+def pickupReady(request):
+    pickups = PickUp.LogicPickUp.filter(is_waiting=False)
+
+    num_page = request.GET.get('page', 1)
+    paginator = Paginator(pickups, 25)
+    pickups = paginator.page(num_page)
+
+    return render(request, 'intranet/pickups/index.html', 
+        {
+            'pickups': pickups,
+            'ready': True,
+        })
+
+
+
+@login_required(login_url="login/")   
+def pickupProfile(request, pickup_id):
+    pickup = PickUp.LogicPickUp.get(id=pickup_id)
+    return render(request, 'intranet/pickups/profile.html', 
+        {
+            'pickup': pickup,
+        })
+
+
+@login_required(login_url="login/")   
+def pickupPackage(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.LogicPackage.get(id=request.POST['package_id'])
+            pickup = PickUp.LogicPickUp.get(id=request.POST['pickup_id'])
+            pickup.package = package
+            pickup.deliverer = request.user
+            pickup.is_waiting = False
+            pickup.pickUpDate = datetime.now()
+            pickup.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)

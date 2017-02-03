@@ -65,7 +65,7 @@
                       <tr>
                         <th class="text-center">ID</th>
                         <th>Cliente</th>
-                        {% if payer %}
+                        {% if package.payer %}
                         <th>Consignatario</th>
                         {% else %}
                         <th>Proveedor</th>
@@ -79,7 +79,7 @@
                         <tr>
                             <td class="text-center">{{package.id}}</td>
                             <td>{{package.customer.name}}</td>
-                            {% if payer %}
+                            {% if package.payer %}
                             <td>{{package.consignee.name}}</td>
                             {% else %}
                             <td>{{package.provider.name}}</td>
