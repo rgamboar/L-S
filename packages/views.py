@@ -68,9 +68,6 @@ def package(request):
                     obj.customer=obj.provider
                 else:
                     obj.customer=obj.consignee
-                if obj.startAddress:
-                    obj.is_waiting=True
-                    obj.is_transmitter=True
                 if obj.finishAddress:
                     obj.is_reciever=True
                 obj.creator = request.user
@@ -87,9 +84,6 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.startAddress:
-                        obj.is_waiting=True
-                        obj.is_transmitter=True
                     if obj.finishAddress:
                         obj.is_reciever=True
                     obj.creator = request.user
@@ -110,9 +104,6 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.startAddress:
-                        obj.is_waiting=True
-                        obj.is_transmitter=True
                     if obj.finishAddress:
                         obj.is_reciever=True
                     obj.creator = request.user
@@ -137,9 +128,6 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.startAddress:
-                        obj.is_waiting=True
-                        obj.is_transmitter=True
                     if obj.finishAddress:
                         obj.is_reciever=True
                     obj.creator = request.user
@@ -154,7 +142,6 @@ def package(request):
         oldForm= form
         form = PackageForm(initial={
             'start': oldForm.cleaned_data['start'],
-            'startAddress': oldForm.cleaned_data['startAddress'],
             'finish': oldForm.cleaned_data['finish'],
             'finishAddress': oldForm.cleaned_data['finishAddress'],
             'provider': oldForm.cleaned_data['provider'],
@@ -251,7 +238,7 @@ def packagesFilter(request, start, finish, search, status, binicial, bfinal, rat
     elif status == "2":
         packages = Package.LogicPackage.filter(is_traveling=True)
     elif status == "3":
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False)
     elif status == "4":
         packages = Package.LogicPackage.filter(is_delivered=True)
     else:
@@ -287,7 +274,7 @@ def packageIndex(request, traveling=False, finish=False, delivered=False):
         packages = Package.LogicPackage.filter(is_traveling=True)
         page = "traveling"
     elif finish:
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False, is_transmitter=False)
+        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False)
         page = "finish"
     elif delivered:
         packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=True)
@@ -360,8 +347,6 @@ def packageProfile(request, package_id):
         return packageProfileTraveling(request, package)
     elif package.is_delivered:
         return packageProfileDelivered(request, package)
-    elif package.is_transmitter:
-        return packageProfileTransmitter(request, package)
     elif package.is_receiver:
         return packageProfileReceiver(request, package)
     else:
@@ -382,12 +367,6 @@ def packageProfileReceiver(request, package):
             'package': package,
         })
 
-@login_required(login_url="login/")
-def packageProfileTransmitter(request, package):
-    return render(request, 'intranet/packages/profileTransmitter.html', 
-        {
-            'package': package,
-        })
 
 @login_required(login_url="login/")
 def packageProfileDelivered(request, package):
@@ -444,11 +423,7 @@ def packageState(request):
         if request.is_ajax():
             package = Package.LogicPackage.get(id=request.POST['id'])
             temp= request.POST['state']
-            if temp == 'transmitter':
-                package.is_waiting = True
-                package.transmitter= request.user
-                package.transmitDate = datetime.now()
-            elif temp == 'delivered':
+            if temp == 'delivered':
                 package.is_delivered = True
                 package.deliverer= request.user
                 package.deliverDate = datetime.now()

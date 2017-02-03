@@ -14,15 +14,12 @@ class Package(models.Model):
 	lastDate = models.DateTimeField(auto_now=True, verbose_name="Ultima modificación")
 	createDate = models.DateTimeField(auto_now_add=True, verbose_name="Creacion")
 	deliverDate = models.DateTimeField(null=True, verbose_name="Entrega")
-	transmitDate = models.DateTimeField(null=True, verbose_name="Ido a buscar")
 
-	startAddress = models.CharField(max_length=300, null=True, verbose_name="Dirección origen")
 	finishAddress = models.CharField(max_length=300, null=True, verbose_name="Dirección destino")
 
 	is_waiting =models.BooleanField(default=True, verbose_name="Esta esperando?")
 	is_traveling =models.BooleanField(default=False, verbose_name="Esta viajando?")
 	is_delivered =models.BooleanField(default=False, verbose_name="Fue entregado?")
-	is_transmitter =models.BooleanField(default=False, verbose_name="Ir a buscar?")
 	is_receiver =models.BooleanField(default=False, verbose_name="Ir a entregar?")
 
 	is_boleta =models.BooleanField(default=False, verbose_name="Es boleta?")
@@ -47,7 +44,6 @@ class Package(models.Model):
 	
 	creator = models.ForeignKey(User, null=False, related_name='packageCreator', verbose_name="U. Creado")
 	deliverer = models.ForeignKey(User, null=True, related_name='packageDeliverer', verbose_name="U. Entregado")
-	transmitter = models.ForeignKey(User, null=True, related_name='packageTransmitter', verbose_name="U. Ir a buscar")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
 	objects = models.Manager()
 	LogicPackage = LogicPackageManager()

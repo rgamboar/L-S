@@ -44,6 +44,7 @@
                     <thead>
                       <tr>
                         <th>Rut</th>
+                        <th>ID</th>
                         <th>Nombre</th>
                         <th>Telefono</th>
                         <th>Representante</th>
@@ -56,6 +57,7 @@
                         {% for customer in customers %}
                             <tr>
                                 <td class="link rut" onclick="location.href='{% url 'customerProfile' customer.id %}'"><a>{{customer.rut}}</a></td>
+                                <td>{{customer.id}}</td>
                                 <td>{{customer.name}}</td>
                                 <td>{{customer.phone}}</td>
                                 <td>{{customer.rep}}</td>
