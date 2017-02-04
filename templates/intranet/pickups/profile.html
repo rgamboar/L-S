@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block extra_head %}
     <link href="{% static 'css/freight.css' %}" rel="stylesheet">
-
+    <link href="{% static 'css/print80.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -18,10 +18,13 @@
                     <thead>
                       <tr>
                         <th class="text-center">ID</th>
+                        <th>Cliente</th>
                         <th>Bodega</th>
                         <th>Dirección</th>
                         <th>Cantidad</th>
                         <th>Peso</th>
+                        <th>Camión</th>
+                        <th>Conductor</th>
                         <th>Fecha creacion</th>
                         <th>Guia de flete</th>
                         {% if is_waiting %}
@@ -35,10 +38,13 @@
                     <tbody>
                         <tr>
                             <td class="text-center">{{pickup.id}}</td>
+                            <td>{{pickup.customer.name}}</td>
                             <td>{{pickup.warehouse.name}}</td>
                             <td>{{pickup.address}}</td>
                             <td>{{pickup.quantity}}</td>
                             <td>{{pickup.weight}}</td>
+                            <td>{{pickup.truck.plate}}</td>
+                            <td>{{pickup.driver.name}}</td>
                             <td>{{pickup.createDate}}</td>
                             {% if is_waiting %}
                                 <td>
@@ -61,10 +67,116 @@
                 </div>
 
                 <a href="javascript:window.print()" class="btn btn-primary" role="button">Imprimir en 80mm</a>
-                <a href="{% url 'packagePdf' package.id %}" class="btn btn-primary" role="button">Imprimir</a>
 
         </div>
     </div>
+</div>
+
+
+
+
+<div id="print" class="row">
+<div class="title col-sm-12">
+L&amp;S
+</div>
+
+
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Recogida de carga:
+    </div>
+    <div class="col-xs-8">
+        {{pickup.id}}
+    </div>
+</div>
+
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Cliente:
+    </div>
+    <div class="col-xs-8">
+        {{pickup.customer.name}}
+    </div>
+</div>
+
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Cantidad:
+    </div>
+    <div class="col-xs-8">
+        {{pickup.quantity}}
+    </div>
+</div>
+
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Peso:
+    </div>
+    <div class="col-xs-8">
+        {{pickup.weight}}
+    </div>
+</div>
+
+<div class="line col-xs-12">
+    <div class="col-xs-4">
+        Fecha Inicio:
+    </div>
+    <div class="col-xs-8">
+        {{pickup.createDate}}
+    </div>
+</div>
+
+<div class="price col-xs-12">
+    Entregar a:
+
+
+<div class="line col-xs-12">
+    <div class="deliver col-xs-4">
+        Camión:
+    </div>
+    <div class="col-xs-8">
+        {{pickup.truck.plate}}
+    </div>
+</div>
+
+<div class="line col-xs-12">
+    <div class="deliver col-xs-4">
+        Conductor:
+    </div>
+    <div class="col-xs-8">
+        {{pickup.driver.name}}
+    </div>
+</div>
+</div>
+
+<div class="price col-xs-12">
+    Direccion de retiro:
+
+
+<div class="line col-xs-12">
+    <div class="address col-xs-12">
+        {{pickup.address}}
+    </div>
+</div>
+
+
+</div>
+
+<div class="jump col-xs-12">
+</div>
+<div class="line col-xs-12">
+    <div class="sign col-xs-5">
+        Encargado
+    </div>
+    <div class="col-xs-2">
+    </div>
+    <div class="sign col-xs-5">
+        Cliente
+    </div>
+</div>
+
+
+
 </div>
 
 

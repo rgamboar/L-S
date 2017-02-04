@@ -236,7 +236,18 @@ L&amp;S
     </div>
 </div>
 
+{% if package.finishAddress %}
 
+<div class="price col-xs-12">
+    <div class="col-xs-12">
+        Direccion de entrega:
+    </div>
+    <div class="col-xs-12 address">
+        {{package.finishAddress}}
+    </div>
+</div>
+
+{% endif %}
 
 <div class="jump col-xs-12">
 </div>

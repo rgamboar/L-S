@@ -79,6 +79,8 @@ class PickUp(models.Model):
 	customer = models.ForeignKey(Customer, null=False, verbose_name="Cliente", related_name='pickUpCustomer')
 
 	warehouse = models.ForeignKey(Warehouse, null=False, related_name='pickUpWarehouse', verbose_name="Bodega")
+	truck = models.ForeignKey(Truck, null=True, verbose_name="Camion")
+	driver = models.ForeignKey(Driver, null=True, verbose_name="Conductor")
 
 	package = models.ForeignKey(Package, null=True, related_name='pickUpPackage', verbose_name="Guia de flete")
 	

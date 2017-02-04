@@ -31,6 +31,8 @@
   font-weight: bold;
 }
 
+
+
 @media print {
   @page{
     size: 80mm 200mm;
@@ -133,6 +135,8 @@
 .col-xs-11,
 .col-xs-12 {
 float: left !important;
+padding-left: 0px;
+padding-right: 0px;
 }
 
 body {
@@ -165,6 +169,15 @@ form,
 ul.links.list-inline,
 ul.action-links {
   display:none !important;
+}
+
+.address {
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+.deliver {
+  padding-left: 20px;
 }
 
 }

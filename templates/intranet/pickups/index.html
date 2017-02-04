@@ -21,8 +21,10 @@
                         <th>Dirección</th>
                         <th>Cantidad</th>
                         <th>Peso</th>
+                        <th>Camión</th>
+                        <th>Conductor</th>
                         <th>Fecha creacion</th>
-                        <th>Guia de flete</th>
+                        <th>Guia</th>
                         {% if not ready %}
                             <th></th>
                         {% else %}
@@ -33,11 +35,13 @@
                     <tbody>
                         {% for pickup in pickups %}
                             <tr>
-                                <td class="link" onclick="location.href='{% url 'pickupProfile' pickups.id %}'"><a>{{pickup.id}}</a></td>
+                                <td class="link" onclick="location.href='{% url 'pickupProfile' pickup.id %}'"><a>{{pickup.id}}</a></td>
                                 <td>{{pickup.warehouse.name}}</td>
                                 <td>{{pickup.address}}</td>
                                 <td>{{pickup.quantity}}</td>
                                 <td>{{pickup.weight}}</td>
+                                <td>{{pickup.truck.plate}}</td>
+                                <td>{{pickup.driver.name}}</td>
                                 <td>{{pickup.createDate}}</td>
                                 {% if not ready %}
                                     <td>

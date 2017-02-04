@@ -41,10 +41,12 @@ class PickUpForm(forms.ModelForm):
 	customer = forms.ModelChoiceField(label='Cliente',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'))
 	quantity = forms.IntegerField(label='Cantidad')
 	weight = forms.CharField(label='Peso',max_length=100, required=False)
+	truck = forms.ModelChoiceField(label='Camión',queryset=Truck.LogicTruck.all(), required=False)
+	driver = forms.ModelChoiceField(label='Conductor',queryset=Driver.LogicDriver.all(), required=False)
 
 	class Meta:
 		model = PickUp
-		fields = ['warehouse','address','customer', 'quantity','weight']
+		fields = ['warehouse','address','customer', 'quantity','weight','truck','driver']
 
 
 

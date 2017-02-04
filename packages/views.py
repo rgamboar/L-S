@@ -45,6 +45,7 @@ def packagePdf(request, package_id=1):
 
 @login_required(login_url="login/")
 def package(request):
+    package=False
     success=False
     customerCheck= False
     makeProvider= False
@@ -72,6 +73,7 @@ def package(request):
                     obj.is_reciever=True
                 obj.creator = request.user
                 obj.save()
+                package = obj
                 success=True
             elif data['provider']:
                 if consignee.is_valid() and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
@@ -88,6 +90,7 @@ def package(request):
                         obj.is_reciever=True
                     obj.creator = request.user
                     obj.save()
+                    package = obj
                     success=True
                 else:
                     customerCheck=True
@@ -108,6 +111,7 @@ def package(request):
                         obj.is_reciever=True
                     obj.creator = request.user
                     obj.save()
+                    package = obj
                     success=True
                 else:
                     customerCheck=True
@@ -132,6 +136,7 @@ def package(request):
                         obj.is_reciever=True
                     obj.creator = request.user
                     obj.save()
+                    package = obj
                     success=True
                 else:
                     customerCheck=True
@@ -160,7 +165,8 @@ def package(request):
         'makeProvider': makeProvider,
         'makeConsignee': makeConsignee,
         'rutProvider': rutProvider,
-        'rutConsignee': rutConsignee
+        'rutConsignee': rutConsignee,
+        'package': package
     })
 
 
@@ -449,6 +455,7 @@ def packageRate(request):
 @login_required(login_url="login/")   
 def pickup(request):
     success=False
+    pickup=False
     if request.method == 'POST':
         form = PickUpForm(request.POST)
         if form.is_valid():
@@ -456,11 +463,20 @@ def pickup(request):
             obj.creator = request.user
             obj.save()
             success=True
+            pickup=obj
+            form = PickUpForm(initial={
+                'warehouse': form.cleaned_data['warehouse'],
+                'address': form.cleaned_data['address'],
+                'customer': form.cleaned_data['customer'],
+                'truck': form.cleaned_data['truck'],
+                'driver': form.cleaned_data['driver'],
+                })
     else:
         form = PickUpForm()
     return render(request, 'intranet/pickups/create.html', {
         'form': form,
-        'success': success
+        'success': success,
+        'pickup': pickup
     })
 
 
