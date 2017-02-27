@@ -27,19 +27,19 @@
             <div class="col-sm-5 default-form">
                     {% csrf_token %}
                     {% for field in form %}
-                        <div class="form-group" {% if forloop.counter == 6 %}id="selectProvider"{% endif %}{% if forloop.counter == 7 %}id="selectConsignee"{% endif %}>
+                        <div class="form-group" {% if forloop.counter == 5 %}id="selectProvider"{% endif %}{% if forloop.counter == 6 %}id="selectConsignee"{% endif %}>
                             {{ field.label_tag }} {{ field }}
                             {% for err in field.errors %}
                                 <span class="error_message">{{ err }}</span>
                             {% endfor %}
                         </div>
-                        {% if forloop.counter == 6 %}
+                        {% if forloop.counter == 5 %}
                             <div class="form-group">
                                 <label for="checkProvider">Agregar Proveedor:</label>
                                 <input name="checkbox" type="checkbox" id="checkProvider" />
                             </div>
                         {% endif %}
-                        {% if forloop.counter == 7 %}
+                        {% if forloop.counter == 6 %}
                             <div class="form-group">
                                 <label for="checkboxConsignee">Agregar Consignatario:</label>
                                 <input name="checkbox" type="checkbox" id="checkboxConsignee" />
