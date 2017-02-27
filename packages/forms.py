@@ -10,7 +10,6 @@ class PackageForm(forms.ModelForm):
 	name = forms.CharField(label='Descripción',max_length=300, required=False)
 	
 	start = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
-	startAddress = forms.CharField(label='Direccion de origen',max_length=300, required=False)
 	
 	finish = forms.ModelChoiceField(label='Destino',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
 	finishAddress = forms.CharField(label='Direccion de destino',max_length=300, required=False)
@@ -33,7 +32,7 @@ class PackageForm(forms.ModelForm):
 
 	class Meta:
 		model = Package
-		fields = ['name','start','startAddress', 'finish','finishAddress','provider','consignee','payer' ,'risk','volume','quantity','weight','chance','rate','pay','is_boleta','boleta']
+		fields = ['name','start', 'finish','finishAddress','provider','consignee','payer' ,'risk','volume','quantity','weight','chance','rate','pay','is_boleta','boleta']
 
 class PickUpForm(forms.ModelForm):
 	warehouse = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
