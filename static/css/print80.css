@@ -1,5 +1,5 @@
 #print{
-  width:80mm;
+  width:77mm;
   visibility: hidden;
   margin: auto;
 }
@@ -8,8 +8,12 @@
   font-size: 12pt;
 }
 .title{
-  font-size: 80pt;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  font-size: 16pt;
   text-align: center;
+  border: 1px solid black;
 }
 
 .sign {
@@ -21,6 +25,9 @@
 .jump{
   height: 100px;
 }
+.littlejump{
+  height: 30px;
+}
 
 .price{
   margin-top: 30px;
@@ -29,6 +36,10 @@
 
 .bold {
   font-weight: bold;
+}
+
+.center {
+  text-align: center;
 }
 
 
