@@ -3,9 +3,17 @@
 {% load package_80 %}
 {% block extra_head %}
     <link href="{% static 'css/print80.css' %}" rel="stylesheet">
+
+    <script type="text/javascript" src="{% static 'fancybox/jquery.fancybox.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'fancybox/jquery.fancybox.min.css' %}" type="text/css" media="screen" />
+
 {% endblock %}
 {% block content %}
 
+<form action="{% url 'package'%}" method="post" id="form1">
+
+
+<div style="display:none"><div id="data">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div></div>
 <div class="container">
         <div class="jumbotron">
         <div class="row">
@@ -21,10 +29,9 @@
                       <strong>No ingreso a un proveedor o consignatario correctamente!</strong>
                     </div>
                 {% endif %}
-        {% if form %}
             <div class="col-sm-1">
             </div>
-            <form action="{% url 'package'%}" method="post">
+
             <div class="col-sm-5 default-form">
                     {% csrf_token %}
                     {% for field in form %}
@@ -48,7 +55,7 @@
                         {% endif %}
 
                     {% endfor %}
-                <input type="submit" value="Crear" />
+
             </div>
             <div class="col-sm-5 default-form">
                 <div class="panel-group">
@@ -98,15 +105,166 @@
                 
 
             </div>
-            </form>
+
             <div class="col-sm-1">
             </div>  
+
+
             
 
-        {% endif %}
-        </div>
+            
+
+        </div> 
+
+<button data-fancybox="" data-src="#modal" href="javascript:;" id="confirmacion">Crear</button>
     </div>
 </div>
+
+
+<div id="modal" style="display: none; padding: 50px 5vw; max-width: 600px; min-width: 600px;">
+    <h2>Guia de Flete</h2>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Descripción:
+        </div>
+        <div class="bold col-xs-8" id="Cdescripcion">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Origen:
+        </div>
+        <div class="bold col-xs-8" id="Corigen">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Destino:
+        </div>
+        <div class="bold col-xs-8" id="Cdestino">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Direccion de destino:
+        </div>
+        <div class="bold col-xs-8" id="Cdireccion">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Proveedor:
+        </div>
+        <div class="bold col-xs-8" id="Cproveedor">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Consignatario:
+        </div>
+        <div class="bold col-xs-8" id="Cconsignatario">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Cliente:
+        </div>
+        <div class="bold col-xs-8" id="Ccliente">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Riesgo:
+        </div>
+        <div class="bold col-xs-8" id="Criesgo">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Volumen:
+        </div>
+        <div class="bold col-xs-8" id="Cvolumen">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Cantidad:
+        </div>
+        <div class="bold col-xs-8" id="Ccantidad">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Peso:
+        </div>
+        <div class="bold col-xs-8" id="Cpeso">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Oportunidad:
+        </div>
+        <div class="bold col-xs-8" id="Coportunidad">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Tarifado:
+        </div>
+        <div class="bold col-xs-8" id="Ctarifado">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            F. Pago:
+        </div>
+        <div class="bold col-xs-8" id="CFpago">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Boleta o Factura?:
+        </div>
+        <div class="bold col-xs-8" id="CBF">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            Numero de boleta:
+        </div>
+        <div class="bold col-xs-8" id="Cboleta">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
+            <button type="submit" form="form1" value="Submit">Crear</button>
+        </div>
+        <div class="col-xs-8">
+        </div>
+    </div>
+
+
+
+</div>
+
+</form>
 
 {% show_print_80 package %}
 
@@ -114,18 +272,42 @@
 <script type="text/javascript">
     
 $(function() {
-  $(checkProvider).click(function() {
-    $('#id_f-provider').val(null).trigger('change');
-    $("#provider").toggleClass('hidden');
-    $("#selectProvider").toggleClass('hidden');
-    
-  });
-  $(checkboxConsignee).click(function() {
-    $('#id_f-consignee').val(null).trigger('change');    
-    $("#consignee").toggleClass('hidden');
-    $("#selectConsignee").toggleClass('hidden');
-  });
+    $(checkProvider).click(function() {
+        $('#id_f-provider').val(null).trigger('change');
+        $("#provider").toggleClass('hidden');
+        $("#selectProvider").toggleClass('hidden');
+    });
+    $(checkboxConsignee).click(function() {
+        $('#id_f-consignee').val(null).trigger('change');    
+        $("#consignee").toggleClass('hidden');
+        $("#selectConsignee").toggleClass('hidden');
+    });
+
+
+    $( "#confirmacion" ).click(function() {
+      $('#Cdescripcion').text($('#id_f-name').val());
+      $('#Corigen').text($('#id_f-start :selected').text());
+      $('#Cdestino').text($('#id_f-finish :selected').text());
+      $('#Cdireccion').text($('#id_f-finishAddress').val());
+      $('#Cproveedor').text($('#id_f-provider :selected').text());
+      $('#Cconsignatario').text($('#id_f-consignee :selected').text());
+      $('#Ccliente').text($('#id_f-payer :selected').text());
+      $('#Criesgo').text($('#id_f-risk :selected').text());
+      $('#Cvolumen').text($('#id_f-volume').val());
+      $('#Ccantidad').text($('#id_f-quantity').val());
+      $('#Cpeso').text($('#id_f-weight').val());
+      $('#Coportunidad').text($('#id_f-chance').val());
+      $('#Ctarifado').text($('#id_f-rate').val());
+      $('#CFpago').text($('#id_f-pay :selected').text());
+      $('#CBF').text($('#id_f-is_boleta :selected').text());
+      $('#Cboleta').text($('#id_f-boleta').val());
+    });
+
+
+
 });
+
+
 
 
 $( document ).ready(function() {
@@ -139,7 +321,11 @@ $( document ).ready(function() {
     $("#consignee").toggleClass('hidden');
     $("#selectConsignee").toggleClass('hidden');
     {% endif %}
+
 });
+
+
+
 
 </script>
 {% endblock %}
