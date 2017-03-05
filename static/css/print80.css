@@ -7,6 +7,9 @@
 .line{
   font-size: 12pt;
 }
+.number{
+  font-size: 20px;
+}
 .title{
   box-sizing: border-box;
   -moz-box-sizing: border-box;
