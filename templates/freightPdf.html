@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -153,14 +154,14 @@
                             {% if package.rate == 0 %}
                                 Por tarifar
                             {% else %}
-                                {{package.rate}}
+                                ${{package.rate|intcomma}}
                             {% endif %}
                             </td>
                             <td>
                             {% if package.rate == 0 %}
                                 Por tarifar
                             {% else %}
-                                {{package.total}}
+                                ${{package.total|intcomma}}
                             {% endif %}
                             </td>
                         </tr>
@@ -175,7 +176,7 @@
                             <td class="last-line"></td>                            
                             <td class="last-line"></td>
                             <td>Total</td>
-                            <td>{{freight.totalRate}}</td>
+                            <td>${{freight.totalRate|intcomma}}</td>
 
                         </tr>
                     </tbody>

@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -125,14 +126,14 @@
                                 {% if package.rate == 0 %}
                                       No definido
                                 {% else %}
-                                    {{package.rate}}    
+                                    ${{package.rate|intcomma}}    
                                 {% endif %}
                             </td>
                             <td>
                                 {% if package.rate == 0 %}
                                       No definido
                                 {% else %}
-                                    {{package.total}}    
+                                    ${{package.total|intcomma}}    
                                 {% endif %}
                             </td>
                         </tr>
