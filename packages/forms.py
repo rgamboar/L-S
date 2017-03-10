@@ -20,11 +20,13 @@ class PackageForm(forms.ModelForm):
 	payer = forms.TypedChoiceField(label="Cliente" ,coerce=lambda x: x =='True', choices=((True, 'Proveedor'),(False, 'Consignatario')))
 
 	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
+	packaging = forms.ChoiceField(label="Embalage", choices=[("Regular", "Regular"),("Bueno", "Bueno"),("Malo", "Malo")])
 	volume = forms.CharField(label='Volumen',max_length=100, required=False)
 	quantity = forms.IntegerField(label='Cantidad')
-	weight = forms.CharField(label='Peso',max_length=100, required=False)
-	chance = forms.CharField(label='Oportunidad',max_length=100, required=False)
+	weight = forms.IntegerField(label='Peso', required=False)
+	chance = forms.ChoiceField(label="Oportunidad", choices=[("Normal", "Normal"),("Express", "Express")])
 	rate = forms.IntegerField(label='Tarifado')
+	is_weight = forms.TypedChoiceField(label="Forma de Tarifado" ,coerce=lambda x: x =='True', choices=((False, 'Cantidad'), (True, 'Kilogramos')))
 	pay = forms.TypedChoiceField(label="F. Pago" ,coerce=lambda x: x =='True', choices=((False, 'Contado'), (True, 'Credito')))
 
 	is_boleta = forms.TypedChoiceField(label="Boleta o Factura?" ,coerce=lambda x: x =='True', choices=((False, 'Factura'), (True, 'Boleta')))
@@ -32,7 +34,7 @@ class PackageForm(forms.ModelForm):
 
 	class Meta:
 		model = Package
-		fields = ['name','start', 'finish','finishAddress','provider','consignee','payer' ,'risk','volume','quantity','weight','chance','rate','pay','is_boleta','boleta']
+		fields = ['name','start', 'finish','finishAddress','provider','consignee','payer' ,'risk','packaging','volume','quantity','weight','chance','is_weight','rate','pay','is_boleta','boleta']
 
 class PickUpForm(forms.ModelForm):
 	warehouse = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)
