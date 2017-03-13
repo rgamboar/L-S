@@ -17,7 +17,7 @@ class PackageForm(forms.ModelForm):
 	provider = forms.ModelChoiceField(label='Proveedor',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'), required=False)
 	consignee = forms.ModelChoiceField(label='Consignatario',queryset=Customer.LogicCustomer.all(), widget=autocomplete.ModelSelect2(url='customer-autocomplete'), required=False)
 
-	payer = forms.TypedChoiceField(label="Cliente" ,coerce=lambda x: x =='True', choices=((True, 'Proveedor'),(False, 'Consignatario')))
+	payerMiddle = forms.ChoiceField(label="Cliente", choices=[("Null", "-----"),("True", "Proveedor"),("False", "Consignatario")])
 
 	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
 	packaging = forms.ChoiceField(label="Embalage", choices=[("Regular", "Regular"),("Bueno", "Bueno"),("Malo", "Malo")])
@@ -34,7 +34,7 @@ class PackageForm(forms.ModelForm):
 
 	class Meta:
 		model = Package
-		fields = ['name','start', 'finish','finishAddress','provider','consignee','payer' ,'risk','packaging','volume','quantity','weight','chance','is_weight','rate','pay','is_boleta','boleta']
+		fields = ['name','start', 'finish','finishAddress','provider','consignee','payerMiddle' ,'risk','packaging','volume','quantity','weight','chance','is_weight','rate','pay','is_boleta','boleta']
 
 class PickUpForm(forms.ModelForm):
 	warehouse = forms.ModelChoiceField(label='Origen',queryset=Warehouse.LogicWarehouse.all(), empty_label=None)

@@ -228,6 +228,14 @@
 
     <div class="conf col-xs-12">
         <div class="col-xs-4">
+            Forma de Tarifado:
+        </div>
+        <div class="bold col-xs-8" id="CFtarifado">
+        </div>
+    </div>
+
+    <div class="conf col-xs-12">
+        <div class="col-xs-4">
             Tarifado:
         </div>
         <div class="bold col-xs-8" id="Ctarifado">
@@ -303,6 +311,7 @@ $(function() {
       $('#Ccantidad').text($('#id_f-quantity').val());
       $('#Cpeso').text($('#id_f-weight').val());
       $('#Coportunidad').text($('#id_f-chance').val());
+      $('#CFtarifado').text($('#id_f-is_weight :selected').text());
       $('#Ctarifado').text($('#id_f-rate').val());
       $('#CFpago').text($('#id_f-pay :selected').text());
       $('#CBF').text($('#id_f-is_boleta :selected').text());

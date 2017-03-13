@@ -7,6 +7,10 @@
 .line{
   font-size: 12pt;
 }
+.justify{
+  text-align: justify!important;
+  text-justify: inter-word!important;
+}
 .number{
   font-size: 20px;
 }

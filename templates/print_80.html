@@ -27,52 +27,86 @@ Fonos: 227792184 - 227766879
     </div>
 </div>
 
-<div class="line col-xs-12">
-    <div class="col-xs-4">
-        Cliente:
+{% if package.customer %}
+    <div class="line col-xs-12">
+        <div class="col-xs-4">
+            Cliente:
+        </div>
+        <div class="col-xs-8">
+            {{package.customer.name}}
+            {% if package.customer.phone %}
+                {% if package.customer.phone != "0" %}
+                    <br>
+                    {{package.customer.phone}}
+                {% endif %}        
+            {% endif %}
+        </div>
     </div>
-    <div class="col-xs-8">
-        {{package.customer.name}}
-        {% if package.customer.phone %}
-            {% if package.customer.phone != "0" %}
-                <br>
-                {{package.customer.phone}}
-            {% endif %}        
-        {% endif %}
-    </div>
-</div>
 
-{% if package.payer %}
-<div class="line col-xs-12">
-    <div class="col-xs-4">
-        Consig.:
+    {% if package.payer %}
+    <div class="line col-xs-12">
+        <div class="col-xs-4">
+            Consig.:
+        </div>
+        <div class="col-xs-8">
+            {{package.consignee.name}} 
+            {% if package.consignee.phone %}
+                {% if package.consignee.phone != "0" %}
+                    <br>
+                    {{package.consignee.phone}}
+                {% endif %}        
+            {% endif %}
+        </div>
     </div>
-    <div class="col-xs-8">
-        {{package.consignee.name}} 
-        {% if package.consignee.phone %}
-            {% if package.consignee.phone != "0" %}
-                <br>
-                {{package.consignee.phone}}
-            {% endif %}        
-        {% endif %}
-    </div>
-</div>
 
+    {% else %}
+    <div class="line col-xs-12">
+        <div class="col-xs-4">
+            Proveedor:
+        </div>
+        <div class="col-xs-8">
+            {{package.provider.name}}
+            {% if package.provider.phone %}
+                {% if package.provider.phone != "0" %}
+                    <br>
+                    {{package.provider.phone}}
+                {% endif %}        
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 {% else %}
-<div class="line col-xs-12">
-    <div class="col-xs-4">
-        Proveedor:
+
+    <div class="line col-xs-12">
+        <div class="col-xs-4">
+            Consig.:
+        </div>
+        <div class="col-xs-8">
+            {{package.consignee.name}} 
+            {% if package.consignee.phone %}
+                {% if package.consignee.phone != "0" %}
+                    <br>
+                    {{package.consignee.phone}}
+                {% endif %}        
+            {% endif %}
+        </div>
     </div>
-    <div class="col-xs-8">
-        {{package.provider.name}}
-        {% if package.provider.phone %}
-            {% if package.provider.phone != "0" %}
-                <br>
-                {{package.provider.phone}}
-            {% endif %}        
-        {% endif %}
+
+    <div class="line col-xs-12">
+        <div class="col-xs-4">
+            Proveedor:
+        </div>
+        <div class="col-xs-8">
+            {{package.provider.name}}
+            {% if package.provider.phone %}
+                {% if package.provider.phone != "0" %}
+                    <br>
+                    {{package.provider.phone}}
+                {% endif %}        
+            {% endif %}
+        </div>
     </div>
-</div>
+
 {% endif %}
 
 <div class="line col-xs-12">
@@ -98,7 +132,11 @@ Fonos: 227792184 - 227766879
         Volumen:
     </div>
     <div class="col-xs-8">
-        {{package.volume}}
+        {% if package.volume %}
+            {{package.volume}}
+        {% else %}
+            No determinado
+        {% endif %}
     </div>
 </div>
 
@@ -107,7 +145,11 @@ Fonos: 227792184 - 227766879
         Cantidad:
     </div>
     <div class="col-xs-8">
-        {{package.quantity}}
+        {% if package.quantity %}
+            {{package.quantity}}
+        {% else %}
+            No determinado
+        {% endif %}
     </div>
 </div>
 
@@ -116,7 +158,11 @@ Fonos: 227792184 - 227766879
         Peso:
     </div>
     <div class="col-xs-8">
-        {{package.weight}}
+        {% if package.weight %}
+            {{package.weight}} kg
+        {% else %}
+            No determinado
+        {% endif %}
     </div>
 </div>
 
@@ -140,7 +186,11 @@ Fonos: 227792184 - 227766879
 
 <div class="price col-xs-12">
     <div class="col-xs-4">
-        Unitario:
+        {% if package.is_weight %}
+            Kilogramo:
+        {% else %}
+            Unitario:
+        {% endif %}
     </div>
     <div class="col-xs-8">
         {% if package.rate == 0 %}
@@ -190,8 +240,18 @@ Fonos: 227792184 - 227766879
     </div>
 </div>
 
-<div class="center line col-xs-12">
-El embalaje es responsabilidad del proveedor
+<div class="center line justify col-xs-12">
+El embalaje es responsabilidad del proveedor. La empresa NO responde por cargas con embalaje inadecuado
+</div>
+
+<div class="littlejump col-xs-12">
+</div>
+
+<div class="center line justify col-xs-12">
+No se responderá por mercaderías que no son retiradas desde nuestras bodegas dentro de los 5 días desde la notificación al igual que aquellas cargas que no sean entregadas la destinatario por causas no imputables a Transportes L&amp;S Ltda, se notificará telefónicamente o por escrito al remitente quien deberá pagar todos los costos (ida y vuelta)agregándose bodegaje por cada día que supere el plazo establecido (5) días desde la notificación .A contar del 6 día se cobrará 2% diario del valor del flete la empresa no responderá por aquellas mercaderías que no sean retiradas dentro de 60 días .
+</div>
+
+<div class="littlejump col-xs-12">
 </div>
 
 <div class="center line col-xs-12">

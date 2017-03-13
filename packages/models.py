@@ -39,7 +39,7 @@ class Package(models.Model):
 	rate = models.IntegerField(null=False, verbose_name="Tarifado")
 	credit = models.BooleanField(default=False, verbose_name="Forma de pago")
 
-	customer = models.ForeignKey(Customer, null=False, verbose_name="Cliente", related_name='packageCustomer')
+	customer = models.ForeignKey(Customer, null=True, verbose_name="Cliente", related_name='packageCustomer')
 	provider = models.ForeignKey(Customer, null=False, verbose_name="Prooveedor", related_name='packageProvider')
 	consignee = models.ForeignKey(Customer, null=False, verbose_name="Consignatario", related_name='packageConsignee')
 	payer = models.BooleanField(default=False, verbose_name="Paga el proveedor?")

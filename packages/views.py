@@ -65,10 +65,12 @@ def package(request):
                 makeConsignee = True
             if data['provider'] and data['consignee']:
                 obj = form.save(commit=False)
-                if obj.payer:
+                if obj.payer == "Proveedor":
                     obj.customer=obj.provider
-                else:
+                elif obj.payer == "Consignatario":
                     obj.customer=obj.consignee
+                else:
+                    obj.customer = None
                 if obj.finishAddress:
                     obj.is_reciever=True
                 obj.creator = request.user
