@@ -538,3 +538,4 @@ def pickupPackage(request):
             return JsonResponse({'error': False})
         else:
             return freightIndex(request)
+

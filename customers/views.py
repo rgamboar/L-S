@@ -144,6 +144,12 @@ def customerIndex(request):
 
 @login_required(login_url="login/")
 def customerProfile(request, customer_id):
+    if customer_id == "None":
+        own_packages = Package.LogicPackage.filter(customer=None)
+        return render(request, 'intranet/customers/profileNone.html', 
+        {
+            'own_packages' : own_packages,
+        })
     customer = Customer.LogicCustomer.get(id=customer_id)
     own_packages = Package.LogicPackage.filter(customer=customer)
     num_page = request.GET.get('page', 1)
@@ -155,3 +161,23 @@ def customerProfile(request, customer_id):
             'own_packages' : own_packages,
         })
 
+@login_required(login_url="login/")   
+def packageClient(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.LogicPackage.get(id=request.POST['package_id'])
+            client = request.POST['client']
+            print(client)
+            if client == "1":
+                package.customer=package.provider
+                package.payer=1
+                package.save()
+            elif client == "0":
+                package.customer=package.consignee
+                package.payer=0
+                package.save()
+            else:
+                return JsonResponse({'error': True})
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)

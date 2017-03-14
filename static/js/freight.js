@@ -63,7 +63,6 @@ function change_freight_driver(freight, freight_id){
 
 
 function change_freight_load(freight_id, package_finish){
-	console.log(package_finish);
 	$.ajax({
 		url: freightLoad,
 		method: 'POST',
@@ -82,7 +81,6 @@ function change_freight_load(freight_id, package_finish){
 
 function change_freight_state(freight, state){
 	if ($("#selectDriver").val() == '-' || $("#selectTruck").val() == '-'){
-		console.log("Logrado");
 	}
 	else {
 		$.ajax({

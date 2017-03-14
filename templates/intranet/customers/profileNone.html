@@ -1,0 +1,101 @@
+{% extends 'intranet/base.html' %}
+{% load staticfiles %}
+{% block extra_head %}  
+    <link href="{% static 'css/freight.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+        <div class="jumbotron">
+        <div class="row">
+        <h3 class="text-center"> Paquetes enviados sin cliente determinado </h3>
+            <div class="col-sm-12 default-form">
+                        
+                <div class="table-responsive">   
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th class="text-center">ID</th>
+                            <th>Proveedor</th>
+                            <th>Consignatario</th>
+                            <th>Tarifado</th>
+                            <th>Fecha creacion</th>
+                            <th>Cliente</th>
+                            <th></th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody id="own">
+                            {% for package in own_packages %}
+                            <tr>
+                                <td class="link" onclick="location.href='{% url 'packageProfile' package.id %}'"><a>{{package.id}}</a></td>
+                                <td>{{package.provider}}</td>
+                                <td>{{package.consignee}}</td>
+                                <td>{{package.total}}</td>
+                                <td>{{package.createDate}}</td>
+                                <td>
+                                        <select id="select{{package.id}}">
+                                            <option value="-">----</option>
+                                            <option value="1">{{package.provider}}</option>
+                                            <option value="0">{{package.consignee}}</option>
+                                        </select>
+                                </td>
+                                <td>
+                                    <button type="submit" onclick="change_package_client({{package.id}});" class="btn btn-default">Guardar</button>
+                                </td>
+                                <td style="width: 30px;">
+                                    <i class="fa fa-check hidden" id="icon{{package.id}}" style="color: green;" aria-hidden="true"></i>
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4 text-center">
+
+                    <div class="pagination">
+                    <span class="step-links">
+                        {% if own_packages.has_previous %}
+                            <a href="?page={{ own_packages.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Pagina {{ own_packages.number }} de {{ own_packages.paginator.num_pages }}.
+                        </span>
+
+                        {% if own_packages.has_next %}
+                            <a href="?page={{ own_packages.next_page_number }}">Siguiente</a>
+                        {% endif %}
+                    </span>
+                </div>
+
+                </div>
+                <div class="col-sm-4">
+                </div>
+
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var changeClient = "{% url 'packageClient' %}";
+    var csrf_token = "{{ csrf_token }}";
+</script>
+
+
+
+
+<script src="{% static 'js/freight.js' %}"></script>
+<script src="{% static 'js/customer.js' %}"></script>
+{% endblock %}
