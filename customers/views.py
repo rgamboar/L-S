@@ -146,6 +146,9 @@ def customerIndex(request):
 def customerProfile(request, customer_id):
     if customer_id == "None":
         own_packages = Package.LogicPackage.filter(customer=None)
+        num_page = request.GET.get('page', 1)
+        paginator = Paginator(own_packages, 25)
+        own_packages = paginator.page(num_page)
         return render(request, 'intranet/customers/profileNone.html', 
         {
             'own_packages' : own_packages,
