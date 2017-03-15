@@ -73,6 +73,12 @@ def package(request):
                     obj.customer = None
                 if obj.finishAddress:
                     obj.is_reciever=True
+                if data['pay'] == "None":
+                    obj.unknown_pay_method = True
+                elif data['pay'] == "True":
+                    obj.credit = True
+                elif data['pay'] == "False":
+                    obj.credit = False
                 obj.creator = request.user
                 obj.save()
                 package = obj
@@ -88,8 +94,14 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.finishAddress:
-                        obj.is_reciever=True
+                    if data['pay'] == "None":
+                        obj.unknown_pay_method = True
+                    elif data['pay'] == "True":
+                        obj.credit = True
+                    elif data['pay'] == "False":
+                        obj.credit = False
+                    else:
+                        obj.credit = data['pay']
                     obj.creator = request.user
                     obj.save()
                     package = obj
@@ -111,6 +123,12 @@ def package(request):
                         obj.customer=obj.consignee
                     if obj.finishAddress:
                         obj.is_reciever=True
+                    if data['pay'] == "None":
+                        obj.unknown_pay_method = True
+                    elif data['pay'] == "True":
+                        obj.credit = True
+                    elif data['pay'] == "False":
+                        obj.credit = False
                     obj.creator = request.user
                     obj.save()
                     package = obj
@@ -136,6 +154,12 @@ def package(request):
                         obj.customer=obj.consignee
                     if obj.finishAddress:
                         obj.is_reciever=True
+                    if data['pay'] == "None":
+                        obj.unknown_pay_method = True
+                    elif data['pay'] == "True":
+                        obj.credit = True
+                    elif data['pay'] == "False":
+                        obj.credit = False
                     obj.creator = request.user
                     obj.save()
                     package = obj

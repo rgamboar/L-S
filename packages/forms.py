@@ -27,7 +27,7 @@ class PackageForm(forms.ModelForm):
 	chance = forms.ChoiceField(label="Oportunidad", choices=[("Normal", "Normal"),("Express", "Express")])
 	rate = forms.IntegerField(label='Tarifado')
 	is_weight = forms.TypedChoiceField(label="Forma de Tarifado" ,coerce=lambda x: x =='True', choices=((False, 'Cantidad'), (True, 'Kilogramos')))
-	pay = forms.TypedChoiceField(label="F. Pago" ,coerce=lambda x: x =='True', choices=((False, 'Contado'), (True, 'Credito')))
+	pay = forms.ChoiceField(label="F. Pago", choices=[("False", "Contado"),("True", "Credito"),("None", "-----")])
 
 	is_boleta = forms.TypedChoiceField(label="Boleta o Factura?" ,coerce=lambda x: x =='True', choices=((False, 'Factura'), (True, 'Boleta')))
 	boleta = forms.IntegerField(required=False, label="Numero de boleta")

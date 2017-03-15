@@ -37,7 +37,9 @@ class Package(models.Model):
 	chance = models.CharField(max_length=100, null=True, verbose_name="Oportunidad")
 	is_weight =models.BooleanField(default=False, verbose_name="Forma de Tarifado")
 	rate = models.IntegerField(null=False, verbose_name="Tarifado")
+	unknown_pay_method = models.BooleanField(default=False, verbose_name="Se desconoce forma de pago?")
 	credit = models.BooleanField(default=False, verbose_name="Forma de pago")
+	
 
 	customer = models.ForeignKey(Customer, null=True, verbose_name="Cliente", related_name='packageCustomer')
 	provider = models.ForeignKey(Customer, null=False, verbose_name="Prooveedor", related_name='packageProvider')
