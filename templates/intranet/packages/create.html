@@ -12,8 +12,6 @@
 
 <form action="{% url 'package'%}" method="post" id="form1">
 
-
-<div style="display:none"><div id="data">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div></div>
 <div class="container">
         <div class="jumbotron">
         <div class="row">
@@ -29,6 +27,14 @@
                       <strong>No ingreso a un proveedor o consignatario correctamente!</strong>
                     </div>
                 {% endif %}
+                {% if errors %}
+                    {% for value in errors %} 
+                        <div class="alert alert-danger">
+                            <strong>{{ value|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
             <div class="col-sm-1">
             </div>
 

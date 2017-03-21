@@ -44,6 +44,43 @@ def packagePdf(request, package_id=1):
         )
 
 @login_required(login_url="login/")
+def checkData(obj, data, form):
+    if obj.finishAddress:
+        obj.is_reciever=True
+    if data['pay'] == "None":
+        obj.unknown_pay_method = True
+    elif data['pay'] == "True":
+        obj.credit = True
+    elif data['pay'] == "False":
+        obj.credit = False
+    obj.creator = request.user
+    obj.save()   
+    package = obj
+    success=True
+
+    oldForm= form
+    form = PackageForm(initial={
+        'start': oldForm.cleaned_data['start'],
+        'finish': oldForm.cleaned_data['finish'],
+        'finishAddress': oldForm.cleaned_data['finishAddress'],
+        'provider': oldForm.cleaned_data['provider'],
+        'consignee': oldForm.cleaned_data['consignee'],
+        }, prefix="f") 
+    return render(request, 'intranet/packages/create.html', {
+        'form': form,
+        'success': success,
+        'provider': provider,
+        'consignee': consignee,
+        'customerCheck': customerCheck,
+        'makeProvider': makeProvider,
+        'makeConsignee': makeConsignee,
+        'rutProvider': rutProvider,
+        'rutConsignee': rutConsignee,
+        'package': package
+    })
+
+
+@login_required(login_url="login/")
 def package(request):
     package=False
     success=False
@@ -71,18 +108,8 @@ def package(request):
                     obj.customer=obj.consignee
                 else:
                     obj.customer = None
-                if obj.finishAddress:
-                    obj.is_reciever=True
-                if data['pay'] == "None":
-                    obj.unknown_pay_method = True
-                elif data['pay'] == "True":
-                    obj.credit = True
-                elif data['pay'] == "False":
-                    obj.credit = False
-                obj.creator = request.user
-                obj.save()
-                package = obj
-                success=True
+                return checkData(obj, data, form)
+
             elif data['provider']:
                 if consignee.is_valid() and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
                     data= consignee.cleaned_data
@@ -94,18 +121,7 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if data['pay'] == "None":
-                        obj.unknown_pay_method = True
-                    elif data['pay'] == "True":
-                        obj.credit = True
-                    elif data['pay'] == "False":
-                        obj.credit = False
-                    else:
-                        obj.credit = data['pay']
-                    obj.creator = request.user
-                    obj.save()
-                    package = obj
-                    success=True
+                    return checkData(obj, data, form)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
@@ -121,18 +137,7 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.finishAddress:
-                        obj.is_reciever=True
-                    if data['pay'] == "None":
-                        obj.unknown_pay_method = True
-                    elif data['pay'] == "True":
-                        obj.credit = True
-                    elif data['pay'] == "False":
-                        obj.credit = False
-                    obj.creator = request.user
-                    obj.save()
-                    package = obj
-                    success=True
+                    return checkData(data, obj)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=provider.cleaned_data['rut']):
@@ -152,18 +157,8 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.finishAddress:
-                        obj.is_reciever=True
-                    if data['pay'] == "None":
-                        obj.unknown_pay_method = True
-                    elif data['pay'] == "True":
-                        obj.credit = True
-                    elif data['pay'] == "False":
-                        obj.credit = False
-                    obj.creator = request.user
-                    obj.save()
-                    package = obj
-                    success=True
+                    return checkData(obj, data, form)
+
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=provider.cleaned_data['rut']):
@@ -171,6 +166,7 @@ def package(request):
                     if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
                         rutConsignee = True 
         oldForm= form
+        errors=oldForm.non_field_errors
         form = PackageForm(initial={
             'start': oldForm.cleaned_data['start'],
             'finish': oldForm.cleaned_data['finish'],
@@ -182,6 +178,7 @@ def package(request):
         form = PackageForm(prefix="f")
         provider=  FastCustomerForm(prefix="p")
         consignee= FastCustomerForm(prefix="c")
+        errors= None
     return render(request, 'intranet/packages/create.html', {
         'form': form,
         'success': success,
@@ -192,7 +189,8 @@ def package(request):
         'makeConsignee': makeConsignee,
         'rutProvider': rutProvider,
         'rutConsignee': rutConsignee,
-        'package': package
+        'package': package,
+        'errors': errors
     })
 
 
@@ -473,6 +471,26 @@ def packageRate(request):
             if rate> 0:
                 package.rate= rate
                 package.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
+
+@login_required(login_url="login/")   
+def packagePay(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.LogicPackage.get(id=request.POST['id'])
+            pay = request.POST['pay']
+            if pay == "Credito":
+                package.credit = True
+                package.unknown_pay_method = False 
+            if pay == "Contado":
+                package.credit = False
+                package.unknown_pay_method = False 
+            if pay == "-----":
+                package.credit = False
+                package.unknown_pay_method = True 
+            package.save()
             return JsonResponse({'error': False})
         else:
             return freightIndex(request)

@@ -47,6 +47,24 @@ function change_package_rate(){
 	});
 };
 
+function change_package_pay(){
+	var pay = $("#pay").val()
+	$.ajax({
+	url: changePackagePay,
+	method: 'POST',
+	beforeSend: function(xhr){
+		xhr.setRequestHeader("X-CSRFToken", csrf_token);
+	},
+	data: {
+		'id': package_id,
+		'pay': pay 
+		},
+	}).done(function(html){
+		location.reload(true);
+	});
+};
+
+
 function change_pickup_package(pickup_id){
 	console.log($('#'+pickup_id).val());
 	$.ajax({
