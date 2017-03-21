@@ -581,3 +581,17 @@ def pickupPackage(request):
         else:
             return freightIndex(request)
 
+@login_required(login_url="login/")   
+def packageChange(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.LogicPackage.get(id=request.POST['package_id'])
+            pickup = PickUp.LogicPickUp.get(id=request.POST['pickup_id'])
+            pickup.package = package
+            pickup.deliverer = request.user
+            pickup.is_waiting = False
+            pickup.pickUpDate = datetime.now()
+            pickup.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
