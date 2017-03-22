@@ -27,16 +27,16 @@ class Package(models.Model):
 	is_receiver =models.BooleanField(default=False, verbose_name="Ir a entregar?")
 
 	is_boleta =models.BooleanField(default=False, verbose_name="Es boleta?")
-	boleta = models.IntegerField(null=True, verbose_name="Boleta")
+	boleta = models.PositiveIntegerField(null=True, verbose_name="Boleta")
 
 	risk = models.CharField(max_length=100, null=True, verbose_name="Riesgo")
 	packaging = models.CharField(max_length=100, null=True, verbose_name="Embalage")
 	volume = models.CharField(max_length=100, null=True, verbose_name="Volumen")
-	quantity = models.IntegerField(null=True, verbose_name="Cantidad")
-	weight = models.IntegerField(null=True, verbose_name="Peso")
+	quantity = models.PositiveIntegerField(null=True, verbose_name="Cantidad")
+	weight = models.PositiveIntegerField(null=True, verbose_name="Peso")
 	chance = models.CharField(max_length=100, null=True, verbose_name="Oportunidad")
 	is_weight =models.BooleanField(default=False, verbose_name="Forma de Tarifado")
-	rate = models.IntegerField(null=False, verbose_name="Tarifado")
+	rate = models.PositiveIntegerField(null=False, verbose_name="Tarifado")
 	unknown_pay_method = models.BooleanField(default=False, verbose_name="Se desconoce forma de pago?")
 	credit = models.BooleanField(default=False, verbose_name="Forma de pago")
 	
@@ -50,7 +50,7 @@ class Package(models.Model):
 	start = models.ForeignKey(Warehouse, null=False, related_name='packageStart', verbose_name="Origen")
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish', verbose_name="Destino")
 	
-	old_id = models.IntegerField(null=True, verbose_name="Guia anterior")
+	old_id = models.PositiveIntegerField(null=True, verbose_name="Guia anterior")
 	old = models.BooleanField(default=False, verbose_name="Guia antigua")
 	creator = models.ForeignKey(User, null=False, related_name='packageCreator', verbose_name="U. Creado")
 	deliverer = models.ForeignKey(User, null=True, related_name='packageDeliverer', verbose_name="U. Entregado")
