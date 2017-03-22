@@ -109,7 +109,8 @@ def package(request):
                     obj.customer=obj.consignee
                 else:
                     obj.customer = None
-                return checkData(request, obj, data, form, provider,consignee)
+                return checkData(request, obj, data, form, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
 
             elif data['provider']:
                 if consignee.is_valid() and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
@@ -122,7 +123,8 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    return checkData(request, obj, data, form, provider,consignee)
+                    return checkData(request, obj, data, form, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
@@ -138,7 +140,8 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    return checkData(request, data, obj, provider,consignee)
+                    return checkData(request, data, obj, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=provider.cleaned_data['rut']):
@@ -158,7 +161,8 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    return checkData(request, obj, data, form, provider,consignee)
+                    return checkData(request, obj, data, form, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
 
                 else:
                     customerCheck=True
