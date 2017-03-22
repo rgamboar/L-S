@@ -7,7 +7,7 @@ from customers.models import *
 
 class LogicPackageManager(models.Manager):
     def get_queryset(self):
-        return super(LogicPackageManager, self).get_queryset().filter(delete=False)
+        return super(LogicPackageManager, self).get_queryset().filter(delete=False, old=False)
 
 class LogicPickUpManager(models.Manager):
     def get_queryset(self):
@@ -50,6 +50,8 @@ class Package(models.Model):
 	start = models.ForeignKey(Warehouse, null=False, related_name='packageStart', verbose_name="Origen")
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish', verbose_name="Destino")
 	
+	old_id = models.IntegerField(null=True, verbose_name="Guia anterior")
+	old = models.BooleanField(default=False, verbose_name="Guia antigua")
 	creator = models.ForeignKey(User, null=False, related_name='packageCreator', verbose_name="U. Creado")
 	deliverer = models.ForeignKey(User, null=True, related_name='packageDeliverer', verbose_name="U. Entregado")
 	delete = models.BooleanField(default=False, verbose_name="Borrado")

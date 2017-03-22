@@ -54,6 +54,11 @@ def checkData(request, obj, data, form, provider,consignee,
         obj.credit = True
     elif data['pay'] == "False":
         obj.credit = False
+    obj.old_id = request.POST.get('old_id')
+    if obj.old_id != None:
+        old = Package.LogicPackage.get(id=obj.old_id)
+        old.old = True
+        old.save()
     obj.creator = request.user
     obj.save()   
     package = obj
@@ -592,7 +597,6 @@ def packageChange(request, package_id):
     form = PackageForm(instance=package, prefix="f")
     provider=  FastCustomerForm(prefix="p")
     consignee= FastCustomerForm(prefix="c")
-    package=False
     success=False
     customerCheck= False
     makeProvider= False
@@ -600,7 +604,7 @@ def packageChange(request, package_id):
     rutProvider = False
     rutConsignee = False
     errors = None
-    return render(request, 'intranet/packages/create.html', {
+    return render(request, 'intranet/packages/createOther.html', {
         'form': form,
         'success': success,
         'provider': provider,
