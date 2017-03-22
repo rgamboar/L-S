@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
@@ -13,7 +13,6 @@ from django.template import Context
 from cgi import escape
 from bson import json_util
 import json
-
 from customers.forms import *
 from freights.forms import *
 from customers.models import *
@@ -218,6 +217,7 @@ def packageSearch(request):
             binicial = data['binicial']
             bfinal = data['bfinal']
             rate = data['rate']
+            modified = data['modified']
             save = data
             save['startDate']= json.dumps(save['startDate'], default=json_util.default)
             save['finishDate']= json.dumps(save['finishDate'], default=json_util.default)
@@ -227,7 +227,7 @@ def packageSearch(request):
 
             success=True
 
-            packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal, rate)
+            packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal, rate, modified)
 
             paginator = Paginator(packages, 25)
 
@@ -254,8 +254,9 @@ def packageSearch(request):
                 status = data['status']
                 binicial = data['binicial']
                 bfinal = data['bfinal']
+                modified = data['modified']
                 success=True
-                packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
+                packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal, modified)
                 paginator = Paginator(packages, 25)
                 page = paginator.page(num_page)
                 packages = page
@@ -272,17 +273,19 @@ def packageSearch(request):
 
 
 @login_required(login_url="login/")
-def packagesFilter(request, start, finish, search, status, binicial, bfinal, rate):
-    if status == "1":
-        packages = Package.LogicPackage.filter(is_waiting=True)
-    elif status == "2":
-        packages = Package.LogicPackage.filter(is_traveling=True)
-    elif status == "3":
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False)
-    elif status == "4":
-        packages = Package.LogicPackage.filter(is_delivered=True)
+def packagesFilter(request, start, finish, search, status, binicial, bfinal, rate, modified):
+    if modified:
+        packages = Package.objects.filter(old=True)
     else:
-        packages = Package.LogicPackage.all()
+        packages = Package.objects.all()
+    if status == "1":
+        packages = packages.filter(is_waiting=True)
+    elif status == "2":
+        packages = packages.filter(is_traveling=True)
+    elif status == "3":
+        packages= packages.filter(is_waiting=False, is_traveling=False, is_delivered=False)
+    elif status == "4":
+        packages = packages.filter(is_delivered=True)
     if rate:
         packages= packages.filter(rate='0')
     if (binicial and binicial != 'None'):
@@ -380,7 +383,9 @@ def packageIndex(request, traveling=False, finish=False, delivered=False):
 
 @login_required(login_url="login/")
 def packageProfile(request, package_id):
-    package = Package.LogicPackage.get(id=package_id)
+    package = Package.objects.get(id=package_id)
+    if package.delete == True:
+        return redirect('home')
     if package.is_waiting:
         return packageProfileWaiting(request, package)
     elif package.is_traveling:

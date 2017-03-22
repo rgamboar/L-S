@@ -95,9 +95,27 @@
                     <a onclick="change_package_rate();" class="btn btn-primary" role="button">Cambiar Tarifado</a>
                 </div>
             {% endif %}
+
+            <div class="col-sm-12 default-form" style="margin-top: 20px;">
+                <div class="form-group">
+                        <label for="pay">Forma de Pago:</label> 
+
+                        <select id="pay" name="f-payerMiddle" required="">
+                            <option value="-----">-----</option>
+                            <option value="Credito">Credito</option>
+                            <option value="Contado">Contado</option>
+                        </select>
+                        
+                    </div>
+                <a onclick="change_package_pay();" class="btn btn-primary" role="button">Cambiar F. Pago</a>
+            
+                <a class="btn btn-primary" role="button" href="{% url 'packageChange' package.id %}">Modificar guia de despacho</a>
+            </div>
         </div>
     </div>
 </div>
+
+
 
 {% load package_80 %}
 {% show_print_80 package %}
@@ -109,6 +127,7 @@
     var change = "{% url 'packageFreight' %}";
     var changePackageState = "{% url 'packageState' %}";
     var changePackageRate = "{% url 'packageRate' %}";
+    var changePackagePay = "{% url 'packagePay' %}";
     var csrf_token = "{{ csrf_token }}";
     var package_id = "{{ package.id }}"; 
 </script>
@@ -116,6 +135,11 @@
 
 
 
+
+
+<script src="{% static 'js/freight.js' %}"></script>
+<script src="{% static 'js/package.js' %}"></script>
+{% endblock %}
 
 <script src="{% static 'js/freight.js' %}"></script>
 <script src="{% static 'js/package.js' %}"></script>

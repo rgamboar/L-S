@@ -66,6 +66,7 @@ class SearchBoxForm(forms.Form):
 	binicial = forms.ModelChoiceField(label='Bodega Inicial',queryset=Warehouse.LogicWarehouse.all(), required=False)
 	bfinal = forms.ModelChoiceField(label='Bodega Final',queryset=Warehouse.LogicWarehouse.all(), required=False)
 	rate = forms.BooleanField(label='Mostrar solo por tarifar', required=False)
+	modified = forms.BooleanField(label='Mostrar las modificadas', required=False)
 
 	startDate = forms.DateTimeField(
 		label='Creacion desde',
