@@ -6,7 +6,7 @@ urlpatterns = [
 
 
     url(r'^guia/crear/$',  views.package, name='package'),
-    url(r'^guia/modificar/$',  views.packageChange, name='packageChange'),
+    url(r'^guia/modificar/(?P<package_id>.*)/$',  views.packageChange, name='packageChange'),
     url(r'^guia/buscar/$',  views.packageSearch, name='packageSearch'),
     
     url(r'^guia/origen/$',  views.packageIndex, name='packageIndex'),

@@ -44,7 +44,8 @@ def packagePdf(request, package_id=1):
         )
 
 @login_required(login_url="login/")
-def checkData(obj, data, form):
+def checkData(request, obj, data, form, provider,consignee,
+    customerCheck=False,makeProvider=False,makeConsignee=False,rutProvider=False,rutConsignee=False):
     if obj.finishAddress:
         obj.is_reciever=True
     if data['pay'] == "None":
@@ -108,7 +109,7 @@ def package(request):
                     obj.customer=obj.consignee
                 else:
                     obj.customer = None
-                return checkData(obj, data, form)
+                return checkData(request, obj, data, form, provider,consignee)
 
             elif data['provider']:
                 if consignee.is_valid() and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
@@ -121,7 +122,7 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    return checkData(obj, data, form)
+                    return checkData(request, obj, data, form, provider,consignee)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
@@ -137,7 +138,7 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    return checkData(data, obj)
+                    return checkData(request, data, obj, provider,consignee)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=provider.cleaned_data['rut']):
@@ -157,7 +158,7 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    return checkData(obj, data, form)
+                    return checkData(request, obj, data, form, provider,consignee)
 
                 else:
                     customerCheck=True
@@ -582,16 +583,30 @@ def pickupPackage(request):
             return freightIndex(request)
 
 @login_required(login_url="login/")   
-def packageChange(request):
-    if request.method == "POST":
-        if request.is_ajax():
-            package = Package.LogicPackage.get(id=request.POST['package_id'])
-            pickup = PickUp.LogicPickUp.get(id=request.POST['pickup_id'])
-            pickup.package = package
-            pickup.deliverer = request.user
-            pickup.is_waiting = False
-            pickup.pickUpDate = datetime.now()
-            pickup.save()
-            return JsonResponse({'error': False})
-        else:
-            return freightIndex(request)
+def packageChange(request, package_id):
+    package = Package.LogicPackage.get(id=package_id)
+    form = PackageForm(instance=package, prefix="f")
+    provider=  FastCustomerForm(prefix="p")
+    consignee= FastCustomerForm(prefix="c")
+    package=False
+    success=False
+    customerCheck= False
+    makeProvider= False
+    makeConsignee= False
+    rutProvider = False
+    rutConsignee = False
+    errors = None
+    return render(request, 'intranet/packages/create.html', {
+        'form': form,
+        'success': success,
+        'provider': provider,
+        'consignee': consignee,
+        'customerCheck': customerCheck,
+        'makeProvider': makeProvider,
+        'makeConsignee': makeConsignee,
+        'rutProvider': rutProvider,
+        'rutConsignee': rutConsignee,
+        'package': package,
+        'errors': errors
+    })
+
