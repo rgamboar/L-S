@@ -54,12 +54,15 @@ def checkData(request, obj, data, form, provider,consignee,
     elif data['pay'] == "False":
         obj.credit = False
     obj.old_id = request.POST.get('old_id')
+    obj.creator = request.user
+    obj.save()
     if obj.old_id != None:
         old = Package.LogicPackage.get(id=obj.old_id)
         old.old = True
         old.save()
-    obj.creator = request.user
-    obj.save()   
+        old_pickup = PickUp.LogicPickUp.get(package = obj.old_id)
+        old_pickup.package = obj
+        old_pickup.save()
     package = obj
     success=True
 
