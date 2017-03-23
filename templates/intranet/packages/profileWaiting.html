@@ -12,28 +12,19 @@
         <div class="jumbotron">
         <div class="row">
             <h3 class="text-center"> Guia de Flete N°{{package.id}}</h3>
-            {% if package.old %}
-            <h3 class="text-center"> ANULADA </h3>
-            {% endif %}
             
             <div class="col-sm-12 default-form">
             
-
               <div class="table-responsive">   
                 <table class="table">
                     <thead>
                       <tr>
                         <th class="text-center">ID</th>
-                        {% if package.customer %}
-                            <th>Cliente</th>
-                            {% if package.payer %}
-                                <th>Consignatario</th>
-                            {% else %}
-                                <th>Proveedor</th>
-                            {% endif %}
+                        <th>Cliente</th>
+                        {% if package.payer %}
+                        <th>Consignatario</th>
                         {% else %}
-                            <th>Consignatario</th>
-                            <th>Proveedor</th>
+                        <th>Proveedor</th>
                         {% endif %}
                         <th>Origen</th>
                         <th>Destino</th>
@@ -42,16 +33,11 @@
                     <tbody>
                         <tr>
                             <td class="text-center">{{package.id}}</td>
-                            {% if package.customer %}
-                                <td class="link" onclick="location.href='{% url 'customerProfile' package.customer.id %}'"><a>{{package.customer.name}}</a></td>
-                                {% if package.payer %}
-                                    <td>{{package.consignee.name}}</td>
-                                {% else %}
-                                    <td>{{package.provider.name}}</td>
-                                {% endif %}
+                            <td class="link" onclick="location.href='{% url 'customerProfile' package.customer.id %}'"><a>{{package.customer.name}}</a></td>
+                            {% if package.payer %}
+                            <td>{{package.consignee.name}}</td>
                             {% else %}
-                                <td>{{package.consignee.name}}</td>
-                                <td>{{package.provider.name}}</td>
+                            <td>{{package.provider.name}}</td>
                             {% endif %}
                             <td>{{package.start.name}}</td>
                             <td>{{package.finish.name}}</td>
@@ -71,12 +57,7 @@
                         <th>Precio</th>
                         <th>Riesgo</th>
                         <th>Fecha creacion</th>
-                        {% if package.deliverDate %}
-                            <th>Fecha entrega</th>
-                        {% endif %}
-                        {% if package.freight %}
-                            <th>Manifiesto</th>
-                        {% endif %}
+                        <th>Manifiesto</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -93,31 +74,24 @@
                             </td>
                             <td>{{package.risk}}</td>
                             <td>{{package.createDate}}</td>
-                                {% if package.deliverDate %}
-                                    <td>{{package.deliverDate}}</td>            
-                                {% endif %}
-                            {% if package.freight %}
-                                <td class="link" onclick="location.href='{% url 'freightProfile' package.freight %}'"><a>{{package.freight}}: {{package.freight.truck.plate}} </a></td>
-                            {% endif %}
-                            {% if package.is_traveling %}
-                                    <td class="send">Viajando</td>
-                            {% elif package.old %}
-
-                            {% else %}
-                                {% if package.rate == 0 %}
-                                    <td class="send">Tarifar antes de entregar</td>
-                                {% else %}
-                                    <td onclick="change_freight_state({{package.id}},'delivered');" class="send">Entrega a cliente</td>
-                                {% endif %}
-                            {% endif %}
-                            
+                            <td>
+                                <select id="{{package.id}}" onchange="change_package_freight(this);">
+                                    {% if package.freight %}
+                                      <option value="{{package.freight.id}}">{{package.freight}}: {{package.freight.truck.plate}}</option>
+                                    {% endif %}
+                                      <option value="-">----</option>
+                                    {% for a in package.posibleFreight %}
+                                      <option value="{{a.id}}">{{a}}: {{a.truck.plate}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
                 </div>
-                
                 <a href="javascript:window.print()" class="btn btn-primary" role="button">Imprimir en 80mm</a>
                 <a href="{% url 'packagePdf' package.id %}" class="btn btn-primary" role="button">Imprimir</a>
+
             </div>
 
             {% if package.rate == 0 %}
@@ -142,6 +116,8 @@
                         
                     </div>
                 <a onclick="change_package_pay();" class="btn btn-primary" role="button">Cambiar F. Pago</a>
+            
+                <a class="btn btn-primary" role="button" href="{% url 'packageChange' package.id %}">Modificar guia de despacho</a>
             </div>
         </div>
     </div>

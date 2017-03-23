@@ -386,55 +386,20 @@ def packageProfile(request, package_id):
     package = Package.objects.get(id=package_id)
     if package.delete == True:
         return redirect('home')
-    if package.is_waiting:
+    if package.is_waiting and not package.old:
         return packageProfileWaiting(request, package)
-    elif package.is_traveling:
-        return packageProfileTraveling(request, package)
-    elif package.is_delivered:
-        return packageProfileDelivered(request, package)
-    elif package.is_receiver:
-        return packageProfileReceiver(request, package)
     else:
-        return packageProfileFinish(request, package)
-
-
-@login_required(login_url="login/")
-def packageProfileFinish(request, package):
-    return render(request, 'intranet/packages/profileFinish.html', 
+        return render(request, 'intranet/packages/profile.html', 
         {
             'package': package,
         })
-
-@login_required(login_url="login/")
-def packageProfileReceiver(request, package):
-    return render(request, 'intranet/packages/profileReceiver.html', 
-        {
-            'package': package,
-        })
-
-
-@login_required(login_url="login/")
-def packageProfileDelivered(request, package):
-    return render(request, 'intranet/packages/profileDelivered.html', 
-        {
-            'package': package,
-        })
-
-
-@login_required(login_url="login/")
-def packageProfileTraveling(request, package):
-    return render(request, 'intranet/packages/profileTraveling.html', 
-        {
-            'package': package,
-        })
-
 
 @login_required(login_url="login/")
 def packageProfileWaiting(request, package):
     package.posibleFreight= Freight.LogicFreight.filter(start=package.start, finish= package.finish, is_waiting= True)
     if package.freight:
         package.posibleFreight = package.posibleFreight.exclude(id= package.freight.id)
-    return render(request, 'intranet/packages/profile.html', 
+    return render(request, 'intranet/packages/profileWaiting.html', 
         {
             'package': package,
         })

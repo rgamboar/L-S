@@ -73,6 +73,9 @@ class Package(models.Model):
 		else:
 			return self.quantity*self.rate
 
+	def pickup(self):
+		return PickUp.objects.get(package = self.id)
+
 
 class PickUp(models.Model):
 	lastDate = models.DateTimeField(auto_now=True, verbose_name="Ultima modificación")
