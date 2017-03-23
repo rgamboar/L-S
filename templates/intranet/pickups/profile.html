@@ -56,7 +56,7 @@
                                     <a onclick="change_pickup_package({{pickup.id}});" class="btn btn-success pull-right">Enviar</a>
                                 </td>
                             {% else %}
-                                <td>{{pickup.package}}</td>
+                                <td class="link" onclick="location.href='{% url 'packageProfile' pickup.package %}'"><a>{{pickup.package}}</a></td>
                                 <td>{{pickup.pickUpDate}}</td>
                             {% endif %}
 

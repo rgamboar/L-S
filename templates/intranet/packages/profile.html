@@ -68,7 +68,6 @@
                         <th>Volumen</th>
                         <th>Cantidad</th>
                         <th>Peso</th>
-                        <th>Precio</th>
                         <th>Riesgo</th>
                         <th>Fecha creacion</th>
                         {% if package.deliverDate %}
@@ -81,14 +80,19 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>{{package.volume}}</td>
-                            <td>{{package.quantity}}</td>
-                            <td>{{package.weight}}</td>
                             <td>
-                                {% if package.rate == 0 %}
-                                      No definido
+                                {% if package.volume %}
+                                    {{package.volume}}
                                 {% else %}
-                                    ${{package.rate|intcomma}}    
+                                    No definido
+                                {% endif %}
+                            </td>
+                            <td>{{package.quantity}}</td>
+                            <td>
+                                {% if package.weight %}
+                                    {{package.weight}}
+                                {% else %}
+                                    No definido
                                 {% endif %}
                             </td>
                             <td>{{package.risk}}</td>
@@ -115,6 +119,65 @@
                     </tbody>
                 </table>
                 </div>
+
+
+                <div class="table-responsive">   
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Oportunidad</th>
+                        {% if package.pickup %}
+                            <th>Recogida</th>
+                        {% endif %}
+                        <th>Forma de Pago</th>
+                        <th>
+                            {% if package.is_weight %}
+                                Kilogramo:
+                            {% else %}
+                                Unitario:
+                            {% endif %}
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{package.chance}}</td>
+                            {% if package.pickup %}
+                            <td class="link" onclick="location.href='{% url 'pickupProfile' package.pickup %}'"><a>{{package.pickup}}</a></td>
+                            {% endif %}
+                            <td>
+                                {% if package.unknown_pay_method %}
+                                    Desconocida
+                                {% else %}
+                                    {% if package.credit %}
+                                        Credito
+                                    {% else %}
+                                        Contado
+                                    {% endif %}  
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if package.rate == 0 %}
+                                      No definido
+                                {% else %}
+                                    ${{package.rate|intcomma}}    
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if package.rate == 0 %}
+                                      No definido
+                                {% else %}
+                                    ${{package.total|intcomma}}    
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
                 
                 <a href="javascript:window.print()" class="btn btn-primary" role="button">Imprimir en 80mm</a>
                 <a href="{% url 'packagePdf' package.id %}" class="btn btn-primary" role="button">Imprimir</a>
