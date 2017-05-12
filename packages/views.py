@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
@@ -13,7 +13,6 @@ from django.template import Context
 from cgi import escape
 from bson import json_util
 import json
-
 from customers.forms import *
 from freights.forms import *
 from customers.models import *
@@ -44,6 +43,52 @@ def packagePdf(request, package_id=1):
         )
 
 @login_required(login_url="login/")
+def checkData(request, obj, data, form, provider,consignee,
+    customerCheck=False,makeProvider=False,makeConsignee=False,rutProvider=False,rutConsignee=False):
+    if obj.finishAddress:
+        obj.is_reciever=True
+    if data['pay'] == "None":
+        obj.unknown_pay_method = True
+    elif data['pay'] == "True":
+        obj.credit = True
+    elif data['pay'] == "False":
+        obj.credit = False
+    obj.old_id = request.POST.get('old_id')
+    obj.creator = request.user
+    obj.save()
+    if obj.old_id != None:
+        old = Package.LogicPackage.get(id=obj.old_id)
+        old.old = True
+        old.save()
+        old_pickup = PickUp.LogicPickUp.get(package = obj.old_id)
+        old_pickup.package = obj
+        old_pickup.save()
+    package = obj
+    success=True
+
+    oldForm= form
+    form = PackageForm(initial={
+        'start': oldForm.cleaned_data['start'],
+        'finish': oldForm.cleaned_data['finish'],
+        'finishAddress': oldForm.cleaned_data['finishAddress'],
+        'provider': oldForm.cleaned_data['provider'],
+        'consignee': oldForm.cleaned_data['consignee'],
+        }, prefix="f") 
+    return render(request, 'intranet/packages/create.html', {
+        'form': form,
+        'success': success,
+        'provider': provider,
+        'consignee': consignee,
+        'customerCheck': customerCheck,
+        'makeProvider': makeProvider,
+        'makeConsignee': makeConsignee,
+        'rutProvider': rutProvider,
+        'rutConsignee': rutConsignee,
+        'package': package
+    })
+
+
+@login_required(login_url="login/")
 def package(request):
     package=False
     success=False
@@ -71,18 +116,9 @@ def package(request):
                     obj.customer=obj.consignee
                 else:
                     obj.customer = None
-                if obj.finishAddress:
-                    obj.is_reciever=True
-                if data['pay'] == "None":
-                    obj.unknown_pay_method = True
-                elif data['pay'] == "True":
-                    obj.credit = True
-                elif data['pay'] == "False":
-                    obj.credit = False
-                obj.creator = request.user
-                obj.save()
-                package = obj
-                success=True
+                return checkData(request, obj, data, form, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
+
             elif data['provider']:
                 if consignee.is_valid() and not Customer.objects.filter(rut=consignee.cleaned_data['rut']):
                     data= consignee.cleaned_data
@@ -94,18 +130,8 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if data['pay'] == "None":
-                        obj.unknown_pay_method = True
-                    elif data['pay'] == "True":
-                        obj.credit = True
-                    elif data['pay'] == "False":
-                        obj.credit = False
-                    else:
-                        obj.credit = data['pay']
-                    obj.creator = request.user
-                    obj.save()
-                    package = obj
-                    success=True
+                    return checkData(request, obj, data, form, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
@@ -121,18 +147,8 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.finishAddress:
-                        obj.is_reciever=True
-                    if data['pay'] == "None":
-                        obj.unknown_pay_method = True
-                    elif data['pay'] == "True":
-                        obj.credit = True
-                    elif data['pay'] == "False":
-                        obj.credit = False
-                    obj.creator = request.user
-                    obj.save()
-                    package = obj
-                    success=True
+                    return checkData(request, data, obj, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=provider.cleaned_data['rut']):
@@ -152,18 +168,9 @@ def package(request):
                         obj.customer=obj.provider
                     else:
                         obj.customer=obj.consignee
-                    if obj.finishAddress:
-                        obj.is_reciever=True
-                    if data['pay'] == "None":
-                        obj.unknown_pay_method = True
-                    elif data['pay'] == "True":
-                        obj.credit = True
-                    elif data['pay'] == "False":
-                        obj.credit = False
-                    obj.creator = request.user
-                    obj.save()
-                    package = obj
-                    success=True
+                    return checkData(request, obj, data, form, provider,consignee,
+                    customerCheck,makeProvider,makeConsignee,rutProvider,rutConsignee)
+
                 else:
                     customerCheck=True
                     if Customer.objects.filter(rut=provider.cleaned_data['rut']):
@@ -171,6 +178,7 @@ def package(request):
                     if Customer.objects.filter(rut=consignee.cleaned_data['rut']):
                         rutConsignee = True 
         oldForm= form
+        errors=oldForm.non_field_errors
         form = PackageForm(initial={
             'start': oldForm.cleaned_data['start'],
             'finish': oldForm.cleaned_data['finish'],
@@ -182,6 +190,7 @@ def package(request):
         form = PackageForm(prefix="f")
         provider=  FastCustomerForm(prefix="p")
         consignee= FastCustomerForm(prefix="c")
+        errors= None
     return render(request, 'intranet/packages/create.html', {
         'form': form,
         'success': success,
@@ -192,7 +201,8 @@ def package(request):
         'makeConsignee': makeConsignee,
         'rutProvider': rutProvider,
         'rutConsignee': rutConsignee,
-        'package': package
+        'package': package,
+        'errors': errors
     })
 
 
@@ -210,6 +220,7 @@ def packageSearch(request):
             binicial = data['binicial']
             bfinal = data['bfinal']
             rate = data['rate']
+            modified = data['modified']
             save = data
             save['startDate']= json.dumps(save['startDate'], default=json_util.default)
             save['finishDate']= json.dumps(save['finishDate'], default=json_util.default)
@@ -219,7 +230,7 @@ def packageSearch(request):
 
             success=True
 
-            packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal, rate)
+            packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal, rate, modified)
 
             paginator = Paginator(packages, 25)
 
@@ -246,8 +257,9 @@ def packageSearch(request):
                 status = data['status']
                 binicial = data['binicial']
                 bfinal = data['bfinal']
+                modified = data['modified']
                 success=True
-                packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal)
+                packages = packagesFilter(request,startDate, finishDate, search, status, binicial, bfinal, modified)
                 paginator = Paginator(packages, 25)
                 page = paginator.page(num_page)
                 packages = page
@@ -264,17 +276,19 @@ def packageSearch(request):
 
 
 @login_required(login_url="login/")
-def packagesFilter(request, start, finish, search, status, binicial, bfinal, rate):
-    if status == "1":
-        packages = Package.LogicPackage.filter(is_waiting=True)
-    elif status == "2":
-        packages = Package.LogicPackage.filter(is_traveling=True)
-    elif status == "3":
-        packages= Package.LogicPackage.filter(is_waiting=False, is_traveling=False, is_delivered=False)
-    elif status == "4":
-        packages = Package.LogicPackage.filter(is_delivered=True)
+def packagesFilter(request, start, finish, search, status, binicial, bfinal, rate, modified):
+    if modified:
+        packages = Package.objects.filter(old=True)
     else:
-        packages = Package.LogicPackage.all()
+        packages = Package.objects.all()
+    if status == "1":
+        packages = packages.filter(is_waiting=True)
+    elif status == "2":
+        packages = packages.filter(is_traveling=True)
+    elif status == "3":
+        packages= packages.filter(is_waiting=False, is_traveling=False, is_delivered=False)
+    elif status == "4":
+        packages = packages.filter(is_delivered=True)
     if rate:
         packages= packages.filter(rate='0')
     if (binicial and binicial != 'None'):
@@ -372,56 +386,23 @@ def packageIndex(request, traveling=False, finish=False, delivered=False):
 
 @login_required(login_url="login/")
 def packageProfile(request, package_id):
-    package = Package.LogicPackage.get(id=package_id)
-    if package.is_waiting:
+    package = Package.objects.get(id=package_id)
+    if package.delete == True:
+        return redirect('home')
+    if package.is_waiting and not package.old:
         return packageProfileWaiting(request, package)
-    elif package.is_traveling:
-        return packageProfileTraveling(request, package)
-    elif package.is_delivered:
-        return packageProfileDelivered(request, package)
-    elif package.is_receiver:
-        return packageProfileReceiver(request, package)
     else:
-        return packageProfileFinish(request, package)
-
-
-@login_required(login_url="login/")
-def packageProfileFinish(request, package):
-    return render(request, 'intranet/packages/profileFinish.html', 
+        return render(request, 'intranet/packages/profile.html', 
         {
             'package': package,
         })
-
-@login_required(login_url="login/")
-def packageProfileReceiver(request, package):
-    return render(request, 'intranet/packages/profileReceiver.html', 
-        {
-            'package': package,
-        })
-
-
-@login_required(login_url="login/")
-def packageProfileDelivered(request, package):
-    return render(request, 'intranet/packages/profileDelivered.html', 
-        {
-            'package': package,
-        })
-
-
-@login_required(login_url="login/")
-def packageProfileTraveling(request, package):
-    return render(request, 'intranet/packages/profileTraveling.html', 
-        {
-            'package': package,
-        })
-
 
 @login_required(login_url="login/")
 def packageProfileWaiting(request, package):
     package.posibleFreight= Freight.LogicFreight.filter(start=package.start, finish= package.finish, is_waiting= True)
     if package.freight:
         package.posibleFreight = package.posibleFreight.exclude(id= package.freight.id)
-    return render(request, 'intranet/packages/profile.html', 
+    return render(request, 'intranet/packages/profileWaiting.html', 
         {
             'package': package,
         })
@@ -473,6 +454,26 @@ def packageRate(request):
             if rate> 0:
                 package.rate= rate
                 package.save()
+            return JsonResponse({'error': False})
+        else:
+            return freightIndex(request)
+
+@login_required(login_url="login/")   
+def packagePay(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            package = Package.LogicPackage.get(id=request.POST['id'])
+            pay = request.POST['pay']
+            if pay == "Credito":
+                package.credit = True
+                package.unknown_pay_method = False 
+            if pay == "Contado":
+                package.credit = False
+                package.unknown_pay_method = False 
+            if pay == "-----":
+                package.credit = False
+                package.unknown_pay_method = True 
+            package.save()
             return JsonResponse({'error': False})
         else:
             return freightIndex(request)
@@ -562,4 +563,31 @@ def pickupPackage(request):
             return JsonResponse({'error': False})
         else:
             return freightIndex(request)
+
+@login_required(login_url="login/")   
+def packageChange(request, package_id):
+    package = Package.LogicPackage.get(id=package_id)
+    form = PackageForm(instance=package, prefix="f")
+    provider=  FastCustomerForm(prefix="p")
+    consignee= FastCustomerForm(prefix="c")
+    success=False
+    customerCheck= False
+    makeProvider= False
+    makeConsignee= False
+    rutProvider = False
+    rutConsignee = False
+    errors = None
+    return render(request, 'intranet/packages/createOther.html', {
+        'form': form,
+        'success': success,
+        'provider': provider,
+        'consignee': consignee,
+        'customerCheck': customerCheck,
+        'makeProvider': makeProvider,
+        'makeConsignee': makeConsignee,
+        'rutProvider': rutProvider,
+        'rutConsignee': rutConsignee,
+        'package': package,
+        'errors': errors
+    })
 

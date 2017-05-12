@@ -22,16 +22,25 @@ class PackageForm(forms.ModelForm):
 	risk = forms.ChoiceField(label="Riesgo", choices=[("Bajo", "Bajo"),("Medio", "Medio"),("Alto", "Alto")])
 	packaging = forms.ChoiceField(label="Embalage", choices=[("Regular", "Regular"),("Bueno", "Bueno"),("Malo", "Malo")])
 	volume = forms.CharField(label='Volumen',max_length=100, required=False)
-	quantity = forms.IntegerField(label='Cantidad')
-	weight = forms.IntegerField(label='Peso', required=False)
+	quantity = forms.IntegerField(min_value=0, max_value=99999999, label='Cantidad')
+	weight = forms.IntegerField(min_value=0, max_value=99999999, label='Peso', required=False)
 	chance = forms.ChoiceField(label="Oportunidad", choices=[("Normal", "Normal"),("Express", "Express")])
-	rate = forms.IntegerField(label='Tarifado')
+	rate = forms.IntegerField(min_value=0, max_value=99999999, label='Tarifado')
 	is_weight = forms.TypedChoiceField(label="Forma de Tarifado" ,coerce=lambda x: x =='True', choices=((False, 'Cantidad'), (True, 'Kilogramos')))
 	pay = forms.ChoiceField(label="F. Pago", choices=[("False", "Contado"),("True", "Credito"),("None", "-----")])
 
 	is_boleta = forms.TypedChoiceField(label="Boleta o Factura?" ,coerce=lambda x: x =='True', choices=((False, 'Factura'), (True, 'Boleta')))
-	boleta = forms.IntegerField(required=False, label="Numero de boleta")
+	boleta = forms.IntegerField(min_value=0, max_value=99999999, required=False, label="Numero de boleta")
 
+	def clean(self):
+		cleaned_data = super(PackageForm, self).clean()
+		is_weight = cleaned_data.get("is_weight")
+		weight = cleaned_data.get("weight")
+		if is_weight == True:
+			if weight == None:
+				raise forms.ValidationError(
+					"Para calcular el precio por la cantidad de kilogramos tiene que ingresar el peso."
+				)
 	class Meta:
 		model = Package
 		fields = ['name','start', 'finish','finishAddress','provider','consignee','payerMiddle' ,'risk','packaging','volume','quantity','weight','chance','is_weight','rate','pay','is_boleta','boleta']
@@ -57,6 +66,7 @@ class SearchBoxForm(forms.Form):
 	binicial = forms.ModelChoiceField(label='Bodega Inicial',queryset=Warehouse.LogicWarehouse.all(), required=False)
 	bfinal = forms.ModelChoiceField(label='Bodega Final',queryset=Warehouse.LogicWarehouse.all(), required=False)
 	rate = forms.BooleanField(label='Mostrar solo por tarifar', required=False)
+	modified = forms.BooleanField(label='Mostrar las modificadas', required=False)
 
 	startDate = forms.DateTimeField(
 		label='Creacion desde',

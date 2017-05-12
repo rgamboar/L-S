@@ -7,19 +7,19 @@ from customers.models import *
 
 class LogicPackageManager(models.Manager):
     def get_queryset(self):
-        return super(LogicPackageManager, self).get_queryset().filter(delete=False)
+        return super(LogicPackageManager, self).get_queryset().filter(delete=False, old=False)
 
 class LogicPickUpManager(models.Manager):
     def get_queryset(self):
         return super(LogicPickUpManager, self).get_queryset().filter(delete=False)
 
 class Package(models.Model):
-	name = models.CharField(max_length=300, null=True, verbose_name="Descripción")
+	name = models.CharField(max_length=300, null=True, verbose_name="Descripción", blank=True)
 	lastDate = models.DateTimeField(auto_now=True, verbose_name="Ultima modificación")
 	createDate = models.DateTimeField(auto_now_add=True, verbose_name="Creacion")
-	deliverDate = models.DateTimeField(null=True, verbose_name="Entrega")
+	deliverDate = models.DateTimeField(null=True, verbose_name="Entrega", blank=True)
 
-	finishAddress = models.CharField(max_length=300, null=True, verbose_name="Dirección destino")
+	finishAddress = models.CharField(max_length=300, null=True, verbose_name="Dirección destino", blank=True)
 
 	is_waiting =models.BooleanField(default=True, verbose_name="Esta esperando?")
 	is_traveling =models.BooleanField(default=False, verbose_name="Esta viajando?")
@@ -27,21 +27,21 @@ class Package(models.Model):
 	is_receiver =models.BooleanField(default=False, verbose_name="Ir a entregar?")
 
 	is_boleta =models.BooleanField(default=False, verbose_name="Es boleta?")
-	boleta = models.IntegerField(null=True, verbose_name="Boleta")
+	boleta = models.PositiveIntegerField(null=True, verbose_name="Boleta", blank=True)
 
 	risk = models.CharField(max_length=100, null=True, verbose_name="Riesgo")
 	packaging = models.CharField(max_length=100, null=True, verbose_name="Embalage")
-	volume = models.CharField(max_length=100, null=True, verbose_name="Volumen")
-	quantity = models.IntegerField(null=True, verbose_name="Cantidad")
-	weight = models.IntegerField(null=True, verbose_name="Peso")
+	volume = models.CharField(max_length=100, null=True, verbose_name="Volumen", blank=True)
+	quantity = models.PositiveIntegerField(null=True, verbose_name="Cantidad")
+	weight = models.PositiveIntegerField(null=True, verbose_name="Peso", blank=True)
 	chance = models.CharField(max_length=100, null=True, verbose_name="Oportunidad")
 	is_weight =models.BooleanField(default=False, verbose_name="Forma de Tarifado")
-	rate = models.IntegerField(null=False, verbose_name="Tarifado")
+	rate = models.PositiveIntegerField(null=False, verbose_name="Tarifado")
 	unknown_pay_method = models.BooleanField(default=False, verbose_name="Se desconoce forma de pago?")
 	credit = models.BooleanField(default=False, verbose_name="Forma de pago")
 	
 
-	customer = models.ForeignKey(Customer, null=True, verbose_name="Cliente", related_name='packageCustomer')
+	customer = models.ForeignKey(Customer, null=True, verbose_name="Cliente", related_name='packageCustomer', blank=True)
 	provider = models.ForeignKey(Customer, null=False, verbose_name="Prooveedor", related_name='packageProvider')
 	consignee = models.ForeignKey(Customer, null=False, verbose_name="Consignatario", related_name='packageConsignee')
 	payer = models.BooleanField(default=False, verbose_name="Paga el proveedor?")
@@ -50,8 +50,10 @@ class Package(models.Model):
 	start = models.ForeignKey(Warehouse, null=False, related_name='packageStart', verbose_name="Origen")
 	finish = models.ForeignKey(Warehouse, null=False, related_name='packageFinish', verbose_name="Destino")
 	
+	old_id = models.PositiveIntegerField(null=True, verbose_name="Guia anterior", blank=True)
+	old = models.BooleanField(default=False, verbose_name="Guia antigua")
 	creator = models.ForeignKey(User, null=False, related_name='packageCreator', verbose_name="U. Creado")
-	deliverer = models.ForeignKey(User, null=True, related_name='packageDeliverer', verbose_name="U. Entregado")
+	deliverer = models.ForeignKey(User, null=True, related_name='packageDeliverer', verbose_name="U. Entregado", blank=True)
 	delete = models.BooleanField(default=False, verbose_name="Borrado")
 	objects = models.Manager()
 	LogicPackage = LogicPackageManager()
@@ -70,6 +72,9 @@ class Package(models.Model):
 				return self.weight*self.rate
 		else:
 			return self.quantity*self.rate
+
+	def pickup(self):
+		return PickUp.objects.get(package = self.id)
 
 
 class PickUp(models.Model):

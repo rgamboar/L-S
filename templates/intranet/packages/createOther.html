@@ -15,26 +15,7 @@
 <div class="container">
         <div class="jumbotron">
         <div class="row">
-        <h3 class="text-center"> Crear Guia de Flete</h3>
-                {% if success %}
-                    <div class="alert alert-success">
-                        <strong>Se ha creado con exito!</strong> Puedes ver la <a href="{% url 'packageProfile' package.id %}" class="alert-link">Guia de Flete</a> o 
-                        <a href="javascript:window.print()" class="alert-link" role="button">Imprimir</a>.
-                    </div>
-                {% endif %}
-                {% if customerCheck %}
-                    <div class="alert alert-danger">
-                      <strong>No ingreso a un proveedor o consignatario correctamente!</strong>
-                    </div>
-                {% endif %}
-                {% if errors %}
-                    {% for value in errors %} 
-                        <div class="alert alert-danger">
-                            <strong>{{ value|escape }}</strong>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
+        <h3 class="text-center"> Modificando Guia de Flete N°{{package.id}}</h3>
             <div class="col-sm-1">
             </div>
 
@@ -47,85 +28,25 @@
                                 <span class="error_message">{{ err }}</span>
                             {% endfor %}
                         </div>
-                        {% if forloop.counter == 5 %}
-                            <div class="form-group">
-                                <label for="checkProvider">Agregar Proveedor:</label>
-                                <input name="checkbox" type="checkbox" id="checkProvider" />
-                            </div>
-                        {% endif %}
-                        {% if forloop.counter == 6 %}
-                            <div class="form-group">
-                                <label for="checkboxConsignee">Agregar Consignatario:</label>
-                                <input name="checkbox" type="checkbox" id="checkboxConsignee" />
-                            </div>
-                        {% endif %}
-
                     {% endfor %}
+                      <input type="hidden" name="old_id" value="{{package.id}}">
+
 
             </div>
             <div class="col-sm-5 default-form">
-                <div class="panel-group">
-                  <div id="provider" class="panel panel-default hidden">
-                    <div class="panel-heading">Nuevo Proovedor</div>
-                    <div class="panel-body">
-                        <div class="col-sm-12">
-                            {% if rutProvider %}
-                                <div class="alert alert-danger">
-                                  <strong>Rut ya existe en el sistema!</strong>
-                                </div>
-                            {% endif %}
-                        {% for field in provider %}
-                                <div class="form-group">
-                                    {{ field.label_tag }} {{ field }}
-                                    {% for err in field.errors %}
-                                        <span class="error_message">{{ err }}</span>
-                                    {% endfor %}
-                                </div>
-                        {% endfor %}
-                        </div>
-                    </div>
-                  </div>
-                  <div id="consignee" class="panel panel-default hidden">
-                    <div class="panel-heading">Nuevo Consignatario</div>
-                    <div class="panel-body">
-                        <div class="col-sm-12">
-                            {% if rutConsignee %}
-                                <div class="alert alert-danger">
-                                  <strong>Rut ya existe en el sistema!</strong>
-                                </div>
-                            {% endif %}
-                        {% for field in consignee %}
-                                <div class="form-group">
-                                    {{ field.label_tag }} {{ field }}
-                                    {% for err in field.errors %}
-                                        <span class="error_message">{{ err }}</span>
-                                    {% endfor %}
-                                </div>
-                        {% endfor %}
-                        </div>
-                    </div>
-                  </div>
-                </div>
-
-                
-                
-
+                <div class="alert alert-info">
+                    <strong>Recuerda!</strong> al modificar la guia la anterior quedara guardada en el sistema
+               </div>
             </div>
-
             <div class="col-sm-1">
             </div>  
-
-
-            
-
-            
 
     </div>
 <div class="row"> 
     <div class="col-sm-1">
     </div>
     <div class="col-sm-5">
-        <button data-fancybox="" data-src="#modal" href="javascript:;" class="btn btn-default" id="confirmacion">Crear</button>
+        <button data-fancybox="" data-src="#modal" href="javascript:;" class="btn btn-default" id="confirmacion">Modificar</button>
             </div>
         </div>
     </div>
@@ -286,23 +207,9 @@
 
 </form>
 
-{% show_print_80 package %}
-
-
 <script type="text/javascript">
     
 $(function() {
-    $(checkProvider).click(function() {
-        $('#id_f-provider').val(null).trigger('change');
-        $("#provider").toggleClass('hidden');
-        $("#selectProvider").toggleClass('hidden');
-    });
-    $(checkboxConsignee).click(function() {
-        $('#id_f-consignee').val(null).trigger('change');    
-        $("#consignee").toggleClass('hidden');
-        $("#selectConsignee").toggleClass('hidden');
-    });
-
 
     $( "#confirmacion" ).click(function() {
       $('#Cdescripcion').text($('#id_f-name').val());
@@ -332,20 +239,8 @@ $(function() {
 
 
 $( document ).ready(function() {
-    {% if makeProvider %}
-    $('#checkProvider')[0].checked = true;
-    $("#provider").toggleClass('hidden');
-    $("#selectProvider").toggleClass('hidden');
-    {% endif %}
-    {% if makeConsignee %}
-    $('#checkboxConsignee')[0].checked = true;
-    $("#consignee").toggleClass('hidden');
-    $("#selectConsignee").toggleClass('hidden');
-    {% endif %}
 
 });
-
-
 
 
 </script>

@@ -6,6 +6,7 @@ urlpatterns = [
 
 
     url(r'^guia/crear/$',  views.package, name='package'),
+    url(r'^guia/modificar/(?P<package_id>.*)/$',  views.packageChange, name='packageChange'),
     url(r'^guia/buscar/$',  views.packageSearch, name='packageSearch'),
     
     url(r'^guia/origen/$',  views.packageIndex, name='packageIndex'),
@@ -16,6 +17,7 @@ urlpatterns = [
     url(r'^guia/retirar/$',  views.packageIndex, {'transmitter': True}, name='packageTransmitter'),
     url(r'^guia/estado/$', views.packageState, name='packageState'),
     url(r'^guia/tarifado/$', views.packageRate, name='packageRate'),
+    url(r'^guia/formadepago/$', views.packagePay, name='packagePay'),
 
     url(r'^guia/pdf/(?P<package_id>.*)/$',  views.packagePdf, name='packagePdf'),
 
